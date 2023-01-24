@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    title Topal
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel='stylesheet' href='/stylesheets/layout.css')
+
+    script(src="/javascripts/tools/cookies.js")
+    script(src="/javascripts/tools/awards.js")
+    script(src="/javascripts/tools/permissions.js")
+    script(src="/javascripts/layout.js")
+  body
+    .top-bar
+      #nav-container
+        .line
+        button#nav-home.clickable Home
+
+        .line
+        .dropdown
+          button Awards
+          .dropdown-content
+            a(href="/awards/midmar-mile") Midmar Mile
+            a(href="/awards/polar-bear") Polar Bear
+            a(href="/awards/running") Running
+
+        .line(style=`display: ${awardsLineDisplay}`)
+        button#nav-sign_awards.clickable(style=`display: ${awardsButtonDisplay}`) Sign Awards
+
+        .line(style=`display: ${permissionsLineDisplay}`)
+        button#nav-permissions.clickable(style=`display: ${permissionsButtonDisplay}`) Permissions
+
+        .line
+        button#nav-settings.clickable Settings
+
+        .line
+        button#nav-login.clickable Login
+        .line
+
+    #overflow
+
+    .container
+      block content

@@ -1,0 +1,20 @@
+.container h1 {
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.container h2 {
+    margin-left: 10px;
+}
+
+.container pre {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.separator {
+    background-color: rgb(255, 255, 255);
+    height: 15px;
+    margin-left: 2.5%;
+    width: 95%;
+}

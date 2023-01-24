@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/awards/running.css")
+  script(src="/javascripts/awards/running.js")
+
+  h1 Running Award
+  h3 Run hundereds of km!
+
+  h2.space Total Distance Run:
+  h3#total-distance-label Loading...
+  meter#total-distance-meter(max="100000")
+
+  .add-container.space
+    h1 Create Entry
+    h2#date-label Date
+    input#date-input(type="date")
+    h2 Distance
+    h3#distance-display 1000m
+    input#distance-input(type="range" min="1000" max="30000" value="3000" step="100")
+    h2#time-label Time
+    input#time-input(type="text" placeholder="Hours Minutes Seconds (e.g. \"1 30 0\")")
+    h2 Description
+    textarea#description-input
+    button#add-button Create
+    h4#success-prompt Successfully created new log!
+
+  h1.space Logs
+
+  table#logs-table.space
+    tr
+      th ID
+      th Date
+      th Distance
+      th Time
+      th Description
+      th Remove
+
+  .spacer

@@ -1,0 +1,97 @@
+body {
+    overflow-x: hidden;
+}
+
+.add-user {
+    background-color: rgb(4, 170, 109);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    overflow: hidden;
+    padding: 8px;
+    row-gap: 5px;
+}
+
+.add-user input {
+    min-width: 150px;
+    width: 50%;
+}
+
+.add-user-input-container {
+    align-items: center;
+    display: flex;
+}
+
+.add-user button {
+    font-size: 20px;
+    height: 50px;
+    width: 175px;
+}
+
+.container {
+    padding: 20px;
+}
+
+.info-header {
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.permissions-info h3 {
+    margin-top: 10px;
+}
+
+.permissions-info p {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.permissions-info ul {
+    margin-left: 20px;
+}
+
+.permissions-info ul li {
+    margin-top: 10px;
+}
+
+.section {
+    border: 3px solid rgb(0, 0, 0);
+    margin-top: 30px;
+    overflow: hidden;
+    padding: 20px;
+    width: 100%;
+}
+
+.user {
+    align-items: center;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    min-height: 100px;
+    overflow: hidden;
+    padding: 8px;
+    row-gap: 5px;
+}
+
+.user select {
+    float: right;
+    font-size: 30px;
+    height: 100px;
+    width: 250px;
+}
+
+#add-user-info {
+    color: rgb(255, 255, 255);
+    display: none;
+}
+
+#permissions-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    row-gap: 5px;
+}

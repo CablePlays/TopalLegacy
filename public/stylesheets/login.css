@@ -1,0 +1,14 @@
+.container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.container h1 {
+    background-color: greenyellow;
+}
+
+.error {
+    display: none;
+}

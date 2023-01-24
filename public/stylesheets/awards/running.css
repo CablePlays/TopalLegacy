@@ -1,0 +1,119 @@
+html {
+    overflow-x: hidden;
+}
+
+meter {
+    height: 40px;
+    width: 80%;
+}
+
+meter::-webkit-meter-bar {
+    background-color: rgb(211, 211, 211);
+    box-shadow: 0 3px 3px -3px rgb(51, 51, 51) inset;
+}
+
+meter::-webkit-meter-optimum-value {
+    background-image: linear-gradient(90deg, rgb(4, 170, 109), rgb(255, 255, 255));
+    background-size: 100% 100%;
+    -webkit-transition: width 1s;
+}
+
+table {
+    display: none;
+    width: 100%;
+}
+
+table,
+th,
+td {
+    border: 1px solid rgb(0, 0, 0);
+    border-collapse: collapse;
+}
+
+th,
+td {
+    background-color: rgb(150, 212, 212);
+    padding: 8px;
+}
+
+td:last-child {
+    cursor: pointer;
+    text-align: center;
+}
+
+td:last-child:hover {
+    background-color: rgb(120, 182, 182);
+}
+
+/* Hide ID Column */
+th:first-child,
+td:first-child {
+    display: none;
+}
+
+.add-container {
+    background-color: rgb(4, 170, 109);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 360px;
+    overflow: hidden;
+    padding: 16px;
+    width: 50%;
+}
+
+.add-container button {
+    background-color: rgb(240, 240, 240);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 18px;
+    height: 50px;
+    margin: 20px auto 0;
+    width: 200px;
+}
+
+.add-container button:hover {
+    background-color: rgb(220, 220, 220);
+}
+
+.add-container button:active {
+    background-color: rgb(250, 250, 250);
+}
+
+.add-container h2 {
+    margin-top: 10px;
+}
+
+.add-container input,
+.add-container textarea {
+    margin-top: 5px;
+    min-height: 50px;
+}
+
+.add-container input[type="text"],
+.add-container textarea {
+    padding: 8px;
+}
+
+.container {
+    padding: 20px;
+    margin-bottom: 50px;
+}
+
+.required::after {
+    color: rgb(150, 8, 13);
+    content: " *"
+}
+
+.space {
+    margin-top: 20px;
+}
+
+#success-prompt {
+    color: rgb(255, 255, 255);
+    display: none;
+    margin: 10px auto 0;
+}

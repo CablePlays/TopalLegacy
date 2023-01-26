@@ -10,6 +10,7 @@ function router(path, options) {
     } = options || {};
 
     router.get('/', async function (req, res) {
+        // const params = req.url;
         const requestedPath = req.originalUrl;
         const loggedIn = cookies.isLoggedIn(req);
         const userEmail = cookies.getEmail(req);
@@ -55,10 +56,16 @@ function router(path, options) {
 
         if (await onGet()) {
             res.render(path, {
-                awardsButtonDisplay: (userPermissions.awards ? "inline-block" : "none"),
-                awardsLineDisplay: (userPermissions.awards ? "flex" : "none"),
-                permissionsButtonDisplay: (userPermissions.permissions ? "inline-block" : "none"),
-                permissionsLineDisplay: (userPermissions.permissions ? "flex" : "none")
+                awardsDisplay: {
+                    block: (userPermissions.awards ? "block" : "none"),
+                    flex: (userPermissions.awards ? "flex" : "none"),
+                    inlineBlock: (userPermissions.awards ? "inline-block" : "none")
+                },
+                permissionsDisplay: {
+                    block: (userPermissions.permissions ? "block" : "none"),
+                    flex: (userPermissions.permissions ? "flex" : "none"),
+                    inlineBlock: (userPermissions.permissions ? "inline-block" : "none")
+                }
             });
         }
     });
@@ -70,8 +77,9 @@ function acceptApp(app) {
     app.use('/', router("index"));
     app.use('/login', router("login")); // require not logged in handled in router
     app.use('/permissions', router("permissions", { permission: "permissions" }));
+    app.use('/profile', router("profile"));
     app.use('/settings', router("settings", { requireLoggedIn: true }));
-    app.use('/sign-awards', router("coming-soon", { permission: "awards" }));
+    app.use('/sign-awards', router("index"));
 
     app.use('/awards/midmar-mile', router("awards/midmar-mile", { requireLoggedIn: true }));
     app.use('/awards/polar-bear', router("awards/polar-bear", { requireLoggedIn: true }));

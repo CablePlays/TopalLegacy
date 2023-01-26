@@ -3,7 +3,10 @@ html
   head
     title Topal
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
     link(rel='stylesheet' href='/stylesheets/layout.css')
+    link(rel='stylesheet' href='/stylesheets/global/menu-icon.css')
+    link(rel='stylesheet' href='/stylesheets/global/sidebar.css')
 
     script(src="/javascripts/tools/cookies.js")
     script(src="/javascripts/tools/awards.js")
@@ -23,11 +26,11 @@ html
             a(href="/awards/polar-bear") Polar Bear
             a(href="/awards/running") Running
 
-        .line(style=`display: ${awardsLineDisplay}`)
-        button#nav-sign_awards.clickable(style=`display: ${awardsButtonDisplay}`) Sign Awards
+        .line(style=`display: ${awardsDisplay.flex}`)
+        button#nav-sign_awards.clickable(style=`display: ${awardsDisplay.inlineBlock}`) Sign Awards
 
-        .line(style=`display: ${permissionsLineDisplay}`)
-        button#nav-permissions.clickable(style=`display: ${permissionsButtonDisplay}`) Permissions
+        .line(style=`display: ${permissionsDisplay.flex}`)
+        button#nav-permissions.clickable(style=`display: ${permissionsDisplay.inlineBlock}`) Permissions
 
         .line
         button#nav-settings.clickable Settings
@@ -36,7 +39,36 @@ html
         button#nav-login.clickable Login
         .line
 
-    #overflow
+      #sidebar-button.menu-bar
+        .bar1
+        .bar2
+        .bar3
+
+    #sidebar
+      ul
+        li
+          a(href="/") Home
+        li
+          .item
+            input#awards-checkbox(type="checkbox")
+            label(for="awards-checkbox") Awards
+
+            ul
+              li
+                a(href="/awards/midmar-mile") Midmar Mile
+              li
+                a(href="/awards/polar-bear") Polar Bear
+              li
+                a(href="/awards/running") Running
+
+        li(style=`display: ${awardsDisplay.block}`)
+          a(href="/sign-awards") Sign Awards
+        li(style=`display: ${permissionsDisplay.block}`)
+          a(href="/permissions") Permissions
+        li
+          a(href="/settings") Settings
+        li
+          a(href="/login") Login
 
     .container
       block content

@@ -32,3 +32,7 @@
 .logout-all button:active {
     background-color: rgb(174, 265, 232);
 }
+
+#attributions {
+    display: none;
+}

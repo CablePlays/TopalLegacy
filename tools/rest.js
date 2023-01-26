@@ -119,7 +119,7 @@ function acceptApp(app) {
         try {
             decoded = await verify(credential).then();
         } catch (error) {
-            console.log("Invalid JWT: " + error.message);
+            console.warn("Invalid JWT: " + error.message);
 
             res.json({
                 status: "error",

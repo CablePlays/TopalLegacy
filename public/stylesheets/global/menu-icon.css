@@ -1,0 +1,29 @@
+.menu-bar {
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 6px;
+}
+
+.menu-bar .bar1,
+.menu-bar .bar2,
+.menu-bar .bar3 {
+    background-color: rgb(50, 50, 50);
+    height: 5px;
+    transition: 0.4s;
+    width: 35px;
+}
+
+.menu-bar.change .bar1 {
+    transform: translate(0, 11px) rotate(-45deg);
+}
+
+.menu-bar.change .bar2 {
+    opacity: 0;
+}
+
+.menu-bar.change .bar3 {
+    transform: translate(0, -11px) rotate(45deg);
+}

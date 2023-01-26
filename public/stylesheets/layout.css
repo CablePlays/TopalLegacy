@@ -20,7 +20,7 @@
 
 .container {
     margin-top: 10vh;
-    height: 90vh;
+    height: 100%;
     width: 100vw;
 }
 
@@ -70,6 +70,22 @@
     width: 100%;
 }
 
+.permission-awards,
+.permission-permissions {
+    display: none;
+}
+
+.top-bar {
+    background-color: rgb(50, 50, 50);
+    border-bottom: 2px solid rgb(0, 0, 0);
+    box-shadow: 0 3px 5px rgb(0, 0, 0, .5);
+    height: 10vh;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
 #nav-container {
     display: flex;
     height: 100%;
@@ -87,32 +103,4 @@
 #nav-container button:hover,
 .dropdown:hover button {
     background-color: rgb(62, 142, 65);
-}
-
-.permission-awards,
-.permission-permissions {
-    display: none;
-}
-
-.top-bar {
-    background-color: rgb(50, 50, 50);
-    border-bottom: 2px solid rgb(0, 0, 0);
-    box-shadow: 0 3px 5px rgb(0, 0, 0, .5);
-    height: 10vh;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 10;
-}
-
-#overflow {
-    background-color: rgb(25, 25, 25);
-    height: 100%;
-    max-width: 45%;
-    position: fixed;
-    right: max(-300px, -45%);
-    top: 0;
-    transition: right 2s;
-    width: 300px;
-    z-index: 20;
 }

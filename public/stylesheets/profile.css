@@ -1,0 +1,105 @@
+body {
+    overflow-x: hidden;
+    background-color: rgb(15, 15, 20);
+}
+
+img {
+    height: 100px;
+    width: 100px;
+}
+
+meter {
+    display: block;
+    height: 40px;
+    max-width: 700px;
+    width: 100%;
+}
+
+meter::-webkit-meter-bar {
+    background-color: rgb(211, 211, 211);
+    box-shadow: 0 3px 3px -3px rgb(51, 51, 51) inset;
+}
+
+meter::-webkit-meter-optimum-value {
+    background-image: linear-gradient(90deg, rgb(230, 152, 50), rgb(238, 70, 210));
+    background-size: 100% 100%;
+    -webkit-transition: width 1s;
+}
+
+.card {
+    background-color: rgb(5, 5, 30);
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 16px;
+}
+
+.card .space {
+    margin-top: 20px;
+}
+
+.tab {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding: 8px 2px;
+}
+
+.tab h3 {
+    color: rgb(200, 200, 200);
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 5px 10px;
+    text-align: center;
+    transition: background-color 0.1s;
+}
+
+.tab h3:hover {
+    background-color: rgb(255, 255, 255, 0.1);
+}
+
+.tab .underline {
+    background-color: rgb(230, 152, 50);
+    display: none;
+    bottom: 0px;
+    height: 2px;
+    position: absolute;
+    width: 100%;
+}
+
+.tab.selected .underline {
+    display: block;
+}
+
+.tab-div {
+    display: none;
+    padding: 16px;
+    width: 100%;
+}
+
+.tab-div h1,
+.tab-div h2,
+.tab-div h3 {
+    color: rgb(200, 200, 200);
+}
+
+.top-block {
+    height: 30px;
+    width: 100%;
+}
+
+#tab-container {
+    background: linear-gradient(90deg, rgb(15, 15, 20), rgb(15, 15, 20) 200px, rgb(0, 0, 0, 0) 800px, rgb(0, 0, 0, 0));
+    border-bottom: 1px solid rgb(50, 50, 50);
+    column-gap: 20px;
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 10vh;
+    width: 100%;
+    z-index: 5;
+}
+
+#tab-div-container {
+    width: 100%;
+}

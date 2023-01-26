@@ -14,23 +14,137 @@ async function verify(token) {
     });
 }
 
-function acceptApp(app) {
-    // get permissions
-    app.post("/get-permissions", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const user = cookies.getEmail(req);
-            let userPermissions = await general.getPermissions(user);
-            res.json(userPermissions);
-        } else {
-            res.json(general.getPermissionsForLevel(0));
+function awardRequests(app) {
+    const LAST_COLUMN = "C";
+    const TOTAL_AWARDS = 2;
+
+    function getAwardColumn(award) {
+        switch (award) {
+            case "POLAR_BEAR": return 1;
+            case "RUNNING": return 2;
+            default: throw new Error("Unexpected award: " + award);
         }
+    }
+
+    /* Has */
+
+    app.post("/has-award", async (req, res) => {
+        let { user, award } = req.body;
+        user ||= cookies.getUser(req);
+
+        const column = getAwardColumn(award);
+        const value = await sheetsApi.search(`Awards!A2:${LAST_COLUMN}`, user, undefined, column);
+        const has = (value != null) && (value.toLowerCase() === "true");
+
+        res.json({
+            has
+        });
     });
 
-    // update permissions
+    /* Set */
+
+    app.post("/set-has-award", async (req, res) => {
+        if (await general.sessionTokenValid(req)) {
+            const clientUser = cookies.getUser(req);
+            let userPermissions = await general.getPermissions(clientUser);
+
+            if (userPermissions.awards) { // check for permission to manage awards
+                const { user, award, has } = req.body;
+                const column = getAwardColumn(award);
+
+                let replace = [];
+
+                for (let i = 0; i < TOTAL_AWARDS; i++) {
+                    replace[i] = null;
+                }
+
+                replace[column - 1] = (has ? true : "");
+
+                sheetsApi.upsert("Awards!A2:B", [
+                    [user, ...replace]
+                ], true);
+            }
+        }
+
+        res.end();
+    });
+
+    /* Run Data */
+
+    app.post("/get-run-entries", async (req, res) => {
+        let json = {};
+
+        if (await general.sessionTokenValid(req)) {
+            const user = cookies.getUser(req);
+            const values = await sheetsApi.get("Runs!A2:E");
+
+            const entries = [];
+
+            if (values != null) {
+                for (let i = 0; i < values.length; i++) {
+                    let row = values[i];
+
+                    if (row[0] === user) {
+                        let sheetRow = i + 2;
+                        entries.push([sheetRow, row[1], row[2], row[3], row[4]]);
+                    }
+                }
+            }
+
+            json.entries = entries;
+        }
+
+        res.json(json);
+    });
+
+    app.post("/add-run-entry", async (req, res) => {
+        if (await general.sessionTokenValid(req)) {
+            const { entry } = req.body;
+            const user = cookies.getUser(req);
+            sheetsApi.add(`Runs!A2:E`, [[user, ...entry]]);
+        }
+
+        res.end();
+    });
+
+    app.post("/remove-run-entry", async (req, res) => {
+        // TODO: check that user owns the entry being removed
+
+        if (await general.sessionTokenValid(req)) {
+            const { row } = req.body;
+            sheetsApi.set(`Runs!A${row}:E`, [["", "", "", "", ""]]);
+        }
+
+        res.end();
+    });
+}
+
+function permissionRequests(app) {
+
+    /* Get */
+
+    app.post("/get-permission-users", async (req, res) => {
+        let json = {};
+
+        if (await general.sessionTokenValid(req)) {
+            const user = cookies.getUser(req);
+            let userPermissions = await general.getPermissions(user);
+
+            if (userPermissions.permissions) { // check for permission to manage permissions
+                const values = await sheetsApi.get("Permissions!A2:B");
+                json.values = values;
+            }
+        }
+
+        res.json(json);
+    });
+
+    /* Set */
+
     app.post("/set-permission", async (req, res) => {
         if (await general.sessionTokenValid(req)) {
-            const userEmail = cookies.getEmail(req);
-            let userPermissions = await general.getPermissions(userEmail);
+            const user = cookies.getUser(req);
+            let userPermissions = await general.getPermissions(user);
 
             if (userPermissions.permissions) { // check for permission to manage permissions
                 const { user, level } = req.body;
@@ -40,78 +154,12 @@ function acceptApp(app) {
 
         res.end();
     });
+}
 
-    // get from database
-    app.post("/database-get", async (req, res) => {
-        let values;
+function otherRequests(app) {
 
-        if (await general.sessionTokenValid(req)) {
-            const { range } = req.body;
-            values = await sheetsApi.get(range);
-        } else {
-            values = [];
-        }
+    /* Login */
 
-        res.json({
-            values
-        });
-    });
-
-    // search database
-    app.post("/database-search", async (req, res) => {
-        let value;
-
-        if (await general.sessionTokenValid(req)) {
-            const { range, match, colSearch, colGet } = req.body;
-            value = await sheetsApi.search(range, match, colSearch, colGet);
-        }
-
-        res.json({
-            value
-        });
-    });
-
-    // add to database
-    app.post("/database-add", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const { range, values } = req.body;
-            sheetsApi.add(range, values);
-        }
-
-        res.end();
-    });
-
-    // set to database
-    app.post("/database-set", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const { range, values } = req.body;
-            sheetsApi.set(range, values);
-        }
-
-        res.end();
-    });
-
-    // replace in database
-    app.post("/database-replace", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const { range, values } = req.body;
-            await sheetsApi.replace(range, values);
-        }
-
-        res.end();
-    });
-
-    // upsert to database
-    app.post("/database-upsert", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const { range, values } = req.body;
-            await sheetsApi.upsert(range, values);
-        }
-
-        res.end();
-    });
-
-    // login
     app.post("/login", async (req, res) => {
         const { credential } = req.body;
         let decoded;
@@ -119,7 +167,7 @@ function acceptApp(app) {
         try {
             decoded = await verify(credential).then();
         } catch (error) {
-            console.warn("Invalid JWT: " + error.message);
+            console.console.warn("Invalid JWT: " + error.message);
 
             res.json({
                 status: "error",
@@ -155,6 +203,24 @@ function acceptApp(app) {
             status: "success"
         });
     });
+
+    /* Invalidate Session Token */
+
+    app.post("/invalidate-session-token", async (req, res) => {
+        const user = cookies.getUser(req);
+
+        if (await general.sessionTokenValid(req)) {
+            await sheetsApi.replace("Users!A2:B", [[user, "", ""]], false);
+        }
+
+        res.end();
+    });
+}
+
+function acceptApp(app) {
+    awardRequests(app);
+    permissionRequests(app);
+    otherRequests(app);
 }
 
 module.exports = acceptApp;

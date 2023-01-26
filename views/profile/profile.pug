@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/profile/profile.css")
+  script(src="/javascripts/profile/profile.js")
+
+  .top-block
+
+  #tab-container
+    .tab#default-tab(data-tab="awards")
+      h3 Awards
+      .underline
+    .tab(data-tab="achievements")
+      h3 Achievements
+      .underline
+    .tab(data-tab="admin" style=`display: ${permissionDisplays.awards.flex}`)
+      h3 Admin
+      .underline
+
+  .tab-div
+    block tab-content

@@ -17,7 +17,7 @@ function generateRemoveString(name) {
     return `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
 }
 
-function getEmail(req) {
+function getUser(req) {
     return getCookie("user_email", req.headers.cookie);
 }
 
@@ -26,12 +26,12 @@ function getSessionToken(req) {
 }
 
 function isLoggedIn(req) {
-    return (getEmail(req) != null) && (getSessionToken(req) != null);
+    return (getUser(req) != null) && (getSessionToken(req) != null);
 }
 
 module.exports = {
     generateRemoveString,
-    getEmail,
+    getUser,
     getSessionToken,
     isLoggedIn
 }

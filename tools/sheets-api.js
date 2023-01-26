@@ -74,7 +74,7 @@ async function set(range, values) {
     });
 }
 
-async function replace(range, desiredRows, append) {
+async function replace(range, desiredRows, append = false) {
     let sheetRows = await get(range);
 
     let parts = range.split("!");

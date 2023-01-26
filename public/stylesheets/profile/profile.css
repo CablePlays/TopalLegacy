@@ -3,11 +3,6 @@ body {
     background-color: rgb(15, 15, 20);
 }
 
-img {
-    height: 100px;
-    width: 100px;
-}
-
 meter {
     display: block;
     height: 40px;
@@ -24,17 +19,6 @@ meter::-webkit-meter-optimum-value {
     background-image: linear-gradient(90deg, rgb(230, 152, 50), rgb(238, 70, 210));
     background-size: 100% 100%;
     -webkit-transition: width 1s;
-}
-
-.card {
-    background-color: rgb(5, 5, 30);
-    border-radius: 8px;
-    margin-top: 20px;
-    padding: 16px;
-}
-
-.card .space {
-    margin-top: 20px;
 }
 
 .tab {
@@ -71,18 +55,6 @@ meter::-webkit-meter-optimum-value {
     display: block;
 }
 
-.tab-div {
-    display: none;
-    padding: 16px;
-    width: 100%;
-}
-
-.tab-div h1,
-.tab-div h2,
-.tab-div h3 {
-    color: rgb(200, 200, 200);
-}
-
 .top-block {
     height: 30px;
     width: 100%;
@@ -98,8 +70,4 @@ meter::-webkit-meter-optimum-value {
     top: 10vh;
     width: 100%;
     z-index: 5;
-}
-
-#tab-div-container {
-    width: 100%;
 }

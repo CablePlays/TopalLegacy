@@ -11,5 +11,5 @@ function setCompleted(completed) {
 
 window.addEventListener("load", () => {
     document.getElementById("info").innerHTML = info;
-    hasAward("POLAR_BEAR").then(setCompleted);
+    hasAward({ award: "POLAR_BEAR" }).then(setCompleted);
 });

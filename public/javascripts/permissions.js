@@ -28,34 +28,26 @@ function setupAddUser() {
 async function loadUsers() {
     const template = document.getElementById("user-template");
     const permissionsContainer = document.getElementById("permissions-container");
-    const localUser = getEmail();
+    const localUser = getUser();
 
-    let res = await fetch("/database-get", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            range: "Permissions!A2:B"
-        })
+    let res = await fetch("/get-permission-users", {
+        method: "POST"
     });
 
     let { values } = await res.json();
 
-    for (let row of values) {
-        const user = row[0];
+    for (let value of values) {
+        const user = value[0];
         if (user === localUser || user == null) continue;
 
         const clone = template.content.cloneNode(true).firstChild; // clone then select div
         const children = clone.children;
 
-        let level = row[1];
+        let level = parseInt(value[1]);
         let permission;
 
-        if (level == 1) {
-            permission = 1;
-        } else if (level == 2) {
-            permission = 2;
+        if (level === 1 || level === 2) {
+            permission = level;
         } else {
             continue;
         }

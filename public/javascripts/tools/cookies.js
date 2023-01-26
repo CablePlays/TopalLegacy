@@ -30,7 +30,7 @@ function removeCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
 }
 
-function getEmail() {
+function getUser() {
     return getCookie("user_email");
 }
 
@@ -39,7 +39,7 @@ function getSessionToken() {
 }
 
 function isLoggedIn() {
-    return (getEmail() != null) && (getSessionToken() != null);
+    return (getUser() != null) && (getSessionToken() != null);
 }
 
 function logOut() {

@@ -8,9 +8,6 @@ function setupNavigation() {
     document.getElementById("nav-settings").addEventListener("click", () => {
         window.location.href = "/settings";
     });
-    document.getElementById("nav-sign_awards").addEventListener("click", () => {
-        window.location.href = "/sign-awards";
-    });
 
     /* Login */
 

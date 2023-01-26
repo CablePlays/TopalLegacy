@@ -24,13 +24,14 @@ async function getSessionToken(user) {
 }
 
 async function sessionTokenValid(req) {
-    const currentToken = cookies.getSessionToken(req);
-    if (currentToken == null) return false;
+    const user = cookies.getUser(req);
+    if (user == null) return false;
 
-    const userEmail = cookies.getEmail(req);
-    const sessionToken = await getSessionToken(userEmail);
+    const savedSessionToken = cookies.getSessionToken(req);
+    if (savedSessionToken == null) return false;
 
-    return (currentToken === sessionToken);
+    const sessionToken = await getSessionToken(user);
+    return (savedSessionToken === sessionToken);
 }
 
 function logOut(res) {

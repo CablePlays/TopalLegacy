@@ -1,0 +1,21 @@
+extends profile
+
+block tab-content
+  link(rel="stylesheet" href="/stylesheets/profile/awards.css")
+
+  h1 Awards
+
+  .card
+    h2 Midmar Mile
+    img.space(src="/images/unchecked.png")
+
+  .card
+    h2 Polar Bear
+    img.space(src="/images/checked.png")
+
+  .card
+    h2 Running
+    h3.space Total Distance Run:
+    h3 5000m / 100000m
+    meter#running-distance-meter.space(max="100000" value="60000")
+    img.space(src="/images/unchecked.png")

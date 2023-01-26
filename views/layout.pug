@@ -9,8 +9,7 @@ html
     link(rel='stylesheet' href='/stylesheets/global/sidebar.css')
 
     script(src="/javascripts/tools/cookies.js")
-    script(src="/javascripts/tools/awards.js")
-    script(src="/javascripts/tools/permissions.js")
+    script(src="/javascripts/tools/rest.js")
     script(src="/javascripts/layout.js")
   body
     .top-bar
@@ -26,11 +25,8 @@ html
             a(href="/awards/polar-bear") Polar Bear
             a(href="/awards/running") Running
 
-        .line(style=`display: ${awardsDisplay.flex}`)
-        button#nav-sign_awards.clickable(style=`display: ${awardsDisplay.inlineBlock}`) Sign Awards
-
-        .line(style=`display: ${permissionsDisplay.flex}`)
-        button#nav-permissions.clickable(style=`display: ${permissionsDisplay.inlineBlock}`) Permissions
+        .line(style=`display: ${permissionDisplays.permissions.flex}`)
+        button#nav-permissions.clickable(style=`display: ${permissionDisplays.permissions.inlineBlock}`) Permissions
 
         .line
         button#nav-settings.clickable Settings
@@ -60,10 +56,8 @@ html
                 a(href="/awards/polar-bear") Polar Bear
               li
                 a(href="/awards/running") Running
-
-        li(style=`display: ${awardsDisplay.block}`)
-          a(href="/sign-awards") Sign Awards
-        li(style=`display: ${permissionsDisplay.block}`)
+                
+        li(style=`display: ${permissionDisplays.permissions.block}`)
           a(href="/permissions") Permissions
         li
           a(href="/settings") Settings

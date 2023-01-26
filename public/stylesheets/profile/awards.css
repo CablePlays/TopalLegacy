@@ -1,0 +1,26 @@
+img {
+    height: 100px;
+    width: 100px;
+}
+
+.card {
+    background-color: rgb(5, 5, 30);
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 16px;
+}
+
+.card .space {
+    margin-top: 20px;
+}
+
+.tab-div {
+    padding: 16px;
+    width: 100%;
+}
+
+.tab-div h1,
+.tab-div h2,
+.tab-div h3 {
+    color: rgb(200, 200, 200);
+}

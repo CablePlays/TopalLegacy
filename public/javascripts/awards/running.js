@@ -43,16 +43,13 @@ function addRow(id, date, distance, time, description) {
     removeCell.addEventListener("click", () => {
         tr.remove();
 
-        fetch("/database-set", {
+        fetch("/remove-run-entry", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                range: `Runs!A${id}:E`,
-                values: [
-                    ["", "", "", "", ""]
-                ]
+                row: id
             })
         });
     });
@@ -86,31 +83,18 @@ function hmsToSeconds(string) {
 }
 
 async function addRows() {
-    let res = await fetch("/database-get", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            range: "Runs!A2:E"
-        })
+    let res = await fetch("/get-run-entries", {
+        method: "POST"
     });
 
-    let { values } = await res.json();
+    let { entries } = await res.json();
     let totalDistance = 0;
 
-    if (values != null) {
-        const user = getEmail();
-
-        for (let i = 0; i < values.length; i++) {
-            let row = values[i];
-
-            if (row[0] === user) {
-                let sheetRow = i + 2;
-                let distance = parseInt(row[2]);
-                totalDistance += distance;
-                addRow(sheetRow, new Date(row[1]), distance, row[3], row[4] || "");
-            }
+    if (entries != null) {
+        for (let entry of entries) {
+            const distance = parseInt(entry[2]);
+            totalDistance += distance;
+            addRow(entry[0], new Date(entry[1]), distance, entry[3], entry[4] || "");
         }
     }
 
@@ -196,7 +180,7 @@ function setupAddSection() {
             dateLabel.classList.add("required");
             missingRequired = true;
         }
-        
+
         const time = hmsToSeconds(timeInput.value);
 
         if (time == null) {
@@ -207,7 +191,7 @@ function setupAddSection() {
             return;
         }
 
-        const user = getEmail();
+        const user = getUser();
         const date = new Date(dateInputValue);
         const distance = parseInt(distanceInput.value);
         const description = descriptionInput.value;
@@ -215,16 +199,13 @@ function setupAddSection() {
         used = true;
         document.getElementById("success-prompt").style.display = "block";
 
-        fetch("/database-add", {
+        fetch("/add-run-entry", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                range: "Runs!A2:E",
-                values: [
-                    [user, date, distance, time, description]
-                ]
+                entry: [date, distance, time, description]
             })
         });
 

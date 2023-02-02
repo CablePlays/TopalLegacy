@@ -111,7 +111,7 @@ function runRequests(app) {
 
     app.post("/remove-run-entry", async (req, res) => { // user can only remove their own entries
         if (await general.sessionTokenValid(req)) {
-            const {id} = req.body;
+            const { id } = req.body;
             const user = cookies.getUser(req);
             await database.run(`DELETE FROM runs WHERE id = ${id} AND user = "${user}"`);
         }
@@ -211,7 +211,7 @@ function otherRequests(app) {
     app.post("/invalidate-session-token", async (req, res) => {
         if (await general.sessionTokenValid(req)) {
             const user = cookies.getUser(req);
-            database.run(`INSERT OR REPLACE INTO users (user, session_token) VALUES ("${user}", null)`);
+            await database.replace("users", "user", user, { session_token: null });
         }
 
         res.end();

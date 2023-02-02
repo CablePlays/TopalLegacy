@@ -26,13 +26,13 @@
 
 #sidebar a,
 #sidebar label {
+    align-items: center;
     background-color: rgb(4, 170, 109);
     border-bottom: 2px solid rgb(25, 25, 25);
     color: rgb(255, 255, 255);
     cursor: pointer;
-    display: inline-block;
+    display: flex;
     height: 60px;
-    padding-top: 19px;
     padding-left: 35px;
     text-decoration: none;
     width: 100%;

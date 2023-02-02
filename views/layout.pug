@@ -7,6 +7,7 @@ html
     link(rel='stylesheet' href='/stylesheets/layout.css')
     link(rel='stylesheet' href='/stylesheets/global/menu-icon.css')
     link(rel='stylesheet' href='/stylesheets/global/sidebar.css')
+    link(rel='stylesheet' href='/stylesheets/global/topbar.css')
 
     script(src="/javascripts/tools/cookies.js")
     script(src="/javascripts/tools/rest.js")
@@ -15,24 +16,24 @@ html
     .top-bar
       #nav-container
         .line
-        button#nav-home.clickable Home
+        a(href="/") Home
 
         .line
         .dropdown
-          button Awards
+          a.dropdown-trigger Awards
           .dropdown-content
             a(href="/awards/midmar-mile") Midmar Mile
             a(href="/awards/polar-bear") Polar Bear
             a(href="/awards/running") Running
 
         .line(style=`display: ${permissionDisplays.permissions.flex}`)
-        button#nav-permissions.clickable(style=`display: ${permissionDisplays.permissions.inlineBlock}`) Permissions
+        a(href="/permissions" style=`display: ${permissionDisplays.permissions.flex}`) Permissions
 
         .line
-        button#nav-settings.clickable Settings
+        a(href="/settings") Settings
 
         .line
-        button#nav-login.clickable Login
+        a.login-option Login
         .line
 
       #sidebar-button.menu-bar
@@ -62,7 +63,7 @@ html
         li
           a(href="/settings") Settings
         li
-          a(href="/login") Login
+          a.login-option Login
 
     .container
       block content

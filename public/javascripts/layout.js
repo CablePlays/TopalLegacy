@@ -1,26 +1,19 @@
-function setupNavigation() {
-    document.getElementById("nav-home").addEventListener("click", () => {
-        window.location.href = "/";
-    });
-    document.getElementById("nav-permissions").addEventListener("click", () => {
-        window.location.href = "/permissions";
-    });
-    document.getElementById("nav-settings").addEventListener("click", () => {
-        window.location.href = "/settings";
-    });
+function setupLoginOptions() {
 
     /* Login */
 
-    const loginButton = document.getElementById("nav-login");
+    const loginOptions = document.getElementsByClassName("login-option");
 
-    loginButton.innerHTML = (isLoggedIn() ? "Sign Out" : "Login");
-    loginButton.addEventListener("click", () => {
-        if (isLoggedIn()) {
-            logout();
-        }
+    for (let loginOption of loginOptions) {
+        loginOption.innerHTML = (isLoggedIn() ? "Sign Out" : "Login");
+        loginOption.addEventListener("click", () => {
+            if (isLoggedIn()) {
+                logout();
+            }
 
-        window.location.href = "/login";
-    });
+            window.location.href = "/login";
+        });
+    }
 }
 
 function addLineInners() {
@@ -99,8 +92,8 @@ function setupResizeListener() {
     window.addEventListener("resize", onResize);
 }
 
-window.addEventListener("load", async () => {
-    setupNavigation();
+window.addEventListener("load", () => {
+    setupLoginOptions();
     setupSidebar();
     addLineInners();
     setupResizeListener();

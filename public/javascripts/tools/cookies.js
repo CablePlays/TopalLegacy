@@ -42,7 +42,7 @@ function isLoggedIn() {
     return (getUser() != null) && (getSessionToken() != null);
 }
 
-function logOut() {
+function logout() {
     removeCookie("session_token");
     removeCookie("user_email");
 }

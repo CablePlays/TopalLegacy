@@ -16,7 +16,7 @@ function setupNavigation() {
     loginButton.innerHTML = (isLoggedIn() ? "Sign Out" : "Login");
     loginButton.addEventListener("click", () => {
         if (isLoggedIn()) {
-            logOut();
+            logout();
         }
 
         window.location.href = "/login";

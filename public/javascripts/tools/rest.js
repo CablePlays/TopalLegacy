@@ -1,11 +1,13 @@
-async function hasAward(body) {
-    const res = await fetch("/has-award", {
+async function getAwards(user) {
+    const res = await fetch("/get-awards", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify({
+            user
+        })
     });
 
-    return (await res.json()).has;
+    return (await res.json()).awards;
 }

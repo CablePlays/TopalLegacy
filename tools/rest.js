@@ -1,8 +1,8 @@
 const { OAuth2Client } = require('google-auth-library');
 const { v4: uuidv4 } = require('uuid');
 const cookies = require('./cookies');
+const database = require('./database');
 const general = require('./general');
-const sheetsApi = require('./sheets-api');
 
 const CLIENT_ID = "65424431927-8mpphvtc9k2sct45lg02pfaidhpmhjsf.apps.googleusercontent.com";
 const client = new OAuth2Client(CLIENT_ID);
@@ -15,104 +15,105 @@ async function verify(token) {
 }
 
 function awardRequests(app) {
-    const LAST_COLUMN = "C";
-    const TOTAL_AWARDS = 2;
-
-    function getAwardColumn(award) {
-        switch (award) {
-            case "POLAR_BEAR": return 1;
-            case "RUNNING": return 2;
-            default: throw new Error("Unexpected award: " + award);
-        }
-    }
 
     /* Has */
 
-    app.post("/has-award", async (req, res) => {
-        let { user, award } = req.body;
-        user ||= cookies.getUser(req);
+    app.post("/get-awards", async (req, res) => { // does not require permissions
+        const user = cookies.getUser(req);
+        let targetUser = req.body.user || user;
 
-        const column = getAwardColumn(award);
-        const value = await sheetsApi.search(`Awards!A2:${LAST_COLUMN}`, user, undefined, column);
-        const has = (value != null) && (value.toLowerCase() === "true");
+        let record = await database.get(`SELECT * FROM awards WHERE user = "${targetUser}"`);
+        record ||= {};
+
+        let awards = {};
+
+        for (let award of Object.getOwnPropertyNames(record)) {
+            if (award === "user") {
+                continue;
+            }
+
+            let has = (record[award] === 1);
+            awards[general.awardColumnToKey(award)] = has;
+        }
 
         res.json({
-            has
+            awards
         });
     });
 
     /* Set */
 
-    app.post("/set-has-award", async (req, res) => {
+    app.post("/set-awards", async (req, res) => { // requires awards permission
         if (await general.sessionTokenValid(req)) {
-            const clientUser = cookies.getUser(req);
-            let userPermissions = await general.getPermissions(clientUser);
+            const user = cookies.getUser(req);
+            let userPermissions = await general.getPermissions(user);
 
             if (userPermissions.awards) { // check for permission to manage awards
-                const { user, award, has } = req.body;
-                const column = getAwardColumn(award);
+                const { user: targetUser, awards } = req.body;
+                let replacing = {};
 
-                let replace = [];
-
-                for (let i = 0; i < TOTAL_AWARDS; i++) {
-                    replace[i] = null;
+                // convert object to array of its properties
+                for (let award of Object.getOwnPropertyNames(awards)) {
+                    let column = general.awardKeyToColumn(award);
+                    let has = (awards[award] === true) ? 1 : 0;
+                    replacing[column] = has;
                 }
 
-                replace[column - 1] = (has ? true : "");
-
-                sheetsApi.upsert("Awards!A2:B", [
-                    [user, ...replace]
-                ], true);
+                await database.replace("awards", "user", targetUser, replacing);
             }
         }
 
         res.end();
     });
+}
 
-    /* Run Data */
+function runRequests(app) {
+
+    /* Get */
 
     app.post("/get-run-entries", async (req, res) => {
         let json = {};
 
-        if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            const values = await sheetsApi.get("Runs!A2:E");
+        const user = cookies.getUser(req);
+        let targetUser = req.user;
 
-            const entries = [];
-
-            if (values != null) {
-                for (let i = 0; i < values.length; i++) {
-                    let row = values[i];
-
-                    if (row[0] === user) {
-                        let sheetRow = i + 2;
-                        entries.push([sheetRow, row[1], row[2], row[3], row[4]]);
-                    }
-                }
+        if (targetUser == null) {
+            if (await general.sessionTokenValid(req)) {
+                targetUser = user;
             }
+        } else {
+            let permissions = general.getPermissions(user);
 
-            json.entries = entries;
+            if (!permissions.awards) { // check for permission to manage awards
+                targetUser = null;
+            }
+        }
+        if (targetUser != null) {
+            json.entries = await database.all(`SELECT * FROM runs WHERE user = "${targetUser}"`);
         }
 
         res.json(json);
     });
 
+    /* Add */
+
     app.post("/add-run-entry", async (req, res) => {
         if (await general.sessionTokenValid(req)) {
             const { entry } = req.body;
             const user = cookies.getUser(req);
-            sheetsApi.add(`Runs!A2:E`, [[user, ...entry]]);
+            await database.run(`INSERT INTO runs (user, date, distance, time, description) VALUES ("${user}", "${entry.date}", ${entry.distance}, ${entry.time}, "${entry.description}")`);
         }
 
         res.end();
     });
 
-    app.post("/remove-run-entry", async (req, res) => {
-        // TODO: check that user owns the entry being removed
+    /* Remove */
 
+    app.post("/remove-run-entry", async (req, res) => { // user can only remove their own entries
         if (await general.sessionTokenValid(req)) {
-            const { row } = req.body;
-            sheetsApi.set(`Runs!A${row}:E`, [["", "", "", "", ""]]);
+            const {id} = req.body;
+            const user = cookies.getUser(req);
+            await database.run(`DELETE FROM runs WHERE id = ${id} AND user = "${user}"`);
         }
 
         res.end();
@@ -121,7 +122,24 @@ function awardRequests(app) {
 
 function permissionRequests(app) {
 
-    /* Get */
+    /* Set */
+
+    app.post("/set-permission-level", async (req, res) => {
+        if (await general.sessionTokenValid(req)) {
+            const user = cookies.getUser(req);
+            let userPermissions = await general.getPermissions(user);
+
+            if (userPermissions.permissions) { // check for permission to manage permissions
+                const { user: targetUser, level } = req.body;
+                await database.replace("users", "user", targetUser, { permission_level: level });
+            }
+        }
+
+        await new Promise(r => setTimeout(r, 1000));
+        res.end();
+    });
+
+    /* Get Permission Users */
 
     app.post("/get-permission-users", async (req, res) => {
         let json = {};
@@ -131,28 +149,12 @@ function permissionRequests(app) {
             let userPermissions = await general.getPermissions(user);
 
             if (userPermissions.permissions) { // check for permission to manage permissions
-                const values = await sheetsApi.get("Permissions!A2:B");
-                json.values = values;
+                let records = await database.all("SELECT user, permission_level FROM users WHERE permission_level > 0");
+                json.records = records;
             }
         }
 
         res.json(json);
-    });
-
-    /* Set */
-
-    app.post("/set-permission", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            let userPermissions = await general.getPermissions(user);
-
-            if (userPermissions.permissions) { // check for permission to manage permissions
-                const { user, level } = req.body;
-                sheetsApi.upsert("Permissions!A2:B", [[user, level]]);
-            }
-        }
-
-        res.end();
     });
 }
 
@@ -188,11 +190,11 @@ function otherRequests(app) {
             return;
         }
 
-        let sessionToken = await sheetsApi.search("Users!A2:B", email);
+        let sessionToken = await general.getSessionToken(email);
 
         if (sessionToken == null) { // create session token
             sessionToken = uuidv4();
-            await sheetsApi.upsert("Users!A2:B", [[email, sessionToken]]);
+            await database.replace("users", "user", email, { session_token: sessionToken });
         }
 
         res.setHeader("Set-Cookie", [
@@ -207,10 +209,9 @@ function otherRequests(app) {
     /* Invalidate Session Token */
 
     app.post("/invalidate-session-token", async (req, res) => {
-        const user = cookies.getUser(req);
-
         if (await general.sessionTokenValid(req)) {
-            await sheetsApi.replace("Users!A2:B", [[user, "", ""]], false);
+            const user = cookies.getUser(req);
+            database.run(`INSERT OR REPLACE INTO users (user, session_token) VALUES ("${user}", null)`);
         }
 
         res.end();
@@ -219,6 +220,7 @@ function otherRequests(app) {
 
 function acceptApp(app) {
     awardRequests(app);
+    runRequests(app);
     permissionRequests(app);
     otherRequests(app);
 }

@@ -49,7 +49,7 @@ function addRow(id, date, distance, time, description) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                row: id
+                id
             })
         });
     });
@@ -92,9 +92,10 @@ async function addRows() {
 
     if (entries != null) {
         for (let entry of entries) {
-            const distance = parseInt(entry[2]);
+            const distance = parseInt(entry.distance);
             totalDistance += distance;
-            addRow(entry[0], new Date(entry[1]), distance, entry[3], entry[4] || "");
+
+            addRow(entry.id, new Date(entry.date), distance, entry.time, entry.description);
         }
     }
 
@@ -205,7 +206,7 @@ function setupAddSection() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                entry: [date, distance, time, description]
+                entry: { date, distance, time, description }
             })
         });
 
@@ -213,7 +214,7 @@ function setupAddSection() {
     });
 }
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
     setupAddSection();
     addRows().then(totalDistance => {
         getTable().style.display = "table";

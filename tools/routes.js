@@ -12,13 +12,12 @@ function router(path, options) {
     router.get('/', async function (req, res) {
         const requestedPath = req.originalUrl;
         const loggedIn = cookies.isLoggedIn(req);
-        const user = cookies.getUser(req);
         let userPermissions = general.getPermissionsForLevel(0);
 
         const onGet = async () => {
             // verify session token
             if (loggedIn && !await general.sessionTokenValid(req)) {
-                general.logOut(res);
+                general.logout(res);
 
                 if (requestedPath === "/") {
                     // requested destination desired; render
@@ -30,6 +29,7 @@ function router(path, options) {
                 return false;
             }
 
+            const user = cookies.getUser(req);
             userPermissions = await general.getPermissions(user);
 
             // check permission
@@ -54,7 +54,7 @@ function router(path, options) {
         };
 
         if (await onGet()) {
-            const val = {
+            const placeholders = {
                 permissionDisplays: {
                     awards: {
                         block: (userPermissions.awards ? "block" : "none"),
@@ -69,7 +69,7 @@ function router(path, options) {
                 }
             };
 
-            res.render(path, val);
+            res.render(path, placeholders);
         }
     });
 

@@ -9,7 +9,12 @@ function setCompleted(completed) {
     document.getElementById("indicator").style.backgroundColor = (completed ? "rgb(0, 255, 0)" : "rgb(255, 0, 0)");
 }
 
+async function checkCompleted() {
+    let awards = await getAwards();
+    setCompleted(awards.polarBear);
+}
+
 window.addEventListener("load", () => {
     document.getElementById("info").innerHTML = info;
-    hasAward({ award: "POLAR_BEAR" }).then(setCompleted);
+    checkCompleted();
 });

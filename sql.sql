@@ -1,2 +1,2 @@
--- INSERT OR REPLACE INTO users VALUES ("4jencal@treverton.co.za", 2, "abc");
+INSERT OR REPLACE INTO users (user, permission_level) VALUES ("4jencal@treverton.co.za", 2);
 SELECT * FROM users;

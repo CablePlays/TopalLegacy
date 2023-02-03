@@ -1,0 +1,46 @@
+* {
+    box-sizing: border-box;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+}
+
+h1 {
+    font-size: 55px;
+}
+
+h2 {
+    font-size: 40px;
+}
+
+h3 {
+    font-size: 25px;
+}
+
+.container {
+    margin-top: 10vh;
+    min-height: 100vh;
+    padding: 20px;
+    width: 100%;
+}
+
+.spacer.v20 {
+    height: 20px;
+}
+
+.spacer.v40 {
+    height: 40px;
+}
+
+.spacer.v60 {
+    height: 60px;
+}
+
+.spacer.v80 {
+    height: 80px;
+}

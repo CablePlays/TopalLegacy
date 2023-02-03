@@ -7,27 +7,49 @@ block content
   h1 Running Award
   h3 Run hundereds of km!
 
-  h2.space Total Distance Run:
+  .spacer.v40
+
+  h2 Total Distance Run:
   h3#total-distance-label Loading...
   meter#total-distance-meter(max="100000")
 
-  .add-container.space
-    h1 Create Entry
-    h2#date-label Date
+  .spacer.v60
+
+  .add-container
+    h2 Create Entry
+    .spacer.v20
+
+    h3#date-label Date
+    .spacer.v20
     input#date-input(type="date")
-    h2 Distance
-    h3#distance-display 1000m
+
+    .spacer.v20
+    
+    h3 Distance
+    p#distance-display 1000m
     input#distance-input(type="range" min="1000" max="30000" value="3000" step="100")
-    h2#time-label Time
+
+    h3#time-label Time
+    .spacer.v20
     input#time-input(type="text" placeholder="Hours Minutes Seconds (e.g. \"1 30 0\")")
-    h2 Description
+
+    .spacer.v20
+
+    h3 Description
+    .spacer.v20
     textarea#description-input
+
+    .spacer.v20
+
     button#add-button Create
-    h4#success-prompt Successfully created new log!
+    .spacer.v20
+    p#success-prompt Successfully created new log!
 
-  h1.space Logs
+  .spacer.v40
+  h2 Logs
+  .spacer.v40
 
-  table#logs-table.space
+  table#logs-table
     tr
       th ID
       th Date
@@ -35,5 +57,3 @@ block content
       th Time
       th Description
       th Remove
-
-  .spacer

@@ -77,7 +77,7 @@ function router(path, options) {
 }
 
 function acceptApp(app) {
-    app.use('/', router("index"));
+    app.use('/', router("home"));
     app.use('/login', router("login")); // require not logged in handled in router
     app.use('/permissions', router("permissions", { permission: "permissions" }));
     app.use('/settings', router("settings", { requireLoggedIn: true }));

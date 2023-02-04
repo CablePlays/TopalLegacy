@@ -9,10 +9,10 @@ function setupAddUser() {
         let email = text + "@treverton.co.za";
         input.value = null;
 
-        info.innerHTML = `Added user "${email}" (Reloading shortly...)`;
+        info.innerHTML = "Sending request...";
         info.style.display = "block";
 
-        await fetch("/set-permission-level", {
+        const res = await fetch("/set-permission-level", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -23,7 +23,14 @@ function setupAddUser() {
             })
         });
 
-        window.location.reload();
+        const { status, error } = await res.json();
+
+        if (status === "success") {
+            info.innerHTML = `Added user "${email}" (Reloading...)`;
+            window.location.reload();
+        } else if (status === "error" && error === "invalid_user") {
+            info.innerHTML = `The user "${email}" does not exist!`;
+        }
     });
 }
 

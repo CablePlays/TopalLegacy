@@ -18,7 +18,7 @@ function awardRequests(app) {
 
     /* Has */
 
-    app.post("/get-awards", async (req, res) => { // does not require permissions
+    app.post("/get-awards", async (req, res, next) => { // does not require permissions
         const user = cookies.getUser(req);
         let targetUser = req.body.user || user;
 
@@ -28,10 +28,7 @@ function awardRequests(app) {
         let awards = {};
 
         for (let award of Object.getOwnPropertyNames(record)) {
-            if (award === "user") {
-                continue;
-            }
-
+            if (award === "user") continue;
             let has = (record[award] === 1);
             awards[general.awardColumnToKey(award)] = has;
         }
@@ -131,12 +128,27 @@ function permissionRequests(app) {
 
             if (userPermissions.permissions) { // check for permission to manage permissions
                 const { user: targetUser, level } = req.body;
-                await database.replace("users", "user", targetUser, { permission_level: level });
+
+                if (await general.isUser(targetUser)) {
+                    await database.run(`UPDATE users SET permission_level = ${level} WHERE user = "${targetUser}"`);
+                    res.json({
+                        status: "success"
+                    });
+                } else {
+                    res.json({
+                        status: "error",
+                        error: "invalid_user"
+                    });
+                }
+
+                return;
             }
         }
 
-        await new Promise(r => setTimeout(r, 1000));
-        res.end();
+        res.json({
+            status: "error",
+            error: "unpermitted"
+        });
     });
 
     /* Get Permission Users */
@@ -215,6 +227,25 @@ function otherRequests(app) {
         }
 
         res.end();
+    });
+
+    /* Search Users */
+
+    app.post("/search-users", async (req, res) => {
+        let { query } = req.body;
+        query = query.replaceAll(" ", "");
+
+        const users = await database.all(`SELECT user FROM users WHERE user LIKE "%${query}%"`);
+        const emails = [];
+
+        // get only emails
+        users.forEach(user => {
+            emails.push(user.user);
+        });
+
+        res.json({
+            users: emails
+        })
     });
 }
 

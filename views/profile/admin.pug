@@ -1,5 +1,16 @@
 extends profile
 
 block tab-content
-  h1 Admin Page
-  h2 Coming Soon!
+  link(rel="stylesheet" href="/stylesheets/profile/admin.css")
+  script(src="/javascripts/profile/admin.js")
+
+  h1 Admin
+  p This page allows you to manage a student's awards, view their logs, etc.
+
+  .spacer.v40
+
+  table#awards-table
+    tr
+      th Award
+      th Status
+      th Sign Off

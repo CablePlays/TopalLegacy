@@ -2,7 +2,7 @@
     padding: 20px;
 }
 
-.logout-all {
+.card {
     background-color: rgb(4, 170, 109);
     border-radius: 4px;
     box-shadow: 30px 10px rgb(3, 75, 44);
@@ -15,7 +15,7 @@
     width: 100%;
 }
 
-.logout-all button {
+.card button {
     background-color: rgb(154, 245, 212);
     border: 1px solid rgb(0, 0, 0);
     border-radius: 4px;
@@ -25,11 +25,11 @@
     width: 200px;
 }
 
-.logout-all button:hover {
+.card button:hover {
     background-color: rgb(114, 205, 172);
 }
 
-.logout-all button:active {
+.card button:active {
     background-color: rgb(174, 265, 232);
 }
 

@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/general/search-users.css")
+  script(src="/javascripts/general/search-users.js")
+
+  h1 Search Users
+  p Use the search bar below to search for a user's profile by typing in their email.
+
+  .spacer.v40
+
+  .search-container
+    input#search-bar(type="text" placeholder="e.g. 1lasfir@treverton.co.za")
+    button#search-button Search
+  
+  .spacer.v20
+
+  h3#amount-info
+  
+  .spacer.v60
+
+  table#results-table(cellspacing="0")

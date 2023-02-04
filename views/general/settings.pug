@@ -1,15 +1,24 @@
-extends layout
+extends ../layout
 
 block content
-  link(rel="stylesheet" href="/stylesheets/settings.css")
-  script(src="/javascripts/settings.js")
+  link(rel="stylesheet" href="/stylesheets/general/settings.css")
+  script(src="/javascripts/general/settings.js")
 
-  h1 Settings 
+  h1 Settings
+
+  .spacer.v20
+
+  .card
+    h2 Log Out
+    p Click to log out of this device.
+    button#logout-button Log Out
   
-  .logout-all
+  .spacer.v40
+  
+  .card
     h2 Log Out Of All Devices
     p This will log you out of all devices you are logged in to, including this one.
-    button#logout-all Log Out All Devices
+    button#logout-all-button Log Out All Devices
 
   h2#attributions Attributions
     ul

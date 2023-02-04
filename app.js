@@ -13,7 +13,7 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(express.json()); // for reading json post requests
 
-routes(app);
+routes.acceptApp(app);
 rest(app);
 
 // catch 404 and forward to error handler
@@ -23,13 +23,18 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    let status = err.status || 500;
+    res.status(status);
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+    // set locals
+    res.locals.message = err.message;
+    res.locals.status = status;
+
+    if (status === 404) {
+        routes.render(req, res, "errors/not-found");
+    } else {
+        routes.render(req, res, "errors/other");
+    }
 });
 
 app.listen(PORT);

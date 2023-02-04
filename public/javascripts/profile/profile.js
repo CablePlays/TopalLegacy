@@ -6,27 +6,23 @@ function setupTabs() {
 
     /* Click */
 
-    for (let child of container.children) {
-        child.addEventListener("click", () => {
-            window.location.href = "/profile/" + child.getAttribute("data-tab");
+    for (let tab of container.children) {
+        tab.addEventListener("click", () => {
+            const search = window.location.search; // parameters
+            window.location.href = "/profile/" + tab.getAttribute("data-tab") + search;
         })
     }
 
     /* Selected */
 
-    let tab;
-
     if (selectedTab != null) {
-        for (let child of container.children) {
-            if (child.getAttribute("data-tab") === selectedTab) {
-                tab = child;
+        for (let tab of container.children) {
+            if (tab.getAttribute("data-tab") === selectedTab) {
+                tab.classList.add("selected");
                 break;
             }
         }
     }
-
-    tab = tab || document.getElementById("default-tab");
-    tab.classList.add("selected");
 }
 
 window.addEventListener("load", async () => {

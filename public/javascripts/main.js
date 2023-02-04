@@ -1,18 +1,19 @@
 function setupLoginOptions() {
+    const loginButtons = document.getElementsByClassName("login-button");
+    const loginVisible = [...loginButtons, ...document.getElementsByClassName("login-visible")];
 
-    /* Login */
-
-    const loginOptions = document.getElementsByClassName("login-option");
-
-    for (let loginOption of loginOptions) {
-        loginOption.innerHTML = (isLoggedIn() ? "Sign Out" : "Login");
-        loginOption.addEventListener("click", () => {
-            if (isLoggedIn()) {
-                logout();
-            }
-
-            window.location.href = "/login";
-        });
+    if (isLoggedIn()) {
+        // hide
+        for (let element of loginVisible) {
+            element.style.display = "none";
+        }
+    } else {
+        // make visible & setup click
+        for (let loginButton of loginButtons) {
+            loginButton.addEventListener("click", () => {
+                window.location.href = "/login";
+            });
+        }
     }
 }
 

@@ -12,14 +12,14 @@ html
 
     script(src="/javascripts/tools/cookies.js")
     script(src="/javascripts/tools/rest.js")
-    script(src="/javascripts/layout.js")
+    script(src="/javascripts/main.js")
   body
     .top-bar
       #nav-container
         .line
         a(href="/") Home
-
         .line
+
         .dropdown
           a.dropdown-trigger Awards
           .dropdown-content
@@ -27,15 +27,18 @@ html
             a(href="/awards/polar-bear") Polar Bear
             a(href="/awards/running") Running
 
-        .line(style=`display: ${permissionDisplays.permissions.flex}`)
-        a(href="/permissions" style=`display: ${permissionDisplays.permissions.flex}`) Permissions
+        .line
+        a(href="/search-users") Find Someone
 
         .line
         a(href="/settings") Settings
+        .line
 
-        .line
-        a.login-option Login
-        .line
+        a.login-button Login
+        .line.login-visible
+
+        a(href="/permissions" style=`display: ${permissionDisplays.permissions.flex}`) Permissions
+        .line(style=`display: ${permissionDisplays.permissions.flex}`)
 
       #sidebar-button.menu-bar
         .bar1
@@ -58,13 +61,12 @@ html
                 a(href="/awards/polar-bear") Polar Bear
               li
                 a(href="/awards/running") Running
-                
-        li(style=`display: ${permissionDisplays.permissions.block}`)
-          a(href="/permissions") Permissions
         li
           a(href="/settings") Settings
         li
-          a.login-option Login
+          a.login-button Login
+        li(style=`display: ${permissionDisplays.permissions.block}`)
+          a(href="/permissions") Permissions
 
     .container
       block content

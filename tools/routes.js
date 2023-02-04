@@ -2,6 +2,34 @@ const express = require('express');
 const cookies = require('./cookies');
 const general = require('./general');
 
+async function render(req, res, path) {
+    let permissions;
+
+    if (cookies.isLoggedIn(req) && await general.sessionTokenValid(req)) {
+        const user = cookies.getUser(req);
+        permissions = await general.getPermissions(user);
+    } else {
+        permissions = general.getPermissionsForLevel(0);
+    }
+
+    const placeholders = {
+        permissionDisplays: {
+            awards: {
+                block: (permissions.awards ? "block" : "none"),
+                flex: (permissions.awards ? "flex" : "none"),
+                inlineBlock: (permissions.awards ? "inline-block" : "none")
+            },
+            permissions: {
+                block: (permissions.permissions ? "block" : "none"),
+                flex: (permissions.permissions ? "flex" : "none"),
+                inlineBlock: (permissions.permissions ? "inline-block" : "none")
+            }
+        }
+    };
+
+    res.render(path, placeholders);
+}
+
 function router(path, options) {
     const router = express.Router();
     const {
@@ -9,7 +37,7 @@ function router(path, options) {
         requireLoggedIn = false
     } = options || {};
 
-    router.get('/', async function (req, res) {
+    router.get('/', async (req, res) => {
         const requestedPath = req.originalUrl;
         const loggedIn = cookies.isLoggedIn(req);
         let userPermissions = general.getPermissionsForLevel(0);
@@ -34,7 +62,7 @@ function router(path, options) {
 
             // check permission
             if (permission != null && (!loggedIn || !userPermissions[permission])) {
-                res.redirect("/");
+                render(req, res, "errors/not-found");
                 return false;
             }
 
@@ -54,41 +82,44 @@ function router(path, options) {
         };
 
         if (await onGet()) {
-            const placeholders = {
-                permissionDisplays: {
-                    awards: {
-                        block: (userPermissions.awards ? "block" : "none"),
-                        flex: (userPermissions.awards ? "flex" : "none"),
-                        inlineBlock: (userPermissions.awards ? "inline-block" : "none")
-                    },
-                    permissions: {
-                        block: (userPermissions.permissions ? "block" : "none"),
-                        flex: (userPermissions.permissions ? "flex" : "none"),
-                        inlineBlock: (userPermissions.permissions ? "inline-block" : "none")
-                    }
-                }
-            };
-
-            res.render(path, placeholders);
+            render(req, res, path);
         }
     });
 
     return router;
 }
 
+function redirectRouter(path) {
+    const router = express.Router();
+
+    router.get('/', async (req, res) => {
+        const url = req.originalUrl;
+        const params = url.split("?")[1];
+
+        res.redirect("/" + path + (params == null ? "" : "?" + params));
+    });
+
+    return router;
+}
+
 function acceptApp(app) {
-    app.use('/', router("home"));
-    app.use('/login', router("login")); // require not logged in handled in router
-    app.use('/permissions', router("permissions", { permission: "permissions" }));
-    app.use('/settings', router("settings", { requireLoggedIn: true }));
+    app.use('/', router("general/home"));
+    app.use('/login', router("general/login")); // require not logged in handled in router
+    app.use('/permissions', router("general/permissions", { permission: "permissions" }));
+    app.use('/search-users', router("general/search-users"));
+    app.use('/settings', router("general/settings", { requireLoggedIn: true }));
 
     app.use('/awards/midmar-mile', router("awards/midmar-mile", { requireLoggedIn: true }));
     app.use('/awards/polar-bear', router("awards/polar-bear", { requireLoggedIn: true }));
     app.use('/awards/running', router("awards/running", { requireLoggedIn: true }));
 
+    app.use('/profile', redirectRouter("profile/awards"));
     app.use('/profile/achievements', router("profile/achievements"));
     app.use('/profile/admin', router("profile/admin"));
     app.use('/profile/awards', router("profile/awards"));
 }
 
-module.exports = acceptApp;
+module.exports = {
+    acceptApp,
+    render
+};

@@ -7,15 +7,19 @@ block tab-content
 
   .card
     h2 Midmar Mile
-    img.space(src="/images/unchecked.png")
+    .spacer.v20
+    img(src="/images/unchecked.png")
 
   .card
     h2 Polar Bear
-    img.space(src="/images/checked.png")
+    .spacer.v20
+    img(src="/images/checked.png")
 
   .card
     h2 Running
-    h3.space Total Distance Run:
+    h3 Total Distance Run:
     h3 5000m / 100000m
-    meter#running-distance-meter.space(max="100000" value="60000")
-    img.space(src="/images/unchecked.png")
+    .spacer.v20
+    meter#running-distance-meter(max="100000" value="60000")
+    .spacer.v20
+    img(src="/images/unchecked.png")

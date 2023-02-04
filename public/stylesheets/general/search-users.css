@@ -1,0 +1,54 @@
+table {
+    max-width: 100%;
+    table-layout: fixed;
+    width: 600px;
+}
+
+td {
+    padding: 8px;
+    word-wrap: break-word;
+}
+
+td button {
+    height: 30px;
+    width: 90px;
+}
+
+tr {
+    height: 50px;
+}
+
+tr:nth-child(odd) {
+    background-color: rgb(4, 160, 99);
+}
+
+tr:nth-child(even) {
+    background-color: rgb(44, 210, 149);
+}
+
+.results-container {
+    max-width: 100%;
+    width: 600px;
+}
+
+.search-container {
+    align-items: center;
+    column-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 10px;
+}
+
+#search-bar {
+    height: 30px;
+    font-size: 18px;
+    height: 30px;
+    max-width: 100%;
+    padding-left: 8px;
+    width: 500px;
+}
+
+#search-button {
+    height: 30px;
+    width: 60px;
+}

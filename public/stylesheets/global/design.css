@@ -22,6 +22,25 @@ h3 {
     font-size: 25px;
 }
 
+meter {
+    display: block;
+    height: 40px;
+    max-width: 700px;
+    width: 100%;
+}
+
+meter::-webkit-meter-bar {
+    background-color: rgb(211, 211, 211);
+    box-shadow: 0 3px 3px -3px rgb(51, 51, 51) inset;
+}
+
+meter::-webkit-meter-optimum-value {
+    background-image: linear-gradient(90deg, rgb(4, 170, 109), rgb(255, 255, 255));
+    background-size: 100% 100%;
+    box-shadow: 0 3px 3px -3px rgb(51, 51, 51) inset;
+    -webkit-transition: width 1s;
+}
+
 .container {
     margin-top: 10vh;
     min-height: 100vh;

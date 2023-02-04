@@ -11,6 +11,7 @@ const database = require("./database");
 
 function awardKeyToColumn(value) {
     switch (value) {
+        case "midmarMile": return "midmar_mile";
         case "polarBear": return "polar_bear";
         case "running": return "running";
         default: throw new Error("Unexpected value: " + value);
@@ -19,6 +20,7 @@ function awardKeyToColumn(value) {
 
 function awardColumnToKey(value) {
     switch (value) {
+        case "midmar_mile": return "midmarMile";
         case "polar_bear": return "polarBear";
         case "running": return "running";
         default: throw new Error("Unexpected value: " + value);
@@ -72,6 +74,11 @@ function logout(res) {
     ]);
 }
 
+async function isUser(user) {
+    const value = await database.get(`SELECT user FROM users WHERE user = "${user}"`);
+    return (value != null);
+}
+
 module.exports = {
     awardKeyToColumn,
     awardColumnToKey,
@@ -79,5 +86,6 @@ module.exports = {
     getPermissionsForLevel,
     getSessionToken,
     sessionTokenValid,
-    logout
+    logout,
+    isUser
 }

@@ -1,2 +1,2 @@
-INSERT OR REPLACE INTO users (user, permission_level) VALUES ("4jencal@treverton.co.za", 2);
-SELECT * FROM users;
+-- UPDATE users SET permission_level = 2 WHERE user = "4jencal@treverton.co.za";
+SELECT * FROM awards;

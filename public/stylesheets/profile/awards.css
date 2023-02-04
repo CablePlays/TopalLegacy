@@ -4,23 +4,9 @@ img {
 }
 
 .card {
-    background-color: rgb(5, 5, 30);
+    background-color: rgb(4, 170, 109);
     border-radius: 8px;
+    box-shadow: 0 3px 5px 0 rgb(0, 0, 0, 0.5) inset;
     margin-top: 20px;
     padding: 16px;
-}
-
-.card .space {
-    margin-top: 20px;
-}
-
-.tab-div {
-    padding: 16px;
-    width: 100%;
-}
-
-.tab-div h1,
-.tab-div h2,
-.tab-div h3 {
-    color: rgb(200, 200, 200);
 }

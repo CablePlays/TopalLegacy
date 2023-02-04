@@ -7,26 +7,6 @@
 const cookies = require("./cookies");
 const database = require("./database");
 
-/* Awards */
-
-function awardKeyToColumn(value) {
-    switch (value) {
-        case "midmarMile": return "midmar_mile";
-        case "polarBear": return "polar_bear";
-        case "running": return "running";
-        default: throw new Error("Unexpected value: " + value);
-    }
-}
-
-function awardColumnToKey(value) {
-    switch (value) {
-        case "midmar_mile": return "midmarMile";
-        case "polar_bear": return "polarBear";
-        case "running": return "running";
-        default: throw new Error("Unexpected value: " + value);
-    }
-}
-
 /* Permissions */
 
 async function getPermissions(user) {
@@ -80,8 +60,6 @@ async function isUser(user) {
 }
 
 module.exports = {
-    awardKeyToColumn,
-    awardColumnToKey,
     getPermissions,
     getPermissionsForLevel,
     getSessionToken,

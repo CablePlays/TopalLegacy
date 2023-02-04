@@ -11,7 +11,7 @@ function setCompleted(completed) {
 
 async function checkCompleted() {
     let awards = await getAwards();
-    setCompleted(awards.polarBear);
+    setCompleted(awards.polar_bear);
 }
 
 window.addEventListener("load", () => {

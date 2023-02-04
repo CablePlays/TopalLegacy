@@ -89,6 +89,24 @@ function router(path, options) {
     return router;
 }
 
+function profileRouter(path) {
+    const router = express.Router();
+
+    router.get('/', async (req, res) => {
+        const paramsString = req.originalUrl.split("?")[1];
+        const params = new URLSearchParams(paramsString);
+        const user = params.get("user");
+
+        if (user == null || !await general.isUser(user)) {
+            render(req, res, "errors/invalid-user");
+        } else {
+            render(req, res, "profile/" + path);
+        }
+    });
+
+    return router;
+}
+
 function redirectRouter(path) {
     const router = express.Router();
 
@@ -114,9 +132,9 @@ function acceptApp(app) {
     app.use('/awards/running', router("awards/running", { requireLoggedIn: true }));
 
     app.use('/profile', redirectRouter("profile/awards"));
-    app.use('/profile/achievements', router("profile/achievements"));
-    app.use('/profile/admin', router("profile/admin"));
-    app.use('/profile/awards', router("profile/awards"));
+    app.use('/profile/achievements', profileRouter("achievements"));
+    app.use('/profile/admin', profileRouter("admin"));
+    app.use('/profile/awards', profileRouter("awards"));
 }
 
 module.exports = {

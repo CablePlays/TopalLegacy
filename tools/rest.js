@@ -27,10 +27,10 @@ function awardRequests(app) {
 
         let awards = {};
 
-        for (let award of Object.getOwnPropertyNames(record)) {
-            if (award === "user") continue;
-            let has = (record[award] === 1);
-            awards[general.awardColumnToKey(award)] = has;
+        for (let column of Object.getOwnPropertyNames(record)) {
+            if (column === "user") continue;
+            let has = (record[column] === 1);
+            awards[column] = has;
         }
 
         res.json({
@@ -47,70 +47,19 @@ function awardRequests(app) {
 
             if (userPermissions.awards) { // check for permission to manage awards
                 const { user: targetUser, awards } = req.body;
-                let replacing = {};
 
-                // convert object to array of its properties
-                for (let award of Object.getOwnPropertyNames(awards)) {
-                    let column = general.awardKeyToColumn(award);
-                    let has = (awards[award] === true) ? 1 : 0;
-                    replacing[column] = has;
+                if (await general.isUser(targetUser)) {
+                    let replacing = {};
+
+                    // convert object to array of its properties
+                    for (let award of Object.getOwnPropertyNames(awards)) {
+                        let has = (awards[award] === true) ? 1 : 0;
+                        replacing[award] = has;
+                    }
+
+                    await database.replace("awards", "user", targetUser, replacing);
                 }
-
-                await database.replace("awards", "user", targetUser, replacing);
             }
-        }
-
-        res.end();
-    });
-}
-
-function runRequests(app) {
-
-    /* Get */
-
-    app.post("/get-run-entries", async (req, res) => {
-        let json = {};
-
-        const user = cookies.getUser(req);
-        let targetUser = req.user;
-
-        if (targetUser == null) {
-            if (await general.sessionTokenValid(req)) {
-                targetUser = user;
-            }
-        } else {
-            let permissions = general.getPermissions(user);
-
-            if (!permissions.awards) { // check for permission to manage awards
-                targetUser = null;
-            }
-        }
-        if (targetUser != null) {
-            json.entries = await database.all(`SELECT * FROM runs WHERE user = "${targetUser}"`);
-        }
-
-        res.json(json);
-    });
-
-    /* Add */
-
-    app.post("/add-run-entry", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
-            const { entry } = req.body;
-            const user = cookies.getUser(req);
-            await database.run(`INSERT INTO runs (user, date, distance, time, description) VALUES ("${user}", "${entry.date}", ${entry.distance}, ${entry.time}, "${entry.description}")`);
-        }
-
-        res.end();
-    });
-
-    /* Remove */
-
-    app.post("/remove-run-entry", async (req, res) => { // user can only remove their own entries
-        if (await general.sessionTokenValid(req)) {
-            const { id } = req.body;
-            const user = cookies.getUser(req);
-            await database.run(`DELETE FROM runs WHERE id = ${id} AND user = "${user}"`);
         }
 
         res.end();
@@ -167,6 +116,60 @@ function permissionRequests(app) {
         }
 
         res.json(json);
+    });
+}
+
+function runRequests(app) {
+
+    /* Get */
+
+    app.post("/get-run-entries", async (req, res) => {
+        await new Promise(r => setTimeout(r, 1000));
+        let json = {};
+
+        const user = cookies.getUser(req);
+        let { targetUser } = req.body;
+
+        if (targetUser == null) {
+            if (await general.sessionTokenValid(req)) {
+                targetUser = user;
+            }
+        } else {
+            let permissions = general.getPermissions(user);
+
+            if (!permissions.awards) { // check for permission to manage awards
+                targetUser = null;
+            }
+        }
+        if (targetUser != null) {
+            json.entries = await database.all(`SELECT * FROM runs WHERE user = "${targetUser}"`);
+        }
+
+        res.json(json);
+    });
+
+    /* Add */
+
+    app.post("/add-run-entry", async (req, res) => {
+        if (await general.sessionTokenValid(req)) {
+            const { entry } = req.body;
+            const user = cookies.getUser(req);
+            await database.run(`INSERT INTO runs (user, date, distance, time, description) VALUES ("${user}", "${entry.date}", ${entry.distance}, ${entry.time}, "${entry.description}")`);
+        }
+
+        res.end();
+    });
+
+    /* Remove */
+
+    app.post("/remove-run-entry", async (req, res) => { // user can only remove their own entries
+        if (await general.sessionTokenValid(req)) {
+            const { id } = req.body;
+            const user = cookies.getUser(req);
+            await database.run(`DELETE FROM runs WHERE id = ${id} AND user = "${user}"`);
+        }
+
+        res.end();
     });
 }
 
@@ -251,8 +254,8 @@ function otherRequests(app) {
 
 function acceptApp(app) {
     awardRequests(app);
-    runRequests(app);
     permissionRequests(app);
+    runRequests(app);
     otherRequests(app);
 }
 

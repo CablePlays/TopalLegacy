@@ -49,6 +49,7 @@ html
       ul
         li
           a(href="/") Home
+
         li
           .item
             input#awards-checkbox(type="checkbox")
@@ -61,16 +62,22 @@ html
                 a(href="/awards/polar-bear") Polar Bear
               li
                 a(href="/awards/running") Running
+
+        li
+          a(href="/search-users") Find Someone
+
         li
           a(href="/settings") Settings
+
         li
           a.login-button Login
+
         li(style=`display: ${permissionDisplays.permissions.block}`)
           a(href="/permissions") Permissions
 
     .container
       block content
-  
+
     footer
       p &copy 2023 
         a(href="/") TOPAL

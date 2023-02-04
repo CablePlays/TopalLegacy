@@ -18,27 +18,23 @@ function formatTime(seconds) {
 function addRow(id, date, distance, time, description) {
     const tr = document.createElement("tr");
 
-    let idCell = document.createElement("td");
-    idCell.innerHTML = id;
-    tr.appendChild(idCell);
-
-    let dateCell = document.createElement("td");
+    const dateCell = document.createElement("td");
     dateCell.innerHTML = formatDate(date);
     tr.appendChild(dateCell);
 
-    let distanceCell = document.createElement("td");
+    const distanceCell = document.createElement("td");
     distanceCell.innerHTML = distance + "m";
     tr.appendChild(distanceCell);
 
-    let timeCell = document.createElement("td");
+    const timeCell = document.createElement("td");
     timeCell.innerHTML = formatTime(time);
     tr.appendChild(timeCell);
 
-    let descriptionCell = document.createElement("td");
+    const descriptionCell = document.createElement("td");
     descriptionCell.innerHTML = description;
     tr.appendChild(descriptionCell);
 
-    let removeCell = document.createElement("td");
+    const removeCell = document.createElement("td");
     removeCell.innerHTML = "X";
     removeCell.addEventListener("click", () => {
         tr.remove();

@@ -1,3 +1,8 @@
+function getProfileUser() {
+    const parameters = new URLSearchParams(window.location.search);
+    return parameters.get("user");
+}
+
 function setupTabs() {
     const container = document.getElementById("tab-container");
 

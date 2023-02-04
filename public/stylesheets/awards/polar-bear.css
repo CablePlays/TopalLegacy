@@ -1,20 +1,8 @@
-body {
-    overflow-x: hidden;
-}
-
 .bottom-container {
     align-items: center;
     display: flex;
     flex-direction: column;
     margin-top: 50px;
-}
-
-.container {
-    padding: 100px 20px 0;
-}
-
-.container h3 {
-    font-size: 20px;
 }
 
 #indicator {
@@ -28,8 +16,6 @@ body {
 }
 
 #info {
-    margin-top: 20px;
     max-width: 700px;
-    font-size: 18px;
     text-align: justify;
 }

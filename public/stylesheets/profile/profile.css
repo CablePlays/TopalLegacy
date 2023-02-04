@@ -31,10 +31,6 @@
     display: block;
 }
 
-.user-email {
-    text-decoration: underline;
-}
-
 .tab-div {
     padding: 16px;
     width: 100%;
@@ -50,4 +46,8 @@
     top: 10vh;
     width: 100%;
     z-index: 5;
+}
+
+#user-email {
+    text-decoration: underline;
 }

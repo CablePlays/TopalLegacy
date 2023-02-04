@@ -5,13 +5,13 @@ block content
   script(src="/javascripts/awards/running.js")
 
   h1 Trail Running
-  p Run hundereds of kilometers to get this award. This award has several tiers, so once you've run 100km you can keep going!
+  p.partial Run hundereds of kilometers to get this award. This award has several tiers, so you can keep going after you've run 100km!
 
   .spacer.v40
 
   h2 Total Distance Run:
   h3#total-distance-label Loading...
-  meter#total-distance-meter(max="100000")
+  meter#total-distance-meter.partial(max="100000")
 
   .spacer.v60
 

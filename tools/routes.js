@@ -38,7 +38,7 @@ function router(path, options) {
     } = options || {};
 
     router.get('/', async (req, res) => {
-        const requestedPath = req.originalUrl;
+        const requestedPath = req.baseUrl;
         const loggedIn = cookies.isLoggedIn(req);
         let userPermissions = general.getPermissionsForLevel(0);
 

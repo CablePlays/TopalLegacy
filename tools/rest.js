@@ -127,7 +127,7 @@ function runRequests(app) {
         let json = {};
 
         const user = cookies.getUser(req);
-        let { targetUser } = req.body;
+        let { user: targetUser } = req.body;
 
         if (targetUser == null) {
             if (await general.sessionTokenValid(req)) {
@@ -145,6 +145,18 @@ function runRequests(app) {
         }
 
         res.json(json);
+    });
+
+    /* Get Distance Run */
+
+    app.post("/get-distance-run", async (req, res) => {
+        const { user: targetUser } = req.body;
+        const value = await database.get(`SELECT SUM(distance) FROM runs WHERE user = "${targetUser}"`);
+        const distance = value["SUM(distance)"] || 0;
+
+        res.json({
+            distance
+        });
     });
 
     /* Add */

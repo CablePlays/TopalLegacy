@@ -3,6 +3,10 @@ function getProfileUser() {
     return parameters.get("user");
 }
 
+function displayUserEmail() {
+    document.getElementById("user-email").innerHTML = getProfileUser();
+}
+
 function setupTabs() {
     const container = document.getElementById("tab-container");
 
@@ -31,5 +35,6 @@ function setupTabs() {
 }
 
 window.addEventListener("load", async () => {
+    displayUserEmail();
     setupTabs();
 });

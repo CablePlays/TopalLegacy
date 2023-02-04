@@ -25,8 +25,6 @@ h3 {
 meter {
     display: block;
     height: 40px;
-    max-width: 700px;
-    width: 100%;
 }
 
 meter::-webkit-meter-bar {
@@ -45,6 +43,11 @@ meter::-webkit-meter-optimum-value {
     margin-top: 10vh;
     min-height: 100vh;
     padding: 20px;
+    width: 100%;
+}
+
+.partial {
+    max-width: 700px;
     width: 100%;
 }
 

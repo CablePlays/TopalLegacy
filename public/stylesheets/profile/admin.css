@@ -17,11 +17,6 @@
     background-color: rgb(44, 210, 149);
 }
 
-#awards-table {
-    max-width: 700px;
-    width: 100%;
-}
-
 #awards-table td:last-child:hover {
     background-color: rgb(100, 200, 100);
     cursor: pointer;

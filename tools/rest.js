@@ -124,7 +124,6 @@ function runRequests(app) {
     /* Get */
 
     app.post("/get-run-entries", async (req, res) => {
-        await new Promise(r => setTimeout(r, 1000));
         let json = {};
 
         const user = cookies.getUser(req);

@@ -210,13 +210,13 @@ function setupAddSection() {
     });
 }
 
-window.addEventListener("load", async () => {
+window.addEventListener("load", () => {
     setupAddSection();
     addRows().then(totalDistance => {
         getTable().style.display = "table";
 
         // total distance display
-        document.getElementById("total-distance-label").innerHTML = totalDistance + "m / 100000m";
+        document.getElementById("total-distance-label").innerHTML = `${totalDistance}m / 100000m`;
         document.getElementById("total-distance-meter").value = totalDistance;
     })
 });

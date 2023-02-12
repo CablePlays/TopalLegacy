@@ -9,5 +9,5 @@ async function getAwards(user) {
         })
     });
 
-    return (await res.json()).awards;
+    return (await res.json()).values;
 }

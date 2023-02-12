@@ -7,7 +7,7 @@ async function setupCheckboxes() {
     for (let checkbox of checkboxes) {
         const award = checkbox.getAttribute("data-award");
 
-        if (awards[award]) {
+        if (awards.includes(award)) {
             checkbox.setAttribute("src", "/images/checked.png");
         } else {
             checkbox.setAttribute("src", "/images/unchecked.png");

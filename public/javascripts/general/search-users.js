@@ -70,6 +70,4 @@ function setupSearch() {
     });
 }
 
-window.addEventListener("load", () => {
-    setupSearch();
-});
+window.addEventListener("load", setupSearch);

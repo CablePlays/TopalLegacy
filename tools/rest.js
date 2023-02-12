@@ -18,23 +18,81 @@ function awardRequests(app) {
 
     /* Has */
 
-    app.post("/get-awards", async (req, res, next) => { // does not require permissions
+    app.post("/get-awards", async (req, res) => { // does not require permissions
         const user = cookies.getUser(req);
         let targetUser = req.body.user || user;
 
         let record = await database.get(`SELECT * FROM awards WHERE user = "${targetUser}"`);
         record ||= {};
 
-        let awards = {};
+        let awards = [];
 
         for (let column of Object.getOwnPropertyNames(record)) {
-            if (column === "user") continue;
-            let has = (record[column] === 1);
-            awards[column] = has;
+            if (column !== "user" && record[column] === 1) {
+                awards.push(column);
+            }
         }
 
         res.json({
-            awards
+            values: awards
+        });
+    });
+
+    /* Set */
+
+    app.post("/set-awards", async (req, res) => { // requires awards permission
+        if (await general.sessionTokenValid(req)) {
+            const user = cookies.getUser(req);
+            let userPermissions = await general.getPermissions(user);
+
+            if (userPermissions.awards) { // check for permission to manage awards
+                const { user: targetUser, awards } = req.body;
+
+                if (await general.isUser(targetUser)) {
+                    let replacing = {};
+
+                    // convert object to array of its properties
+                    for (let award of Object.getOwnPropertyNames(awards)) {
+                        let has = (awards[award] === true) ? 1 : 0;
+                        replacing[award] = has;
+                    }
+
+                    await database.replace("awards", "user", targetUser, replacing);
+                }
+            }
+        }
+
+        res.end();
+    });
+}
+
+function milestoneRequests(app) {
+
+    /* Has */
+
+    app.post("/get-milestones", async (req, res) => { // does not require permissions
+        const user = cookies.getUser(req);
+        const targetUser = req.body.user || user;
+
+        const record = await database.get(`SELECT * FROM awards WHERE user = "${targetUser}"`) || {};
+        let totalAwards = 0;
+
+        for (let column of Object.getOwnPropertyNames(record)) {
+            if (column !== "user" && record[column] === 1) {
+                totalAwards++;
+            }
+        }
+
+        const milestones = {
+            teamAward: totalAwards >= 4,
+            halfColors: totalAwards >= 7,
+            colors: totalAwards >= 10,
+            meritAward: false, // TODO
+            honors: false // TODO
+        };
+
+        res.json({
+            values: milestones
         });
     });
 
@@ -134,7 +192,7 @@ function runRequests(app) {
                 targetUser = user;
             }
         } else {
-            let permissions = general.getPermissions(user);
+            let permissions = await general.getPermissions(user);
 
             if (!permissions.awards) { // check for permission to manage awards
                 targetUser = null;
@@ -265,6 +323,7 @@ function otherRequests(app) {
 
 function acceptApp(app) {
     awardRequests(app);
+    milestoneRequests(app);
     permissionRequests(app);
     runRequests(app);
     otherRequests(app);

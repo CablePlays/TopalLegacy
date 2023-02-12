@@ -84,7 +84,7 @@ async function setupAwards() {
         const display = award[1];
 
         const tr = document.createElement("tr");
-        let completed = !!completedAwards[id];
+        let completed = completedAwards.includes(id);
 
         const awardCell = document.createElement("td");
         awardCell.innerHTML = display;

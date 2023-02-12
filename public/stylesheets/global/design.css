@@ -39,6 +39,10 @@ meter::-webkit-meter-optimum-value {
     -webkit-transition: width 1s;
 }
 
+.bold {
+    font-weight: bolder;
+}
+
 .container {
     margin-top: 10vh;
     min-height: 100vh;
@@ -49,6 +53,10 @@ meter::-webkit-meter-optimum-value {
 .partial {
     max-width: 700px;
     width: 100%;
+}
+
+.spacer.v10 {
+    height: 10px;
 }
 
 .spacer.v20 {

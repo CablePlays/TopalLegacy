@@ -1,0 +1,5 @@
+Milestones page for user profile
+Eligibility page
+Leaderboard page
+Logs page (award grant/revoke & permissions change)
+Recent achievements that cycle on home page

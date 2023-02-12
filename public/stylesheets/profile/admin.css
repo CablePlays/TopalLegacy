@@ -17,6 +17,10 @@
     background-color: rgb(44, 210, 149);
 }
 
+#run-records {
+    width: 100%;
+}
+
 #awards-table td:last-child:hover {
     background-color: rgb(100, 200, 100);
     cursor: pointer;

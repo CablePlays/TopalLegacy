@@ -4,19 +4,59 @@ block content
   link(rel="stylesheet" href="/stylesheets/awards/running.css")
   script(src="/javascripts/awards/running.js")
 
-  h1 Trail Running
-  p.partial Run hundereds of kilometers to get this award. This award has several tiers, so you can keep going after you've run 100km!
+  h1 Running Award
+  p.award-description.
+    Spend time on the trails and accumulate 100km of distance to earn this award.
+    Every time you go for a run, record it so that your total distance increases.
+    Once you've reached 100km, you will be eligible to receive this award.
+    Remember that staff members can view your records!
+
+  .spacer.v20
+
+  .requirements
+    .spacer.v20
+    ol.spacious
+      li
+        p Complete a total of 100km of competetive road/trail running in less than two years.
+
+      li
+        p To make sure that you achieve your true potential, you are required to do the following:
+        .spacer.v20
+        table.requirements-table
+          tr
+            th Race Distance
+            th Minimum Weekly Training
+          tr
+            td 5km
+            td 4km
+          tr
+            td 10km
+            td 5km
+          tr
+            td 15km
+            td 10km
+          tr
+            td 21km
+            td 15km
+          tr
+            td 42km
+            td 30km
+      li
+        p.
+          Before races, you will need to show your logbook to the MIC to qualify for entry.
+          Your distance per day must also be taken into account
+          (seven runs of 1km each are more benefitial than one 7km run).
 
   .spacer.v40
 
-  h2 Total Distance Run:
+  h2 Total Distance Run
   h3#total-distance-label Loading...
   meter#total-distance-meter.partial(max="100000")
 
-  .spacer.v60
+  .spacer.v40
 
   .add-container
-    h2 Create Entry
+    h2 Create Record
     .spacer.v20
 
     h3#date-label Date
@@ -24,7 +64,7 @@ block content
     input#date-input(type="date")
 
     .spacer.v20
-    
+
     h3 Distance
     p#distance-display 1000m
     input#distance-input(type="range" min="1000" max="30000" value="3000" step="100")
@@ -36,6 +76,7 @@ block content
     .spacer.v20
 
     h3 Description
+    p To make your run more believable, describe how you felt during the run and what the weather conditions were like on the day.
     .spacer.v20
     textarea#description-input
 
@@ -46,7 +87,7 @@ block content
     p#success-prompt Successfully created new log!
 
   .spacer.v40
-  h2 Logs
+  h2 Records
   .spacer.v20
 
   table#logs-table

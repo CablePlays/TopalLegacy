@@ -1,0 +1,11 @@
+.checkbox {
+    height: 100%;
+    max-height: 50px;
+}
+
+.milestone {
+    align-items: center;
+    column-gap: 20px;
+    display: flex;
+    height: 60px;
+}

@@ -1,0 +1,17 @@
+.a-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.a-container a {
+    background-color: rgb(4, 170, 109);
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    padding: 16px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.a-container a:hover {
+    background-color: rgb(62, 142, 65);
+}

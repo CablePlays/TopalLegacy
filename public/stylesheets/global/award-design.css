@@ -1,0 +1,43 @@
+.award-description {
+    max-width: 700px;
+    text-align: justify;
+    width: 100%;
+}
+
+.requirements {
+    background-color: rgb(4, 170, 109);
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 4px;
+    max-width: 1000px;
+    padding: 10px 20px;
+    text-align: justify;
+    width: 100%;
+}
+
+.requirements::before {
+    content: "Requirements";
+    font-size: 40px;
+    font-weight: bolder;
+}
+
+.requirements .notice {
+    background-color: rgb(255, 255, 255);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.requirements .notice::before {
+    color: rgb(230, 152, 50);
+    content: "NOTE: ";
+    font-weight: bolder;
+}
+
+.requirements ol,
+.requirements ul {
+    padding-left: 20px;
+}
+
+.requirements ol.spacious>li:not(:first-child),
+.requirements ul.spacious>li:not(:first-child) {
+    margin-top: 20px;
+}

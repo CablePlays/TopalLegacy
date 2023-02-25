@@ -1,38 +1,72 @@
-async function setupCheckboxes() {
-    const profileUser = getProfileUser();
-    const awards = await getAwards(profileUser);
+function meterExtra(max, display, endpoint) {
+    return async card => {
+        const label = document.createElement("h3");
+        label.innerHTML = "Loading...";
+        card.appendChild(label);
 
-    const checkboxes = document.getElementsByClassName("checkbox");
+        const meter = document.createElement("meter");
+        meter.classList.add("partial");
+        meter.max = max;
+        card.appendChild(meter);
 
-    for (let checkbox of checkboxes) {
-        const award = checkbox.getAttribute("data-award");
+        let res = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user: getProfileUser()
+            })
+        });
 
-        if (awards.includes(award)) {
-            checkbox.setAttribute("src", "/images/checked.png");
-        } else {
-            checkbox.setAttribute("src", "/images/unchecked.png");
-        }
-    }
+        let { value } = await res.json();
+
+        label.innerHTML = display(value);
+        meter.value = value;
+    };
 }
 
-async function setupDistanceRun() {
-    let res = await fetch("/get-distance-run", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getProfileUser()
-        })
+function setupAwards() {
+    const profileUser = getProfileUser();
+    const awardsContainer = document.getElementById("awards-container");
+
+    const extras = {
+        running: meterExtra(100000, value => `${value / 1000}km / 100km`, "/get-distance-run"),
+        service: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, "/get-service-time")
+    };
+
+    const awards = getAwards(profileUser);
+
+    AWARDS.forEach(award => {
+        const id = award[0];
+        const display = award[1];
+
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        const title = document.createElement("h2");
+        title.innerHTML = display;
+        card.appendChild(title);
+
+        const extra = extras[id];
+        if (extra != null) extra(card);
+
+        card.appendChild(createSpacer(20));
+
+        const image = document.createElement("img");
+        image.src = "/images/loading.gif";
+        image.classList.add("checkbox");
+        card.appendChild(image);
+
+        awardsContainer.appendChild(card);
+
+        awards.then(value => {
+            const complete = value[id]?.complete === true;
+            image.src = "/images/" + (complete ? "checked.png" : "unchecked.png");
+        });
     });
-
-    let { distance } = await res.json();
-
-    document.getElementById("running-distance-label").innerHTML = `${distance}m / 100000m`;
-    document.getElementById("running-distance-meter").value = distance;
 }
 
 window.addEventListener("load", () => {
-    setupCheckboxes();
-    setupDistanceRun();
+    setupAwards();
 });

@@ -5,24 +5,40 @@ block content
   script(src="/javascripts/general/settings.js")
 
   h1 Settings
-
   .spacer.v20
 
-  .card
-    h2 Log Out
-    p Click to log out of this device.
-    button#logout-button Log Out
-  
-  .spacer.v40
-  
-  .card
-    h2 Log Out Of All Devices
-    p This will log you out of all devices you are logged in to, including this one.
-    button#logout-all-button Log Out All Devices
+  .settings-container
+    .top
+      h2 Dark Theme
+      button#toggle-dark-button
+    p Turn dark theme on and off.
 
-  h2#attributions Attributions
-    ul
-      lu
-        h3 Tick Icon
-        p by Dave Gandy
-        a(href="https://www.flaticon.com/free-icons/check" title="check icons") Check icons created by Dave Gandy - Flaticon
+    .spacer.v20
+    .line
+    .spacer.v20
+
+    div(style=`display: ${displays.permission.permissions.block}`)
+      .top
+        h2 User Permissions
+        button#manage-permissions-button Manage Permissions
+      p.
+        Grant users special privileges throughout the website.
+        Only users with the <b>permissions</b> permission can access this page.
+
+      .spacer.v20
+      .line
+      .spacer.v20
+
+    .top
+      h2 Log Out
+      button#logout-button Log Out
+    p Click to log out of this device.
+
+    .spacer.v20
+    .line
+    .spacer.v20
+
+    .top
+      h2 Log Out Of All Devices
+      button#logout-all-button Log Out All Devices
+    p This will log you out of all devices you are logged in to, including this one.

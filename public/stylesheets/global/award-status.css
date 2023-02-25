@@ -1,0 +1,34 @@
+/*
+    Handles the divs that display the status of awards:
+    complete, date complete and signer.
+*/
+
+.award-status-active {
+    background-color: var(--color-secondary-400);
+    border: 3px solid var(--color-secondary-600);
+    border-radius: 4px;
+    color: var(--color-secondary-400-text);
+    display: flex;
+    height: 100px;
+    justify-content: space-around;
+    margin-left: 5%;
+    padding: 10px;
+    width: 90%;
+}
+
+.award-status-active div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.award-status-active .indication {
+    align-items: center;
+    column-gap: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.award-status-active .indication img {
+    height: 80%;
+}

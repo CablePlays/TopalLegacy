@@ -21,7 +21,7 @@
     },
     "nodemonConfig": {
         "ignore": [
-            "test.json"
+            "user_data/"
         ]
     }
 }

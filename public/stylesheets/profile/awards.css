@@ -1,12 +1,12 @@
 .card {
-    background-color: rgb(4, 170, 109);
+    background-color: var(--color-primary-300);
     border-radius: 8px;
     box-shadow: 0 3px 5px 0 rgb(0, 0, 0, 0.5) inset;
+    color: var(--color-primary-300-text);
     margin-top: 20px;
     padding: 16px;
 }
 
 .checkbox {
-    height: 100px;
-    width: 100px;
+    height: 80px;
 }

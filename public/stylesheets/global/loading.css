@@ -1,0 +1,10 @@
+.loading {
+    content: url("/images/loading.gif");
+    height: 88px;
+    width: 88px;
+}
+
+.loading.center {
+    margin-left: auto;
+    margin-right: auto;
+}

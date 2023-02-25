@@ -4,21 +4,33 @@ html
     title Topal
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
-    link(rel='stylesheet' href='/stylesheets/global/design.css')
-    link(rel='stylesheet' href='/stylesheets/global/award-design.css')
-    link(rel='stylesheet' href='/stylesheets/global/footer.css')
-    link(rel='stylesheet' href='/stylesheets/global/hamburger-icon.css')
-    link(rel='stylesheet' href='/stylesheets/global/sidebar.css')
-    link(rel='stylesheet' href='/stylesheets/global/topbar.css')
+    link(rel="stylesheet" href="/stylesheets/global/award-design.css")
+    link(rel="stylesheet" href="/stylesheets/global/award-status.css")
+    link(rel="stylesheet" href="/stylesheets/global/design.css")
+    link(rel="stylesheet" href="/stylesheets/global/footer.css")
+    link(rel="stylesheet" href="/stylesheets/global/hamburger-icon.css")
+    link(rel="stylesheet" href="/stylesheets/global/loading.css")
+    link(rel="stylesheet" href="/stylesheets/global/record-input.css")
+    link(rel="stylesheet" href="/stylesheets/global/records.css")
+    link(rel="stylesheet" href="/stylesheets/global/sidebar.css")
+    link(rel="stylesheet" href="/stylesheets/global/topbar.css")
 
-    script(src="/javascripts/tools/cookies.js")
-    script(src="/javascripts/tools/rest.js")
+    script(src="/javascripts/global/award-status.js")
+    script(src="/javascripts/global/cookies.js")
+    script(src="/javascripts/global/record-input.js")
+    script(src="/javascripts/global/rest.js")
+    script(src="/javascripts/global/records.js")
+    script(src="/javascripts/global/theme.js")
+    script(src="/javascripts/global/utility.js")
     script(src="/javascripts/main.js")
+    script(src="/javascripts/global/animated-text.js")
   body
     .top-bar
       #nav-container
         .line
+
         a(href="/") Home
+
         .line
 
         .dropdown
@@ -36,17 +48,20 @@ html
             a(href="/awards/venture") Venture
 
         .line
-        a(href="/search-users") Find Someone
+
+        a(href="/search-users") Search
 
         .line
+
+        a(href=`/profile?user=${user}` style=`display: ${displays.loggedIn.true.flex}`) Profile
+        .line(style=`display: ${displays.loggedIn.true.flex}`)
+
         a(href="/settings") Settings
+
         .line
 
-        a.login-button Login
-        .line.login-visible
-
-        a(href="/permissions" style=`display: ${permissionDisplays.permissions.flex}`) Permissions
-        .line(style=`display: ${permissionDisplays.permissions.flex}`)
+        a(href="/login" style=`display: ${displays.loggedIn.false.flex}`) Login
+        .line(style=`display: ${displays.loggedIn.false.flex}`)
 
       #sidebar-button.menu-bar
         .bar1
@@ -80,12 +95,21 @@ html
         li
           a.login-button Login
 
-        li(style=`display: ${permissionDisplays.permissions.block}`)
-          a(href="/permissions") Permissions
-
     .container
       block content
 
     footer
       p &copy 2023 
         a(href="/") TOPAL
+
+    template#award-status-template
+      .award-status-active
+        .indication
+          h3 Completed
+          img
+        div
+          h3 Date
+          p
+        div
+          h3 Signed By
+          p

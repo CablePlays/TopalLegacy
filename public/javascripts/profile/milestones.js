@@ -1,10 +1,14 @@
 async function loadMilestones() {
-    const milestoneContainer = document.getElementById("milestone-container");
+    const milestonesTable = document.getElementById("milestones-table");
+
+    const loading = createLoading();
+    milestonesTable.parentElement.insertBefore(loading, milestonesTable);
+
     const template = [
-        ["teamAward", "Team Award"],
+        ["team", "Team Award"],
         ["halfColors", "Half Colors"],
         ["colors", "Colors"],
-        ["meritAward", "Merit Award"],
+        ["merit", "Merit Award"],
         ["honors", "Honors"]
     ];
 
@@ -19,26 +23,27 @@ async function loadMilestones() {
     });
 
     const milestones = (await res.json()).values;
+    loading.remove();
 
     template.forEach(a => {
         const id = a[0];
         const display = a[1];
 
-        const complete = !!milestones[id];
+        const complete = (milestones[id] === true);
 
-        const div = document.createElement("div");
-        div.classList.add("milestone");
+        const tr = document.createElement("tr");
 
-        const title = document.createElement("h2");
+        const title = document.createElement("td");
         title.innerHTML = display;
-        div.appendChild(title);
+        tr.appendChild(title);
 
-        const checkbox = document.createElement("img");
-        checkbox.classList.add("checkbox");
-        checkbox.src = `/images/${complete ? "checked" : "unchecked"}.png`;
-        div.appendChild(checkbox);
+        const checkbox = document.createElement("td");
+        const checkboxImage = document.createElement("img");
+        checkboxImage.src = "/images/" + (complete ? "checked.png" : "unchecked.png");
+        checkbox.appendChild(checkboxImage);
+        tr.appendChild(checkbox);
 
-        milestoneContainer.append(div);
+        milestonesTable.append(tr);
     });
 }
 

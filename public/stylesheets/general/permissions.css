@@ -3,8 +3,9 @@ body {
 }
 
 .add-user {
-    background-color: rgb(4, 170, 109);
+    background-color: var(--color-primary-500);
     border-radius: 8px;
+    color: var(--color-primary-500-text);
     display: flex;
     flex-direction: column;
     margin-top: 20px;
@@ -29,22 +30,8 @@ body {
     width: 175px;
 }
 
-.container {
-    padding: 20px;
-}
-
 .info-header {
     font-style: italic;
-    margin-top: 10px;
-}
-
-.permissions-info h3 {
-    margin-top: 10px;
-}
-
-.permissions-info p {
-    font-size: 18px;
-    margin-top: 10px;
 }
 
 .permissions-info ul {
@@ -57,7 +44,6 @@ body {
 
 .section {
     border: 3px solid rgb(0, 0, 0);
-    margin-top: 30px;
     overflow: hidden;
     padding: 20px;
     width: 100%;
@@ -92,6 +78,5 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 20px;
-    row-gap: 5px;
+    row-gap: 10px;
 }

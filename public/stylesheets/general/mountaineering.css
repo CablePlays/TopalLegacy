@@ -4,14 +4,15 @@
 }
 
 .a-container a {
-    background-color: rgb(4, 170, 109);
+    background-color: var(--color-primary-500);
     border-radius: 4px;
-    color: rgb(255, 255, 255);
+    color: var(--color-primary-500-text);
     padding: 16px;
     text-align: center;
     text-decoration: none;
 }
 
 .a-container a:hover {
-    background-color: rgb(62, 142, 65);
+    background-color: var(--color-primary-600);
+    color: var(--color-primary-600-text);
 }

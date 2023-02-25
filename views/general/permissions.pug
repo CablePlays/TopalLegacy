@@ -5,11 +5,13 @@ block content
   script(src="/javascripts/general/permissions.js")
 
   h1 Permissions Manager
-  h3.info-header (See bottom of page for information on permissions)
+  h3: i (See bottom of page for information about permissions)
+
+  .spacer.v20
 
   .section
     h2 User Permissions
-    h3.info-header (You cannot see your permission)
+    h3.info-header (You cannot change your own permission)
 
     .add-user
       h3 Add User
@@ -19,20 +21,28 @@ block content
       button#add-user-button Add
       h4#add-user-info
 
+    .spacer.v20
+    
+    #users-loading.loading.center
+    template#user-template
+      .user
+        h1 4jencal@treverton.co.za
+        select
+          option(value="0") None
+          option(value="1") Awards
+          option(value="2") Permissions
+
     #permissions-container
-      template#user-template
-        .user
-          h1 4jencal@treverton.co.za
-          select
-            option(value="0") None
-            option(value="1") Awards
-            option(value="2") Permissions
+
+  .spacer.v20
 
   .permissions-info.section
     h2 About Permissions
-    p
-      | Use permissions to grant users special privileges throughout the website.
-      | This is useful for setting up a team of staff who are able to manage pupils' awards.
+    p.
+      Use permissions to grant users special privileges throughout the website.
+      This is useful for setting up a team of staff who are able to manage pupils' awards.
+    .spacer.v20
+
     h3 Available Permissions:
     ul
       li

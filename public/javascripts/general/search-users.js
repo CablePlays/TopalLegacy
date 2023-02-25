@@ -46,10 +46,13 @@ function clearResults() {
 function setupSearch() {
     const searchBar = document.getElementById("search-bar");
     const searchButton = document.getElementById("search-button");
+    const loading = document.getElementById("search-users-loading");
 
     searchButton.addEventListener("click", async () => {
         const query = searchBar.value;
         clearResults();
+
+        loading.style.display = "block";
 
         let res = await fetch("/search-users", {
             method: "POST",
@@ -64,8 +67,8 @@ function setupSearch() {
         let { users } = await res.json();
         let total = users.length;
 
+        loading.style.display = "none";
         getAmountInfo().innerHTML = `${total} user${total === 1 ? "" : "s"} found`;
-
         users.forEach(addItem);
     });
 }

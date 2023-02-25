@@ -1,20 +1,11 @@
-h1 {
-    color: white;
-}
-
 .container {
     align-items: center;
-    background-color: rgb(15, 15, 20);
     display: flex;
     flex-direction: column;
-    height: 90vh;
     justify-content: center;
+    row-gap: 20px;
 }
 
 .error {
     display: none;
-}
-
-#login-div {
-    margin-top: 20px;
 }

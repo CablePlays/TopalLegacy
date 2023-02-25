@@ -4,10 +4,24 @@
     width: 100%;
 }
 
+.notice {
+    background-color: var(--color-background);
+    border-radius: 4px;
+    color: var(--color-background-text);
+    padding: 8px;
+}
+
+.notice::before {
+    color: var(--color-secondary-500);
+    content: "NOTE: ";
+    font-weight: bolder;
+}
+
 .requirements {
-    background-color: rgb(4, 170, 109);
+    background-color: var(--color-primary-500);
     border: 2px solid rgb(0, 0, 0);
     border-radius: 4px;
+    color: var(--color-primary-500-text);
     max-width: 1000px;
     padding: 10px 20px;
     text-align: justify;
@@ -18,23 +32,6 @@
     content: "Requirements";
     font-size: 40px;
     font-weight: bolder;
-}
-
-.requirements .notice {
-    background-color: rgb(255, 255, 255);
-    border-radius: 4px;
-    padding: 8px;
-}
-
-.requirements .notice::before {
-    color: rgb(230, 152, 50);
-    content: "NOTE: ";
-    font-weight: bolder;
-}
-
-.requirements ol,
-.requirements ul {
-    padding-left: 20px;
 }
 
 .requirements ol.spacious>li:not(:first-child),

@@ -4,7 +4,7 @@ block content
   link(rel="stylesheet" href="/stylesheets/awards/running.css")
   script(src="/javascripts/awards/running.js")
 
-  h1 Running Award
+  h1#award-title Running Award
   p.award-description.
     Spend time on the trails and accumulate 100km of distance to earn this award.
     Every time you go for a run, record it so that your total distance increases.
@@ -54,46 +54,13 @@ block content
   meter#total-distance-meter.partial(max="100000")
 
   .spacer.v40
+  .award-status(data-award="running")
+  .spacer.v40
 
-  .add-container
-    h2 Create Record
-    .spacer.v20
-
-    h3#date-label Date
-    .spacer.v20
-    input#date-input(type="date")
-
-    .spacer.v20
-
-    h3 Distance
-    p#distance-display 1000m
-    input#distance-input(type="range" min="1000" max="30000" value="3000" step="100")
-
-    h3#time-label Time
-    .spacer.v20
-    input#time-input(type="text" placeholder="Hours Minutes Seconds (e.g. \"1 30 0\")")
-
-    .spacer.v20
-
-    h3 Description
-    p To make your run more believable, describe how you felt during the run and what the weather conditions were like on the day.
-    .spacer.v20
-    textarea#description-input
-
-    .spacer.v20
-
-    button#add-button Create
-    .spacer.v20
-    p#success-prompt Successfully created new log!
+  #record-input
 
   .spacer.v40
   h2 Records
   .spacer.v20
 
-  table#logs-table
-    tr
-      th Date
-      th Distance
-      th Time
-      th Description
-      th Remove
+  #records-table

@@ -1,38 +1,36 @@
-.container {
-    padding: 20px;
-}
-
-.card {
-    background-color: rgb(4, 170, 109);
-    border-radius: 4px;
-    box-shadow: 30px 10px rgb(3, 75, 44);
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
-    margin-top: 20px;
+.settings-container {
     max-width: 700px;
-    padding: 20px;
     width: 100%;
 }
 
-.card button {
-    background-color: rgb(154, 245, 212);
-    border: 1px solid rgb(0, 0, 0);
+.settings-container button {
+    background-color: var(--color-primary-300);
+    border: 1px solid var(--color-black);
     border-radius: 4px;
+    color: var(--color-primary-300-text);
     cursor: pointer;
     font-size: 18px;
-    height: 50px;
-    width: 200px;
+    height: 35px;
+    width: 180px;
 }
 
-.card button:hover {
-    background-color: rgb(114, 205, 172);
+.settings-container button:hover {
+    background-color: var(--color-primary-400);
+    color: var(--color-primary-400-text);
 }
 
-.card button:active {
-    background-color: rgb(174, 265, 232);
+.settings-container button:active {
+    background-color: var(--color-primary-200);
+    color: var(--color-primary-200-text);
 }
 
-#attributions {
-    display: none;
+.settings-container .line {
+    background-color: var(--color-background-accent);
+    height: 0.5px;
+}
+
+.settings-container .top {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
 }

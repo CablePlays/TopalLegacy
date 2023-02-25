@@ -1,6 +1,6 @@
 function setupRecordInput() {
     createRecordInput({
-        endpoint: "/add-running-record",
+        endpoint: "/add-endurance-record",
         inputs: [
             {
                 id: "date",
@@ -14,10 +14,10 @@ function setupRecordInput() {
                 type: "range",
                 required: true,
                 range: {
-                    min: 1000,
-                    max: 30000,
+                    min: 5000,
+                    max: 100000,
                     step: 100,
-                    value: 5000,
+                    value: 10000,
                     display: value => (value / 1000) + "km"
                 }
             },
@@ -30,32 +30,14 @@ function setupRecordInput() {
             {
                 id: "description",
                 name: "Description",
-                description: "To make your run more reliable, describe how you felt and what the weather was like.",
+                description: "To make your record more reliable, describe how you felt and what the weather was like.",
                 type: "text_long"
             }
         ]
     });
 }
 
-async function setupTotal() {
-    let res = await fetch("/get-distance-run", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getUser()
-        })
-    });
-
-    const { value } = await res.json();
-
-    document.getElementById("total-distance-label").innerHTML = `${value / 1000}km / 100km`;
-    document.getElementById("total-distance-meter").value = value;
-}
-
 window.addEventListener("load", () => {
-    loadRecords("records-table", "running");
     setupRecordInput();
-    setupTotal();
+    loadRecords("records-table", "endurance");
 });

@@ -1,9 +1,6 @@
 extends ../layout
 
 block content
-  link(rel="stylesheet" href="/stylesheets/awards/polar-bear.css")
-  script(src="/javascripts/awards/polar-bear.js")
-
   h1 Polar Bear Award
   p.award-description.
     Mr. Neil Solomon who introduced the Outdoor Persuits and Post-Matric programmes to Treverton instituted this unique and exclusive club.
@@ -19,7 +16,7 @@ block content
       li
         p At 5:15am on every Wednesday of the school year you must:
         .spacer.v20
-        ol
+        ul
           li Swim a width of the school damn in summer terms.
           li Get totally immersed in the school damn in winter terms.
       li
@@ -32,7 +29,7 @@ block content
         
     .spacer.v20
     .notice Only one catchup session will be arranged per term. If you miss it while behind then you are out!
+  
+  .spacer.v40
 
-  .bottom-container
-    h3 Completed
-    #indicator
+  .award-status(data-award="polarBear")

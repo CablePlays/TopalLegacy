@@ -1,5 +1,4 @@
-Milestones page for user profile
-Eligibility page
+Eligibility page (for admin)
 Leaderboard page
 Logs page (award grant/revoke & permissions change)
 Recent achievements that cycle on home page

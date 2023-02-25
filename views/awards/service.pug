@@ -1,9 +1,11 @@
 extends ../layout
 
 block content
+  script(src="/javascripts/awards/service.js")
+
   h1 Service Award
   .award-description.
-    Encourages as awareness the needs of others and provides a tangible means
+    Encourages an awareness of the needs of others and provides a tangible means
     of expressing the responsibility of members of a comunity for one another.
   .spacer.v20
 
@@ -11,7 +13,6 @@ block content
     .spacer.v20
 
     ol.spacious
-      li You will have responsibility for arranging your own form of service activity in conjunction with an instructor.
       li You must accumulate <b>25 hours</b> of community service. This could consist of activities such as:
         .spacer.v20
         ul
@@ -25,9 +26,28 @@ block content
           li Library service
           li Acting as sports officials
           li Administrative assistance on an ongoing basis (i.e. not an hour or two picked up here and there)
-      li All projects and designated must be approved by the MIC before the project is started. Signatures must be provided as proof.
+      li You will have responsibility for arranging your own form of service activity in conjunction with an instructor.
+      li All projects and designated supervisors must be approved by the MIC before the project is started. Signatures must be provided as proof.
 
     .spacer.v20
     .notice.
       An important part of this award is that the service should be self-motivated.
       You may respond to someone else's idea but you should want to do the service.
+
+  .spacer.v40
+
+  h2 Total Hours
+  h3#total-hours-label Loading...
+  meter#total-hours-meter.partial(max="90000")
+
+  .spacer.v40
+  .award-status(data-award="service")
+  .spacer.v40
+
+  #record-input
+
+  .spacer.v40
+  h2 Records
+  .spacer.v20
+
+  #records-table

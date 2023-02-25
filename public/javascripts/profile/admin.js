@@ -1,134 +1,223 @@
-/* Runs */
+/* Awards */
 
-function formatDate(date) {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-}
+function createManagementRow(id, display, endpoint, data, reload) {
+    const complete = data.complete === true;
+    const { date, signer } = data;
+    const reloadText = "Reload to view";
 
-function formatTime(seconds) {
-    let h = Math.floor(seconds / 3600);
-    seconds -= h * 3600;
-
-    let m = Math.floor(seconds / 60);
-    let s = seconds - m * 60;
-    return `${h}h:${m}m:${s}s`;
-}
-
-function createRow(date, distance, time, description) {
     const tr = document.createElement("tr");
 
+    const displayCell = document.createElement("td");
+    displayCell.innerHTML = display;
+    tr.appendChild(displayCell);
+
+    const completeCell = document.createElement("td");
+    completeCell.innerHTML = complete ? "Yes" : "No";
+    tr.appendChild(completeCell);
+
     const dateCell = document.createElement("td");
-    dateCell.innerHTML = formatDate(date);
+    dateCell.innerHTML = (reload ? reloadText : (date == null) ? "N/A" : formatDate(date));
     tr.appendChild(dateCell);
 
-    const distanceCell = document.createElement("td");
-    distanceCell.innerHTML = distance + "m";
-    tr.appendChild(distanceCell);
+    const signedByCell = document.createElement("td");
+    signedByCell.innerHTML = (reload ? reloadText : signer ?? "N/A");
+    tr.appendChild(signedByCell);
 
-    const timeCell = document.createElement("td");
-    timeCell.innerHTML = formatTime(time);
-    tr.appendChild(timeCell);
+    const toggleCell = document.createElement("td");
+    toggleCell.innerHTML = (complete ? "Revoke" : "Grant");
+    toggleCell.addEventListener("click", () => {
+        const newComplete = !complete;
 
-    const descriptionCell = document.createElement("td");
-    descriptionCell.innerHTML = description;
-    tr.appendChild(descriptionCell);
+        const newTr = createManagementRow(id, display, endpoint, { complete: newComplete }, newComplete);
+        tr.replaceWith(newTr);
+
+        fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                complete: newComplete,
+                id,
+                user: getProfileUser(),
+            })
+        });
+    });
+    tr.appendChild(toggleCell);
 
     return tr;
 }
 
-async function loadRuns() {
-    const profileUser = getProfileUser();
-    const runRecordsTable = document.getElementById("run-records");
-
-    const res = await fetch("/get-run-entries", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: profileUser
-        })
-    });
-
-    const { entries } = await res.json();
-    let totalDistance = 0;
-
-    if (entries != null) {
-        entries.forEach(entry => {
-            const distance = parseInt(entry.distance);
-            totalDistance += distance;
-            const row = createRow(new Date(entry.date), distance, entry.time, entry.description);
-            runRecordsTable.appendChild(row);
-        });
-    }
-
-    document.getElementById("run-distance-label").innerHTML = `${totalDistance}m / 100000m`;
-    document.getElementById("run-distance-meter").value = totalDistance;
-    runRecordsTable.style.display = "table";
-}
-
-/* Awards */
-
-async function setupAwards() {
+async function setupAwardsTable() {
     const awardsTable = document.getElementById("awards-table");
-    const awards = [
-        ["midmar_mile", "Midmar Mile"],
-        ["polar_bear", "Polar Bear"],
-        ["running", "Running"]
-    ];
+
+    const loading = createLoading(true);
+    awardsTable.parentElement.insertBefore(loading, awardsTable);
 
     const profileUser = getProfileUser();
     const completedAwards = await getAwards(profileUser);
 
-    awards.forEach(award => {
-        const id = award[0];
-        const display = award[1];
+    loading.remove();
 
-        const tr = document.createElement("tr");
-        let completed = completedAwards.includes(id);
+    AWARDS.forEach(award => {
+        const [id, display] = award;
+        const data = completedAwards[id] ?? {};
+        const tr = createManagementRow(id, display, "/set-award", data);
 
-        const awardCell = document.createElement("td");
-        awardCell.innerHTML = display;
-        tr.appendChild(awardCell);
-
-        const statusCell = document.createElement("td");
-        tr.appendChild(statusCell);
-
-        const manageCell = document.createElement("td");
-        manageCell.addEventListener("click", () => {
-            completed = !completed;
-            updateCompleted();
-
-            let updating = {};
-            updating[id] = completed;
-
-            fetch("/set-awards", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user: profileUser,
-                    awards: updating
-                })
-            });
-        });
-        tr.appendChild(manageCell);
-
-        const updateCompleted = () => {
-            manageCell.innerHTML = (completed ? "Revoke" : "Grant");
-            statusCell.innerHTML = (completed ? "Yes" : "No");
-        };
-
-        updateCompleted();
         awardsTable.appendChild(tr);
     });
 
     awardsTable.style.display = "table";
 }
 
+/* Records */
+
+const dropdownSections = []; // [visible, toggle]
+
+function setupSection(title, element, load) {
+    const section = document.createElement("div");
+    let loaded = false;
+
+    /* Top */
+
+    const topDiv = document.createElement("div");
+    topDiv.classList.add("dropdown-section-top");
+
+    // title
+    const titleElement = document.createElement("h2");
+    titleElement.innerHTML = title;
+    topDiv.appendChild(titleElement);
+
+    // arrow
+    const arrow = document.createElement("img");
+    arrow.src = "/images/dropdown-arrow.png";
+    topDiv.appendChild(arrow);
+
+    section.appendChild(topDiv);
+
+    /* Spacer */
+
+    section.appendChild(createSpacer(20));
+
+    /* Bottom */
+
+    const bottomDiv = document.createElement("div");
+
+    bottomDiv.appendChild(element);
+    section.appendChild(bottomDiv);
+
+    section.appendChild(createSpacer(40));
+
+    /* Toggle */
+
+    const toggle = visible => {
+        if (visible) {
+            arrow.classList.add("rotated");
+            bottomDiv.style.display = "block";
+        } else {
+            arrow.classList.remove("rotated");
+            bottomDiv.style.display = "none";
+        }
+    }
+
+    toggle(false);
+
+    const data = [false, toggle];
+
+    /* Click */
+
+    topDiv.addEventListener("click", () => {
+        const visible = !data[0];
+
+        if (visible) {
+            dropdownSections.forEach(dropdownSection => { // close other dropdown sections
+                if (dropdownSection !== data && dropdownSection[0]) {
+                    dropdownSection[0] = false;
+                    dropdownSection[1](false);
+                }
+            });
+
+            if (!loaded) { // load
+                if (load != null) load();
+                loaded = true;
+            }
+        }
+
+        data[0] = visible;
+        toggle(visible);
+    });
+
+    /* Section */
+
+    document.getElementById("sections-container").appendChild(section);
+    dropdownSections.push(data);
+}
+
+function setupRecordsSection(title, recordType) {
+    const placeholder = document.createElement("div");
+
+    setupSection(title, placeholder, () => {
+        loadRecords(placeholder, recordType, getProfileUser(), false);
+    });
+}
+
+function setupRockClimbingSection() {
+    const table = document.createElement("table");
+
+    setupSection("Rock Climbing Sign-Offs", table, async () => {
+        const loading = createLoading(true);
+        table.replaceWith(loading);
+
+        const headers = ["Description", "Completed", "Date", "Signed By", "Manage"];
+        table.appendChild(createTableHeader(headers));
+        table.classList.add("alternating");
+        table.classList.add("management-table");
+
+        const res = await fetch("/get-rock-climbing-signoffs", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user: getProfileUser()
+            })
+        });
+
+        const values = (await res.json()).values;
+
+        ROCK_CLIMBING_SIGNOFFS.forEach(signoff => {
+            const [sectionName, items] = signoff;
+
+            const titleRow = document.createElement("tr");
+            const titleCell = document.createElement("th");
+            titleCell.colSpan = headers.length;
+            titleCell.innerHTML = sectionName;
+            titleRow.append(titleCell);
+            table.appendChild(titleRow);
+
+            items.forEach(item => {
+                const [id, display] = item;
+                const data = values[id] ?? {};
+                const tr = createManagementRow(id, display, "/set-rock-climbing-signoff", data);
+
+                table.appendChild(tr);
+            })
+        });
+
+        loading.replaceWith(table);
+    });
+}
+
+function setupSections() {
+    setupRecordsSection("Endurance Records", "endurance");
+    setupRockClimbingSection();
+    setupRecordsSection("Running Records", "running");
+    setupRecordsSection("Service Records", "service");
+}
+
 /* Load */
 
 window.addEventListener("load", () => {
-    setupAwards();
-    loadRuns();
+    setupAwardsTable();
+    setupSections();
 });

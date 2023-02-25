@@ -14,23 +14,14 @@ block tab-content
 
   .spacer.v20
 
-  table#awards-table.partial(style="display: none")
+  table#awards-table.management-table.alternating(style="display: none")
     tr
       th Award
-      th Achieved
+      th Completed
+      th Date
+      th Signed By
       th Manage
 
   .spacer.v40
 
-  h2 Running Logs
-  h3#run-distance-label Loading...
-  meter#run-distance-meter.partial(max="100000")
-
-  .spacer.v20
-
-  table#run-records(style="display: none")
-    tr
-      th Date
-      th Distance
-      th Time
-      th Description
+  #sections-container

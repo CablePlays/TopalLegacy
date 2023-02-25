@@ -1,31 +1,41 @@
-.container table {
-    border-collapse: collapse;
+.dropdown-section-top {
+    cursor: pointer;
+    display: inline-block;
 }
 
-.container td,
-.container th {
-    border: 1px solid rgb(0, 0, 0);
+.dropdown-section-top h2 {
+    display: inline;
+    margin-right: 20px;
+}
+
+.dropdown-section-top img {
+    height: 30px;
+    transition: 0.25s;
+}
+
+.dropdown-section-top img.rotated {
+    transform: rotate(180deg);
+}
+
+.management-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.management-table td,
+.management-table th {
+    border: 1px solid var(--color-black);
     padding: 16px;
     text-align: center;
 }
 
-.container tr:nth-child(odd) {
-    background-color: rgb(4, 160, 99);
-}
-
-.container tr:nth-child(even) {
-    background-color: rgb(44, 210, 149);
-}
-
-#run-records {
-    width: 100%;
-}
-
-#awards-table td:last-child:hover {
-    background-color: rgb(100, 200, 100);
+.management-table td:last-child:hover {
+    background-color: var(--color-primary-400);
+    color: var(--color-primary-400-text);
     cursor: pointer;
 }
 
-#awards-table td:last-child:active {
-    background-color: rgb(50, 150, 50);
+.management-table td:last-child:active {
+    background-color: var(--color-primary-300);
+    color: var(--color-primary-300-text);
 }

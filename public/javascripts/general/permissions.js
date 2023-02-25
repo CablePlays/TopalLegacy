@@ -37,6 +37,7 @@ function setupAddUser() {
 async function loadUsers() {
     const template = document.getElementById("user-template");
     const permissionsContainer = document.getElementById("permissions-container");
+    const loading = document.getElementById("users-loading");
     const user = getUser();
 
     let res = await fetch("/get-permission-users", {
@@ -44,6 +45,8 @@ async function loadUsers() {
     });
 
     let { records } = await res.json();
+    
+    loading.style.display = "none";
 
     for (let record of records) {
         const currentUser = record.user;
@@ -57,7 +60,7 @@ async function loadUsers() {
 
         children[0].innerHTML = currentUser;
 
-        let select = children[1];
+        const select = children[1];
         select.value = permission;
 
         select.addEventListener("change", () => {

@@ -1,12 +1,14 @@
 extends ../layout
 
 block content
+  script(src="/javascripts/awards/endurance.js")
+
   h1 Endurance Award
   p.award-description.
     The Endurance Award recognizes achievement in road running,
     adventure racing, competing in a multisport race, triathlon,
-    mountain bike races, horse riding and canoeing in less than two years.
-  
+    mountain biking events, horse riding and canoeing in less than two years.
+
   .spacer.v20
 
   .requirements
@@ -52,15 +54,15 @@ block content
           li Junior
             ul
               li 2x Multisport half distance individual
-              li 3x 20km mountain bike events (Sub-Junior)
-              li 1x half marathon mountain bike races (Junior)
+              li 3x 20km mountain bike events
+              li 1x half marathon mountain bike events
               li 2x 15km road running evens
               li 1x endurance horse ride
           .spacer.v20
           li Senior
             ul
               li 2x multisport full distance individual
-              li 2x half marathon mountainbike events (Senior)
+              li 2x half marathon mountainbike events
               li 2x 15km road running events
               li 2x road running half marathons
               li 2x endurance horse rides
@@ -73,3 +75,15 @@ block content
         li Senior: U18
       .spacer.v20
       p If you are a Sub-Junior and your category is not listed, use the Junior criteria.
+
+  .spacer.v40
+  .award-status(data-award="endurance")
+  .spacer.v40
+
+  #record-input
+
+  .spacer.v40
+  h2 Records
+  .spacer.v20
+
+  #records-table

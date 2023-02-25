@@ -5,20 +5,4 @@ block tab-content
   script(src="/javascripts/profile/awards.js")
 
   h1 Awards
-
-  .card
-    h2 Midmar Mile
-    .spacer.v20
-    img.checkbox(data-award="midmar_mile" src="/images/unchecked.png")
-
-  .card
-    h2 Polar Bear
-    .spacer.v20
-    img.checkbox(data-award="polar_bear" src="/images/unchecked.png")
-
-  .card
-    h2 Trail Running
-    h3#running-distance-label Loading...
-    meter#running-distance-meter.partial(max="100000")
-    .spacer.v20
-    img.checkbox(data-award="running" src="/images/unchecked.png")
+  #awards-container

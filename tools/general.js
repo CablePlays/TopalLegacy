@@ -5,7 +5,7 @@
 */
 
 const cookies = require("./cookies");
-const database = require("./database");
+const database = require("./sql-database");
 
 /* Permissions */
 
@@ -54,6 +54,9 @@ function logout(res) {
     ]);
 }
 
+/*
+    Checks that the given user is a valid one.
+*/
 async function isUser(user) {
     const value = await database.get(`SELECT user FROM users WHERE user = "${user}"`);
     return (value != null);

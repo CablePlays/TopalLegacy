@@ -1,6 +1,9 @@
 extends ../layout
 
 block content
+  link(rel="stylesheet" href="/stylesheets/awards/rock-climbing.css")
+  script(src="/javascripts/awards/rock-climbing.js")
+
   h1 Rock Climbing Award
   .spacer.v20
 
@@ -26,3 +29,14 @@ block content
       The inside and outside wall may only be used under the supervision of an approved belayer (decided by the MIC) with a Rock Climbing Award,
       or someone in possession of a Rock Climbing Instructor Award.
       Each instructor may be responsible for no more than four climbers per session.
+
+  .spacer.v40
+  .award-status(data-award="rockClimbing")
+  .spacer.v40
+
+  h2 Sign-Offs
+  p Unless specified, skills may be done on either indoor or outdoor walls.
+
+  .spacer.v20
+  #signoffs
+  .spacer.v20

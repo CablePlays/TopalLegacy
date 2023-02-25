@@ -3,9 +3,10 @@ const cookies = require('./cookies');
 const general = require('./general');
 
 async function render(req, res, path) {
+    const loggedIn = cookies.isLoggedIn(req);
     let permissions;
 
-    if (cookies.isLoggedIn(req) && await general.sessionTokenValid(req)) {
+    if (loggedIn && await general.sessionTokenValid(req)) {
         const user = cookies.getUser(req);
         permissions = await general.getPermissions(user);
     } else {
@@ -13,18 +14,33 @@ async function render(req, res, path) {
     }
 
     const placeholders = {
-        permissionDisplays: {
-            awards: {
-                block: (permissions.awards ? "block" : "none"),
-                flex: (permissions.awards ? "flex" : "none"),
-                inlineBlock: (permissions.awards ? "inline-block" : "none")
+        displays: {
+            loggedIn: {
+                false: {
+                    block: (loggedIn ? "none" : "block"),
+                    flex: (loggedIn ? "none" : "flex"),
+                    inlineBlock: (loggedIn ? "none" : "inline-block")
+                },
+                true: {
+                    block: (loggedIn ? "block" : "none"),
+                    flex: (loggedIn ? "flex" : "none"),
+                    inlineBlock: (loggedIn ? "inline-block" : "none")
+                }
             },
-            permissions: {
-                block: (permissions.permissions ? "block" : "none"),
-                flex: (permissions.permissions ? "flex" : "none"),
-                inlineBlock: (permissions.permissions ? "inline-block" : "none")
+            permission: {
+                awards: {
+                    block: (permissions.awards ? "block" : "none"),
+                    flex: (permissions.awards ? "flex" : "none"),
+                    inlineBlock: (permissions.awards ? "inline-block" : "none")
+                },
+                permissions: {
+                    block: (permissions.permissions ? "block" : "none"),
+                    flex: (permissions.permissions ? "flex" : "none"),
+                    inlineBlock: (permissions.permissions ? "inline-block" : "none")
+                }
             }
-        }
+        },
+        user: cookies.getUser(req)
     };
 
     res.render(path, placeholders);
@@ -34,48 +50,61 @@ function router(path, options) {
     const router = express.Router();
     const {
         permission,
-        requireLoggedIn = false
-    } = options || {};
+        loggedIn,
+        validateUser = false
+    } = options ?? {};
 
     router.get('/', async (req, res) => {
         const requestedPath = req.baseUrl;
-        const loggedIn = cookies.isLoggedIn(req);
+        const params = new URLSearchParams(req.originalUrl.split("?")[1]);
+
+        const isLoggedIn = cookies.isLoggedIn(req);
         let userPermissions = general.getPermissionsForLevel(0);
 
         const onGet = async () => {
-            // verify session token
-            if (loggedIn && !await general.sessionTokenValid(req)) {
-                general.logout(res);
 
-                if (requestedPath === "/") {
-                    // requested destination desired; render
-                    return true;
+            /* Verify Session Token */
+
+            if (isLoggedIn) {
+                if (!await general.sessionTokenValid(req)) { // invalid session token
+                    general.logout(res);
+                    if (requestedPath === "/") return true;  // requested destination desired; render
+                    res.redirect("/"); // requested destination unwanted; redirect
+                    return false;
                 }
 
-                // requested destination unwanted; redirect
-                res.redirect("/");
-                return false;
+                const user = cookies.getUser(req);
+                userPermissions = await general.getPermissions(user);
             }
 
-            const user = cookies.getUser(req);
-            userPermissions = await general.getPermissions(user);
+            /* Check Permission */
 
-            // check permission
-            if (permission != null && (!loggedIn || !userPermissions[permission])) {
+            if (permission != null && (!isLoggedIn || userPermissions[permission] !== true)) {
                 render(req, res, "errors/not-found");
                 return false;
             }
 
-            // check logged in
-            if (!loggedIn && requireLoggedIn) {
-                res.redirect("/login?return_path=" + requestedPath);
+            /* Check Logged In */
+
+            if (loggedIn === true) { // ensure logged in
+                if (!isLoggedIn) {
+                    res.redirect("/login?return_path=" + requestedPath);
+                    return false;
+                }
+            } else if (loggedIn === false && isLoggedIn) { // ensure not logged in
+                res.redirect("/");
                 return false;
             }
 
-            // check logged in on login page
-            if (loggedIn && requestedPath === "/login") {
-                res.redirect("/");
-                return false;
+            /* Validate User */
+
+            if (validateUser === true) {
+                const paramUser = params.get("user");
+
+                if (paramUser == null || paramUser === "" || !await general.isUser(paramUser)) {
+                    render(req, res, "errors/invalid-user");
+                    return false;
+                }
             }
 
             return true;
@@ -89,31 +118,13 @@ function router(path, options) {
     return router;
 }
 
-function profileRouter(path) {
-    const router = express.Router();
-
-    router.get('/', async (req, res) => {
-        const paramsString = req.originalUrl.split("?")[1];
-        const params = new URLSearchParams(paramsString);
-        const user = params.get("user");
-
-        if (user == null || !await general.isUser(user)) {
-            render(req, res, "errors/invalid-user");
-        } else {
-            render(req, res, "profile/" + path);
-        }
-    });
-
-    return router;
-}
-
 function redirectRouter(path) {
     const router = express.Router();
 
     router.get('/', async (req, res) => {
         const url = req.originalUrl;
         const params = url.split("?")[1];
-
+        
         res.redirect("/" + path + (params == null ? "" : "?" + params));
     });
 
@@ -142,9 +153,9 @@ function acceptApp(app) {
     app.use('/awards/venture', router("awards/venture", { requireLoggedIn: true }));
 
     app.use('/profile', redirectRouter("profile/awards"));
-    app.use('/profile/admin', profileRouter("admin"));
-    app.use('/profile/awards', profileRouter("awards"));
-    app.use('/profile/milestones', profileRouter("milestones"));
+    app.use('/profile/admin', router("profile/admin", { permission: "awards", validateUser: true }));
+    app.use('/profile/awards', router("profile/awards", { validateUser: true }));
+    app.use('/profile/milestones', router("profile/milestones", { validateUser: true }));
 }
 
 module.exports = {

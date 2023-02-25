@@ -1,0 +1,21 @@
+{
+    "awards": {
+        "running": {
+            "complete": false,
+            "date": "DATE",
+            "signer": "A Name"
+        }
+    },
+    "permissions": {
+        "manageAwards": false,
+        "managePermissions": false,
+        "viewLogs": false
+    },
+    "rockClimbing": {
+        "knots1": {
+            "complete": true,
+            "date": "DATE",
+            "signer": "A Name"
+        }
+    }
+}

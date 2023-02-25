@@ -19,7 +19,7 @@
 }
 
 .tab .underline {
-    background-color: rgb(230, 152, 50);
+    background-color: var(--color-secondary-600);
     display: none;
     bottom: 0px;
     height: 2px;
@@ -37,13 +37,13 @@
 }
 
 #tab-container {
-    background: linear-gradient(90deg, rgb(255, 255, 255), rgb(255, 255, 255) 200px, rgb(0, 0, 0, 0) 800px, rgb(0, 0, 0, 0));
+    background: linear-gradient(90deg, var(--color-background), rgb(0, 0, 0, 0));
     border-bottom: 1px solid rgb(50, 50, 50);
     column-gap: 20px;
     display: flex;
     justify-content: center;
     position: sticky;
-    top: 10vh;
+    top: var(--topbar-height);
     width: 100%;
     z-index: 5;
 }

@@ -1,0 +1,57 @@
+.record-input {
+    background-color: var(--color-primary-400);
+    border-radius: 4px;
+    color: var(--color-primary-400-text);
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 360px;
+    overflow: hidden;
+    padding: 16px;
+    width: 60%;
+}
+
+.record-input button {
+    background-color: rgb(240, 240, 240);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 18px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+}
+
+.record-input button:hover {
+    background-color: rgb(220, 220, 220);
+}
+
+.record-input button:active {
+    background-color: rgb(250, 250, 250);
+}
+
+.record-input input,
+.record-input textarea {
+    background-color: var(--color-background);
+    color: var(--color-background-text);
+}
+
+.record-input input[type="date"],
+.record-input input[type="text"],
+.record-input textarea {
+    min-height: 40px;
+    padding: 8px;
+}
+
+.record-input .success-message {
+    color: rgb(255, 255, 255);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.record-input .required::after {
+    color: rgb(150, 8, 13);
+    content: " *"
+}

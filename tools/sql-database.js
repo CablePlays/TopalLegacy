@@ -87,9 +87,17 @@ async function replace(table, conditionColumn, conditionValue, values) {
 
 // create tables if they do not exist
 useDatabase(db => {
-    db.all("CREATE TABLE IF NOT EXISTS awards (user TEXT PRIMARY KEY, midmar_mile INTEGER DEFAULT 0 NOT NULL, polar_bear INTEGER DEFAULT 0 NOT NULL, running INTEGER DEFAULT 0 NOT NULL)");
-    db.all("CREATE TABLE IF NOT EXISTS runs (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    // db.all("CREATE TABLE IF NOT EXISTS awards (user TEXT PRIMARY KEY, midmar_mile INTEGER DEFAULT 0 NOT NULL, polar_bear INTEGER DEFAULT 0 NOT NULL, running INTEGER DEFAULT 0 NOT NULL)");
+
+    /* General */
+
     db.all("CREATE TABLE IF NOT EXISTS users (user TEXT PRIMARY KEY, permission_level INTEGER DEFAULT 0 NOT NULL, session_token TEXT)");
+
+    /* Records */
+
+    db.all("CREATE TABLE IF NOT EXISTS endurance_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS running_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS service_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, service TEXT NOT NULL, time INTEGER NOT NULL, description TEXT)");
 });
 
 module.exports = {

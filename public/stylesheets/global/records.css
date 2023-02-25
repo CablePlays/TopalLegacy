@@ -1,0 +1,28 @@
+.records-table {
+    width: 100%;
+}
+
+.records-table,
+.records-table th,
+.records-table td {
+    border: 1px solid var(--color-black);
+    border-collapse: collapse;
+}
+
+.records-table th,
+.records-table td {
+    background-color: var(--color-secondary-300);
+    color: var(--color-secondary-300-text);
+    padding: 8px;
+    text-align: center;
+}
+
+.records-table.removable td:last-child {
+    cursor: pointer;
+    width: 10px;
+}
+
+.records-table.removable td:last-child:hover {
+    background-color: var(--color-secondary-400);
+    color: var(--color-secondary-400-text);
+}

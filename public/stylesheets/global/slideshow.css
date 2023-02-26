@@ -1,0 +1,37 @@
+.slideshow {
+    overflow: hidden;
+}
+
+.slideshow-cards {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    transition: 0.5s;
+    width: fit-content;
+}
+
+.slideshow-indicator {
+    aspect-ratio: 1 / 1;
+    background-color: var(--color-background);
+    border-radius: 2px;
+    cursor: pointer;
+    height: 12px;
+    transition: 0.5s;
+}
+
+.slideshow-indicator.selected {
+    background-color: var(--color-background-opposite);
+    height: 15px;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 5px 0 rgb(0, 0, 0, 0.7);
+}
+
+.slideshow-indicator-container {
+    align-items: center;
+    bottom: 36px;
+    column-gap: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: relative;
+}

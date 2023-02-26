@@ -137,20 +137,20 @@ function acceptApp(app) {
     app.use('/mountaineering', router("general/mountaineering"));
     app.use('/permissions', router("general/permissions", { permission: "permissions" }));
     app.use('/search-users', router("general/search-users"));
-    app.use('/settings', router("general/settings", { requireLoggedIn: true }));
+    app.use('/settings', router("general/settings", { loggedIn: true }));
 
-    app.use('/awards/drakensberg', router("awards/drakensberg", { requireLoggedIn: true }));
-    app.use('/awards/endurance', router("awards/endurance", { requireLoggedIn: true }));
-    app.use('/awards/kayaking', router("awards/kayaking", { requireLoggedIn: true }));
-    app.use('/awards/midmar-mile', router("awards/midmar-mile", { requireLoggedIn: true }));
-    app.use('/awards/polar-bear', router("awards/polar-bear", { requireLoggedIn: true }));
-    app.use('/awards/rock-climbing', router("awards/rock-climbing", { requireLoggedIn: true }));
-    app.use('/awards/running', router("awards/running", { requireLoggedIn: true }));
-    app.use('/awards/service', router("awards/service", { requireLoggedIn: true }));
-    app.use('/awards/solitare', router("awards/solitare", { requireLoggedIn: true }));
-    app.use('/awards/summit', router("awards/summit", { requireLoggedIn: true }));
-    app.use('/awards/traverse', router("awards/traverse", { requireLoggedIn: true }));
-    app.use('/awards/venture', router("awards/venture", { requireLoggedIn: true }));
+    app.use('/awards/drakensberg', router("awards/drakensberg", { loggedIn: true }));
+    app.use('/awards/endurance', router("awards/endurance", { loggedIn: true }));
+    app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
+    app.use('/awards/midmar-mile', router("awards/midmar-mile", { loggedIn: true }));
+    app.use('/awards/polar-bear', router("awards/polar-bear", { loggedIn: true }));
+    app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
+    app.use('/awards/running', router("awards/running", { loggedIn: true }));
+    app.use('/awards/service', router("awards/service", { loggedIn: true }));
+    app.use('/awards/solitare', router("awards/solitare", { loggedIn: true }));
+    app.use('/awards/summit', router("awards/summit", { loggedIn: true }));
+    app.use('/awards/traverse', router("awards/traverse", { loggedIn: true }));
+    app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
 
     app.use('/profile', redirectRouter("profile/awards"));
     app.use('/profile/admin', router("profile/admin", { permission: "awards", validateUser: true }));

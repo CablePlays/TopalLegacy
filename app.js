@@ -15,7 +15,7 @@ app.use(express.json()); // for reading json post requests
 
 // simulate lag
 app.use((req, res, next) => {
-    setTimeout(next, 200);
+    setTimeout(next, 100);
 });
 
 routes.acceptApp(app);

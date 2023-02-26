@@ -1,6 +1,9 @@
 extends ../layout
 
 block content
+  link(rel="stylesheet" href="/stylesheets/general/home.css")
+  script(src="/javascripts/general/home.js")
+
   h1 Welcome to Topal
   p.partial(style="text-align: justify").
     Treverton OP Awards List was designed for students to easily record and earn OP awards.
@@ -9,4 +12,6 @@ block content
 
   .spacer.v40
 
-  h2 Heya
+  h2.center Recent Awards
+  .spacer.v20
+  #slideshow

@@ -21,6 +21,6 @@
 }
 
 .signoffs-table .line {
-    background-color: white;
+    background-color: var(--color-background-opposite);
     height: 0.5px;
 }

@@ -35,11 +35,7 @@ function addItem(email) {
 
 function clearResults() {
     const table = getTable();
-
-    while (table.firstChild) {
-        table.firstChild.remove();
-    }
-
+    removeChildren(table);
     getAmountInfo().innerHTML = "";
 }
 

@@ -1,4 +1,5 @@
 Eligibility page (for admin)
 Leaderboard page
 Logs page (award grant/revoke & permissions change)
-Recent achievements that cycle on home page
+Search by name instead of email
+Popup showing checkboxes for each award (maybe top right) - make hideable

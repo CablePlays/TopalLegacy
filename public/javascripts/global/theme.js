@@ -20,10 +20,11 @@ function displayDarkTheme(enabled) {
     if (enabled) {
         setCssVariable("color-background", "rgb(20, 20, 30)");
         setCssVariable("color-background-text", "rgb(220, 220, 220)");
+        setCssVariable("color-background-opposite", "rgb(255, 255, 255)");
     } else {
         setCssVariable("color-background", "rgb(255, 255, 255)");
         setCssVariable("color-background-text", "rgb(0, 0, 0)");
-        setCssVariable("color-background-text-secondary", "rgb(60, 60, 60)");
+        setCssVariable("color-background-opposite", "rgb(0, 0, 0)");
     }
 }
 

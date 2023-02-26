@@ -13,6 +13,16 @@ const AWARDS = [
     ["venture", "Venture"],
 ];
 
+function getAwardName(id) {
+    for (let award of AWARDS) {
+        if (award[0] === id) {
+            return award[1];
+        }
+    }
+
+    return null;
+}
+
 const ROCK_CLIMBING_SIGNOFFS = [
     [
         "Knots",
@@ -76,6 +86,12 @@ const ROCK_CLIMBING_SIGNOFFS = [
         ]
     ]
 ];
+
+function removeChildren(element) {
+    while (element.firstChild) {
+        element.firstChild.remove();
+    }
+}
 
 function formatDate(date) {
     if (typeof date === "string") {

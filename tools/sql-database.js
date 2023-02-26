@@ -1,7 +1,12 @@
+const fs = require("fs");
 const sqlite3 = require("sqlite3").verbose();
 
+if (!fs.existsSync("database")) {
+    fs.mkdirSync("database");
+}
+
 function useDatabase(consumer) {
-    const db = new sqlite3.Database("database.db", error => {
+    const db = new sqlite3.Database("./database/database.db", sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, error => {
         if (error) console.warn(error.message);
     });
 
@@ -87,11 +92,10 @@ async function replace(table, conditionColumn, conditionValue, values) {
 
 // create tables if they do not exist
 useDatabase(db => {
-    // db.all("CREATE TABLE IF NOT EXISTS awards (user TEXT PRIMARY KEY, midmar_mile INTEGER DEFAULT 0 NOT NULL, polar_bear INTEGER DEFAULT 0 NOT NULL, running INTEGER DEFAULT 0 NOT NULL)");
 
     /* General */
 
-    db.all("CREATE TABLE IF NOT EXISTS users (user TEXT PRIMARY KEY, permission_level INTEGER DEFAULT 0 NOT NULL, session_token TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS users (user TEXT PRIMARY KEY, name TEXT, given_name TEXT, family_name TEXT, permission_level INTEGER DEFAULT 0 NOT NULL, session_token TEXT)");
 
     /* Records */
 

@@ -5,6 +5,7 @@ const jsonDatabase = require('./json-database');
 const sqlDatabase = require('./sql-database');
 const general = require('./general');
 
+const MAX_AWARD_RECENTS = 10;
 const CLIENT_ID = "65424431927-8mpphvtc9k2sct45lg02pfaidhpmhjsf.apps.googleusercontent.com";
 const client = new OAuth2Client(CLIENT_ID);
 
@@ -13,6 +14,15 @@ function verify(token) {
         idToken: token,
         audience: CLIENT_ID
     });
+}
+
+async function getNames(user) {
+    const { name, given_name, family_name } = await sqlDatabase.get(`SELECT * FROM users WHERE user = "${user}"`);
+    return {
+        name,
+        given: given_name,
+        family: family_name
+    };
 }
 
 function awardRequests(app) {
@@ -42,7 +52,7 @@ function awardRequests(app) {
         let values = {};
 
         if (targetUser != null) {
-            values = jsonDatabase.get(targetUser).get("awards") ?? {};
+            values = jsonDatabase.getUser(targetUser).get("awards") ?? {};
         }
 
         res.json({
@@ -60,14 +70,31 @@ function awardRequests(app) {
             if (userPermissions.awards) {
                 const { complete, id, user: targetUser } = req.body;
 
-                if (isValidAward(id) && await general.isUser(targetUser)) {
-                    const db = jsonDatabase.get(targetUser);
+                if (id != null && user != null && isValidAward(id) && await general.isUser(targetUser)) {
+                    const db = jsonDatabase.getUser(targetUser);
                     const path = `awards.${id}`;
 
                     if (complete === true) {
+                        const recentsDb = jsonDatabase.getRecents();
+                        const recentAwards = recentsDb.get("awards") ?? [];
+
+                        const date = new Date();
+
+                        if (recentAwards.length >= MAX_AWARD_RECENTS) {
+                            recentAwards.pop();
+                        }
+
+                        recentAwards.unshift({
+                            date,
+                            id,
+                            user: targetUser
+                        });
+
+                        recentsDb.set("awards", recentAwards);
+
                         db.set(path, {
                             complete: true,
-                            date: new Date(),
+                            date,
                             signer: user
                         });
                     } else {
@@ -92,7 +119,7 @@ function milestoneRequests(app) {
         let values = {};
 
         if (targetUser != null) {
-            const awards = jsonDatabase.get(targetUser).get("awards") ?? {};
+            const awards = jsonDatabase.getUser(targetUser).get("awards") ?? {};
             let totalAwards = Object.getOwnPropertyNames(awards).length;
 
             values = {
@@ -204,7 +231,7 @@ function rockClimbingRequests(app) {
                 }
             }
             if (targetUser != null) {
-                values = await jsonDatabase.get(targetUser).get("rockClimbing") ?? {};
+                values = await jsonDatabase.getUser(targetUser).get("rockClimbing") ?? {};
             }
         }
 
@@ -224,7 +251,7 @@ function rockClimbingRequests(app) {
                 const { id, complete, user: targetUser } = req.body;
 
                 if (isValidRockClimbingSignoff(id) && await general.isUser(targetUser)) {
-                    const db = jsonDatabase.get(targetUser);
+                    const db = jsonDatabase.getUser(targetUser);
                     const path = `rockClimbing.${id}`;
 
                     if (complete === true) {
@@ -265,7 +292,7 @@ function miscRequests(app) {
             return;
         }
 
-        const { email, hd } = decoded.getPayload();
+        const { email, family_name, given_name, hd, name } = decoded.getPayload();
 
         if (hd !== "treverton.co.za") { // check domain
             res.json({
@@ -277,11 +304,18 @@ function miscRequests(app) {
         }
 
         let sessionToken = await general.getSessionToken(email);
+        const replace = {
+            family_name,
+            given_name,
+            name
+        };
 
         if (sessionToken == null) { // create session token
             sessionToken = uuidv4();
-            await sqlDatabase.replace("users", "user", email, { session_token: sessionToken });
+            replace.session_token = sessionToken;
         }
+
+        await sqlDatabase.replace("users", "user", email, replace);
 
         res.setHeader("Set-Cookie", [
             `session_token=${sessionToken}`,
@@ -351,6 +385,24 @@ function miscRequests(app) {
 
         res.json({
             value
+        });
+    });
+
+    /* Get Recent Awards */
+
+    app.post("/get-recent-awards", async (req, res) => {
+        const db = jsonDatabase.getRecents();
+        const recents = db.get("awards") ?? [];
+        const values = [];
+
+        for (let recent of recents) {
+            const { user } = recent;
+            recent.names = await getNames(user);
+            values.push(recent);
+        }
+
+        res.json({
+            values
         });
     });
 }

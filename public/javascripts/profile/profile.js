@@ -3,8 +3,12 @@ function getProfileUser() {
     return parameters.get("user");
 }
 
-function displayUserEmail() {
-    document.getElementById("user-email").innerHTML = getProfileUser();
+async function displayUserName() {
+    const userTitle = document.getElementById("user-title");
+    userTitle.innerHTML = LOADING_TEXT;
+
+    const names = await getUserNames(getProfileUser());
+    userTitle.innerHTML = names.name;
 }
 
 function setupTabs() {
@@ -35,6 +39,6 @@ function setupTabs() {
 }
 
 window.addEventListener("load", async () => {
-    displayUserEmail();
+    displayUserName();
     setupTabs();
 });

@@ -66,7 +66,7 @@ async function loadRecords(placeholder, recordType, targetUser, removable = true
         table.classList.add("removable");
 
         const th = document.createElement("th");
-        th.innerHTML = "Remove"
+        th.innerHTML = "Remove";
         topRow.append(th);
     }
 

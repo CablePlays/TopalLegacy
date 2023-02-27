@@ -12,10 +12,17 @@
         "viewLogs": false
     },
     "rockClimbing": {
-        "knots1": {
+        "belayer": {
             "complete": true,
             "date": "DATE",
             "signer": "A Name"
+        },
+        "signoffs": {
+            "knots1": {
+                "complete": true,
+                "date": "DATE",
+                "signer": "A Name"
+            }
         }
     }
 }

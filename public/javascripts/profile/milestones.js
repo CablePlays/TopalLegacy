@@ -1,9 +1,5 @@
-async function loadMilestones() {
+function loadMilestones() {
     const milestonesTable = document.getElementById("milestones-table");
-
-    const loading = createLoading();
-    milestonesTable.parentElement.insertBefore(loading, milestonesTable);
-
     const template = [
         ["team", "Team Award"],
         ["halfColors", "Half Colors"],
@@ -12,24 +8,23 @@ async function loadMilestones() {
         ["honors", "Honors"]
     ];
 
-    const res = await fetch("/get-milestones", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getProfileUser()
-        })
-    });
+    const milestonesPromise = new Promise(async r => {
+        const res = await fetch("/get-milestones", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user: getProfileUser()
+            })
+        });
 
-    const milestones = (await res.json()).values;
-    loading.remove();
+        r((await res.json()).values);
+    });
 
     template.forEach(a => {
         const id = a[0];
         const display = a[1];
-
-        const complete = (milestones[id] === true);
 
         const tr = document.createElement("tr");
 
@@ -38,8 +33,7 @@ async function loadMilestones() {
         tr.appendChild(title);
 
         const checkbox = document.createElement("td");
-        const checkboxImage = document.createElement("img");
-        checkboxImage.src = "/images/" + (complete ? "checked.png" : "unchecked.png");
+        const checkboxImage = createCheckbox(new Promise(async r => r((await milestonesPromise)[id] === true)));
         checkbox.appendChild(checkboxImage);
         tr.appendChild(checkbox);
 

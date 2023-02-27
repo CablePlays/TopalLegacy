@@ -24,7 +24,11 @@ function displayDarkTheme(enabled) {
     } else {
         setCssVariable("color-background", "rgb(255, 255, 255)");
         setCssVariable("color-background-text", "rgb(0, 0, 0)");
-        setCssVariable("color-background-opposite", "rgb(0, 0, 0)");
+        setCssVariable("color-background-opposite", "rgb(20, 20, 30)");
+    }
+
+    for (let a of ["color-button", "color-button-active", "color-button-hover", "color-button-text"]) {
+        setCssVariable(a, getCssVariable(a + "-" + (enabled ? "dark" : "light")));
     }
 }
 

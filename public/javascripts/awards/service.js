@@ -47,6 +47,9 @@ function setupRecordInput() {
 }
 
 async function setupTotal() {
+    const totalHoursLabel = document.getElementById("total-hours-label");
+    totalHoursLabel.innerHTML = LOADING_TEXT;
+
     let res = await fetch("/get-service-time", {
         method: "POST",
         headers: {
@@ -59,7 +62,7 @@ async function setupTotal() {
 
     const { value } = await res.json();
 
-    document.getElementById("total-hours-label").innerHTML = `${formatDuration(value, false)} / 25h`;
+    totalHoursLabel.innerHTML = `${formatDuration(value, false)} / 25h`;
     document.getElementById("total-hours-meter").value = value;
 }
 

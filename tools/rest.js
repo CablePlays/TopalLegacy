@@ -16,13 +16,33 @@ function verify(token) {
     });
 }
 
-async function getNames(user) {
-    const { name, given_name, family_name } = await sqlDatabase.get(`SELECT * FROM users WHERE user = "${user}"`);
+async function getNames(user) { // not user-safe
+    const { name, given_name, family_name } = await sqlDatabase.get(`SELECT * FROM users WHERE user = "${user}"`) ?? {};
     return {
         name,
         given: given_name,
-        family: family_name
+        family: family_name,
+        email: user
     };
+}
+
+async function provideNamesSingle(data) {
+    const signer = data.signer;
+
+    if (signer != null && await general.isUser(signer)) {
+        data.signer = await getNames(signer);
+    }
+}
+
+async function provideNames(data) {
+    const promises = [];
+
+    for (let a of Object.getOwnPropertyNames(data)) {
+        const b = data[a];
+        promises.push(provideNamesSingle(b));
+    }
+
+    await Promise.all(promises);
 }
 
 function awardRequests(app) {
@@ -32,11 +52,12 @@ function awardRequests(app) {
             "endurance",
             "kayaking",
             "midmarMile",
+            "mountainBiking",
             "polarBear",
             "rockClimbing",
             "running",
             "service",
-            "solitare",
+            "solitaire",
             "summit",
             "traverse",
             "venture"
@@ -51,8 +72,13 @@ function awardRequests(app) {
 
         let values = {};
 
-        if (targetUser != null) {
-            values = jsonDatabase.getUser(targetUser).get("awards") ?? {};
+        if (targetUser != null && await general.isUser(targetUser)) {
+            const a = jsonDatabase.getUser(targetUser).get("awards");
+
+            if (a != null) {
+                await provideNames(a);
+                values = a;
+            }
         }
 
         res.json({
@@ -86,7 +112,7 @@ function awardRequests(app) {
 
                         recentAwards.unshift({
                             date,
-                            id,
+                            award: id,
                             user: targetUser
                         });
 
@@ -191,6 +217,10 @@ function permissionRequests(app) {
 }
 
 function rockClimbingRequests(app) {
+    const ROCK_CLIMBING_PATH = "rockClimbing";
+    const BELAYER_PATH = ROCK_CLIMBING_PATH + ".belayer";
+    const SIGNOFFS_PATH = ROCK_CLIMBING_PATH + ".signoffs";
+
     function isValidRockClimbingSignoff(award) {
         const valid = [
             ["knots", 4],
@@ -230,8 +260,13 @@ function rockClimbingRequests(app) {
                     targetUser = null;
                 }
             }
-            if (targetUser != null) {
-                values = await jsonDatabase.getUser(targetUser).get("rockClimbing") ?? {};
+            if (targetUser != null && await general.isUser(targetUser)) {
+                const a = await jsonDatabase.getUser(targetUser).get(SIGNOFFS_PATH);
+
+                if (a != null) {
+                    await provideNames(a);
+                    values = a;
+                }
             }
         }
 
@@ -252,7 +287,7 @@ function rockClimbingRequests(app) {
 
                 if (isValidRockClimbingSignoff(id) && await general.isUser(targetUser)) {
                     const db = jsonDatabase.getUser(targetUser);
-                    const path = `rockClimbing.${id}`;
+                    const path = SIGNOFFS_PATH + "." + id;
 
                     if (complete === true) {
                         db.set(path, {
@@ -269,60 +304,73 @@ function rockClimbingRequests(app) {
 
         res.end();
     });
+
+    /* Get Belayer Signoff */
+
+    app.post(`/get-rock-climbing-belayer-signoff`, async (req, res) => { // permission: none
+        const { user: targetUser } = req.body;
+        let value = {};
+
+        if (targetUser != null && await general.isUser(targetUser)) {
+            const a = await jsonDatabase.getUser(targetUser).get(BELAYER_PATH);
+
+            if (a != null) {
+                await provideNamesSingle(a);
+                value = a;
+            }
+        }
+
+        res.json({
+            value
+        });
+    });
+
+    /* Set Belayer Signoff */
+
+    app.post(`/set-rock-climbing-belayer-signoff`, async (req, res) => { // permission: awards
+        if (await general.sessionTokenValid(req)) {
+            const user = cookies.getUser(req);
+            const userPermissions = await general.getPermissions(user);
+
+            if (userPermissions.awards) {
+                const { complete, user: targetUser } = req.body;
+
+                if (await general.isUser(targetUser)) {
+                    const db = jsonDatabase.getUser(targetUser);
+
+                    if (complete === true) {
+                        db.set(BELAYER_PATH, {
+                            complete: true,
+                            date: new Date(),
+                            signer: user
+                        });
+                    } else {
+                        db.delete(BELAYER_PATH);
+                    }
+                }
+            }
+        }
+
+        res.end();
+    });
 }
 
 function miscRequests(app) {
 
-    /* Login */
+    /* Names */
 
-    app.post("/login", async (req, res) => {
-        const { credential } = req.body;
-        let decoded;
+    app.post("/get-user-names", async (req, res) => { // permission: none
+        const targetUser = req.body.user;
+        let values;
 
-        try {
-            decoded = await verify(credential);
-        } catch (error) {
-            console.console.warn("Invalid JWT: " + error.message);
-
-            res.json({
-                status: "error",
-                error: "invalid_jwt"
-            });
-
-            return;
+        if (targetUser == null) {
+            values = {};
+        } else {
+            values = await getNames(targetUser);
         }
 
-        const { email, family_name, given_name, hd, name } = decoded.getPayload();
-
-        if (hd !== "treverton.co.za") { // check domain
-            res.json({
-                status: "error",
-                error: "invalid_email"
-            });
-
-            return;
-        }
-
-        let sessionToken = await general.getSessionToken(email);
-        const replace = {
-            family_name,
-            given_name,
-            name
-        };
-
-        if (sessionToken == null) { // create session token
-            sessionToken = uuidv4();
-            replace.session_token = sessionToken;
-        }
-
-        await sqlDatabase.replace("users", "user", email, replace);
-
-        res.setHeader("Set-Cookie", [
-            `session_token=${sessionToken}`,
-            `user_email=${email}`
-        ]);
         res.json({
-            status: "success"
+            values
         });
     });
 
@@ -343,16 +391,21 @@ function miscRequests(app) {
         let { query } = req.body;
         query = query.replaceAll(" ", "");
 
-        const users = await sqlDatabase.all(`SELECT user FROM users WHERE user LIKE "%${query}%"`);
-        const emails = [];
+        const users = await sqlDatabase.all(
+            `SELECT * FROM users WHERE user LIKE "%${query}%" OR name LIKE "%${query}%" OR given_name LIKE "%${query}%"`);
+        const values = [];
 
-        // get only emails
-        users.forEach(user => {
-            emails.push(user.user);
-        });
+        for (let user of users) {
+            const email = user.user;
+
+            values.push({
+                email,
+                names: await getNames(email)
+            });
+        }
 
         res.json({
-            users: emails
+            values
         })
     });
 
@@ -403,6 +456,59 @@ function miscRequests(app) {
 
         res.json({
             values
+        });
+    });
+
+    /* Login */
+
+    app.post("/login", async (req, res) => {
+        const { credential } = req.body;
+        let decoded;
+
+        try {
+            decoded = await verify(credential);
+        } catch (error) {
+            console.warn("Invalid JWT: " + error.message);
+
+            res.json({
+                status: "error",
+                error: "invalid_jwt"
+            });
+
+            return;
+        }
+
+        const { email, family_name, given_name, hd, name } = decoded.getPayload();
+
+        if (hd !== "treverton.co.za") { // check domain
+            res.json({
+                status: "error",
+                error: "invalid_email"
+            });
+
+            return;
+        }
+
+        let sessionToken = await general.getSessionToken(email);
+        const replace = {
+            family_name,
+            given_name,
+            name
+        };
+
+        if (sessionToken == null) { // create session token
+            sessionToken = uuidv4();
+            replace.session_token = sessionToken;
+        }
+
+        await sqlDatabase.replace("users", "user", email, replace);
+
+        res.setHeader("Set-Cookie", [
+            `session_token=${sessionToken}`,
+            `user_email=${email}`
+        ]);
+        res.json({
+            status: "success"
         });
     });
 }

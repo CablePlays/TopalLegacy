@@ -1,11 +1,3 @@
-function getAmountInfo() {
-    return document.getElementById("amount-info");
-}
-
-function getTable() {
-    return document.getElementById("results-table");
-}
-
 function createProfileButton(email) {
     const profileButton = document.createElement("button");
     profileButton.innerHTML = "Profile";
@@ -17,38 +9,37 @@ function createProfileButton(email) {
     return profileButton;
 }
 
-function addItem(email) {
-    const table = getTable();
-    const row = document.createElement("tr");
+function createItem(user, display) {
+    const tr = document.createElement("tr");
+    const cell = document.createElement("td");
 
-    const cell1 = document.createElement("td");
-    cell1.innerHTML = email;
-    row.appendChild(cell1);
+    const displayElement = document.createElement("td");
+    displayElement.innerHTML = display;
+    cell.appendChild(displayElement);
 
-    const cell2 = document.createElement("td");
-    const profileButton = createProfileButton(email);
-    cell2.appendChild(profileButton);
-    row.appendChild(cell2);
+    const profileButton = createProfileButton(user);
+    cell.appendChild(profileButton);
 
-    table.appendChild(row);
-}
-
-function clearResults() {
-    const table = getTable();
-    removeChildren(table);
-    getAmountInfo().innerHTML = "";
+    tr.appendChild(cell);
+    return tr;
 }
 
 function setupSearch() {
+    const amountInfo = document.getElementById("amount-info");
     const searchBar = document.getElementById("search-bar");
     const searchButton = document.getElementById("search-button");
-    const loading = document.getElementById("search-users-loading");
+    const table = document.getElementById("results-table");
 
     searchButton.addEventListener("click", async () => {
-        const query = searchBar.value;
-        clearResults();
+        // clear previous results
+        removeChildren(table);
+        amountInfo.innerHTML = "";
 
-        loading.style.display = "block";
+        const query = searchBar.value;
+
+        // loading
+        const loadingElement = createLoading();
+        amountInfo.parentElement.insertBefore(loadingElement, amountInfo);
 
         let res = await fetch("/search-users", {
             method: "POST",
@@ -60,12 +51,17 @@ function setupSearch() {
             })
         });
 
-        let { users } = await res.json();
-        let total = users.length;
+        const { values } = await res.json();
+        const total = values.length;
 
-        loading.style.display = "none";
-        getAmountInfo().innerHTML = `${total} user${total === 1 ? "" : "s"} found`;
-        users.forEach(addItem);
+        loadingElement.remove();
+        amountInfo.innerHTML = `${total === 0 ? "No" : total} user${total === 1 ? "" : "s"} found`;
+
+        values.forEach(value => {
+            const { email, names } = value;
+            const row = createItem(email, names.name);
+            table.appendChild(row);
+        });
     });
 }
 

@@ -1,7 +1,7 @@
 function meterExtra(max, display, endpoint) {
     return async card => {
         const label = document.createElement("h3");
-        label.innerHTML = "Loading...";
+        label.innerHTML = LOADING_TEXT;
         card.appendChild(label);
 
         const meter = document.createElement("meter");
@@ -31,8 +31,40 @@ function setupAwards() {
     const awardsContainer = document.getElementById("awards-container");
 
     const extras = {
-        running: meterExtra(100000, value => `${value / 1000}km / 100km`, "/get-distance-run"),
-        service: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, "/get-service-time")
+        rockClimbing: {
+            after: card => {
+                card.appendChild(createSpacer(20));
+
+                const label = document.createElement("h3");
+                label.innerHTML = "Belayer Signoff";
+                card.appendChild(label);
+                
+                card.appendChild(createSpacer(20));
+
+                const image = createCheckbox(new Promise(async r => {
+                    const res = await fetch("/get-rock-climbing-belayer-signoff", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            user: getProfileUser()
+                        })
+                    });
+
+                    const { value } = await res.json();
+                    r(value.complete === true);
+                }));
+                image.classList.add("checkbox");
+                card.appendChild(image);
+            }
+        },
+        running: {
+            before: meterExtra(100000, value => `${value / 1000}km / 100km`, "/get-distance-run")
+        },
+        service: {
+            before: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, "/get-service-time")
+        }
     };
 
     const awards = getAwards(profileUser);
@@ -48,22 +80,17 @@ function setupAwards() {
         title.innerHTML = display;
         card.appendChild(title);
 
-        const extra = extras[id];
-        if (extra != null) extra(card);
+        const extra = extras[id] ?? {};
+        if (extra.before != null) extra.before(card);
 
         card.appendChild(createSpacer(20));
 
-        const image = document.createElement("img");
-        image.src = "/images/loading.gif";
-        image.classList.add("checkbox");
-        card.appendChild(image);
+        const checkbox = createCheckbox(new Promise(async r => r((await awards)[id]?.complete === true)));
+        checkbox.classList.add("checkbox");
+        card.appendChild(checkbox);
 
+        if (extra.after != null) extra.after(card);
         awardsContainer.appendChild(card);
-
-        awards.then(value => {
-            const complete = value[id]?.complete === true;
-            image.src = "/images/" + (complete ? "checked.png" : "unchecked.png");
-        });
     });
 }
 

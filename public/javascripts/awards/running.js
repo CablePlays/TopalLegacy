@@ -38,7 +38,10 @@ function setupRecordInput() {
 }
 
 async function setupTotal() {
-    let res = await fetch("/get-distance-run", {
+    const distanceLabel = document.getElementById("total-distance-label");
+    distanceLabel.innerHTML = LOADING_TEXT;
+
+    const res = await fetch("/get-distance-run", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -50,7 +53,7 @@ async function setupTotal() {
 
     const { value } = await res.json();
 
-    document.getElementById("total-distance-label").innerHTML = `${value / 1000}km / 100km`;
+    distanceLabel.innerHTML = `${value / 1000}km / 100km`;
     document.getElementById("total-distance-meter").value = value;
 }
 

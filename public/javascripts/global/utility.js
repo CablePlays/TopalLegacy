@@ -1,13 +1,19 @@
+const LOADING_TEXT = "Loading...";
+const LOADING_IMAGE_PATH = "/images/loading.gif";
+const CHECKBOX_CHECKED_PATH = "/images/checked.png";
+const CHECKBOX_UNCHECKED_PATH = "/images/unchecked.png";
+
 const AWARDS = [
     ["drakensberg", "Drakensberg"],
     ["endurance", "Endurance"],
     ["kayaking", "Kayaking"],
     ["midmarMile", "Midmar Mile"],
+    ["mountainBiking", "Mountain Biking"],
     ["polarBear", "Polar Bear"],
     ["rockClimbing", "Rock Climbing"],
     ["running", "Running"],
     ["service", "Service"],
-    ["solitare", "Solitare"],
+    ["solitaire", "Solitaire"],
     ["summit", "Summit"],
     ["traverse", "Traverse"],
     ["venture", "Venture"],
@@ -87,6 +93,10 @@ const ROCK_CLIMBING_SIGNOFFS = [
     ]
 ];
 
+function checkboxImage(checked) {
+    return (checked ? CHECKBOX_CHECKED_PATH : CHECKBOX_UNCHECKED_PATH);
+}
+
 function removeChildren(element) {
     while (element.firstChild) {
         element.firstChild.remove();
@@ -141,10 +151,10 @@ function setDateCurrent(dateInput) {
     dateInput.value = year + "-" + month + "-" + day;
 }
 
-function createTableHeader(titles) {
+function createTableHeaders(headers) {
     const tr = document.createElement("tr");
 
-    titles.forEach(title => {
+    headers.forEach(title => {
         const th = document.createElement("th");
         th.innerHTML = title;
         tr.appendChild(th);
@@ -153,16 +163,20 @@ function createTableHeader(titles) {
     return tr;
 }
 
+function createTable(headers) {
+    const table = document.createElement("table");
+    table.appendChild(createTableHeaders(headers));
+    return table;
+}
+
 function createCheckbox(condition) {
     const checkbox = document.createElement("img");
-    const setChecked = checked => checkbox.src = "/images/" + (checked ? "checked.png" : "unchecked.png");
 
     if (typeof condition === "boolean") {
-        setChecked(condition);
-    }
-    else { // assume promise
-        checkbox.src = "/images/loading.gif";
-        condition.then(val => setChecked(val === true));
+        checkbox.src = checkboxImage(condition);
+    } else { // assume promise
+        checkbox.src = LOADING_IMAGE_PATH;
+        condition.then(val => checkbox.src = checkboxImage(val));
     }
 
     return checkbox;

@@ -15,12 +15,12 @@ async function setupSlideshow() {
     }
     else {
         values.forEach(value => {
-            const { id, names, user } = value;
+            const { award, names, user } = value;
 
             const card = document.createElement("div");
             card.classList.add("card");
             card.classList.add("card-basic");
-            card.innerHTML = `${names.given} recently achieved the ${getAwardName(id)} award!`;
+            card.innerHTML = `${names.given} recently achieved the ${getAwardName(award)} award!`;
 
             const profileElement = document.createElement("a");
             profileElement.innerHTML = "View Profile"

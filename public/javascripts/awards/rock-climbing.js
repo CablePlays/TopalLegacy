@@ -74,6 +74,27 @@ async function setupSignoffs() {
     document.getElementById("signoffs").replaceWith(table);
 }
 
+function setupBelayerSignoff() {
+    const res =  fetch("/get-rock-climbing-belayer-signoff", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user: getUser()
+        })
+    });
+    const promise = new Promise(async r => {
+        const a = await res;
+        const json = await a.json();
+        r(json.value);
+    });
+
+    const status = createAwardStatus("Belayer Signoff", promise);
+    document.getElementById("belayer-status").replaceWith(status);
+}
+
 window.addEventListener("load", () => {
     setupSignoffs();
+    setupBelayerSignoff();
 });

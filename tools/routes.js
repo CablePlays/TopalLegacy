@@ -143,11 +143,12 @@ function acceptApp(app) {
     app.use('/awards/endurance', router("awards/endurance", { loggedIn: true }));
     app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
     app.use('/awards/midmar-mile', router("awards/midmar-mile", { loggedIn: true }));
+    app.use('/awards/mountain-biking', router("awards/mountain-biking", { loggedIn: true }));
     app.use('/awards/polar-bear', router("awards/polar-bear", { loggedIn: true }));
     app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
     app.use('/awards/service', router("awards/service", { loggedIn: true }));
-    app.use('/awards/solitare', router("awards/solitare", { loggedIn: true }));
+    app.use('/awards/solitaire', router("awards/solitaire", { loggedIn: true }));
     app.use('/awards/summit', router("awards/summit", { loggedIn: true }));
     app.use('/awards/traverse', router("awards/traverse", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));

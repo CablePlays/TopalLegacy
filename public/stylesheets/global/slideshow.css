@@ -15,20 +15,20 @@
     background-color: var(--color-background);
     border-radius: 2px;
     cursor: pointer;
-    height: 12px;
+    height: 10px;
     transition: 0.5s;
 }
 
 .slideshow-indicator.selected {
     background-color: var(--color-background-opposite);
-    height: 15px;
+    height: 12px;
     transform: translateY(-5px);
     box-shadow: 0 6px 5px 0 rgb(0, 0, 0, 0.7);
 }
 
 .slideshow-indicator-container {
     align-items: center;
-    bottom: 36px;
+    bottom: 30px;
     column-gap: 10px;
     display: flex;
     flex-direction: row;

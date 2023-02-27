@@ -13,12 +13,28 @@
     --color-black: #000;
     --color-white: #fff;
 
+    /* Background */
     --color-background: #000;
     --color-background-text: #000;
     --color-background-opposite: #000;
     --color-background-accent: rgb(40, 40, 60);
     --color-background-accent-text: var(--color-white);
 
+    /* Button */
+    --color-button: #000;
+    --color-button-active: #000;
+    --color-button-hover: #000;
+    --color-button-text: #000;
+    --color-button-light: rgb(40, 40, 60);
+    --color-button-active-light: rgb(40, 40, 60);
+    --color-button-hover-light: rgb(10, 10, 30);
+    --color-button-text-light: rgb(255, 255, 255);
+    --color-button-dark: rgb(245, 245, 245);
+    --color-button-active-dark: rgb(245, 245, 245);
+    --color-button-hover-dark: rgb(215, 215, 215);
+    --color-button-text-dark: rgb(0, 0, 0);
+
+    /* Primary */
     --color-primary-200: #bbc0e1;
     --color-primary-200-text: var(--color-black);
     --color-primary-300: #9aa0c6;
@@ -32,6 +48,7 @@
     --color-primary-700: #1b1b5a;
     --color-primary-700-text: var(--color-white);
 
+    /* Secondary */
     --color-secondary-200: #ffe1b4;
     --color-secondary-200-text: var(--color-black);
     --color-secondary-300: #fdc87f;

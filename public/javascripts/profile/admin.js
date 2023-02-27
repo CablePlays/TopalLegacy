@@ -1,3 +1,10 @@
+const TABLE_HEADER_NAMES = {
+    complete: "Completed",
+    date: "Date",
+    signer: "Signed By",
+    toggle: "Manage"
+}
+
 /* Awards */
 
 function createManagementRow(id, display, endpoint, data, reload) {
@@ -7,9 +14,11 @@ function createManagementRow(id, display, endpoint, data, reload) {
 
     const tr = document.createElement("tr");
 
-    const displayCell = document.createElement("td");
-    displayCell.innerHTML = display;
-    tr.appendChild(displayCell);
+    if (display != null) {
+        const displayCell = document.createElement("td");
+        displayCell.innerHTML = display;
+        tr.appendChild(displayCell);
+    }
 
     const completeCell = document.createElement("td");
     completeCell.innerHTML = complete ? "Yes" : "No";
@@ -20,7 +29,7 @@ function createManagementRow(id, display, endpoint, data, reload) {
     tr.appendChild(dateCell);
 
     const signedByCell = document.createElement("td");
-    signedByCell.innerHTML = (reload ? reloadText : signer ?? "N/A");
+    signedByCell.innerHTML = (reload ? reloadText : signer?.name ?? "N/A");
     tr.appendChild(signedByCell);
 
     const toggleCell = document.createElement("td");
@@ -52,12 +61,13 @@ async function setupAwardsTable() {
     const awardsTable = document.getElementById("awards-table");
 
     const loading = createLoading(true);
-    awardsTable.parentElement.insertBefore(loading, awardsTable);
+    awardsTable.replaceWith(loading);
 
-    const profileUser = getProfileUser();
-    const completedAwards = await getAwards(profileUser);
+    awardsTable.appendChild(createTableHeaders([
+        "Award", TABLE_HEADER_NAMES.complete, TABLE_HEADER_NAMES.date, TABLE_HEADER_NAMES.signer, TABLE_HEADER_NAMES.toggle
+    ]));
 
-    loading.remove();
+    const completedAwards = await getAwards(getProfileUser());
 
     AWARDS.forEach(award => {
         const [id, display] = award;
@@ -67,7 +77,7 @@ async function setupAwardsTable() {
         awardsTable.appendChild(tr);
     });
 
-    awardsTable.style.display = "table";
+    loading.replaceWith(awardsTable);
 }
 
 /* Records */
@@ -162,49 +172,108 @@ function setupRecordsSection(title, recordType) {
 }
 
 function setupRockClimbingSection() {
-    const table = document.createElement("table");
+    const div = document.createElement("div");
+    const profileUser = getProfileUser();
 
-    setupSection("Rock Climbing Sign-Offs", table, async () => {
-        const loading = createLoading(true);
-        table.replaceWith(loading);
+    setupSection("Rock Climbing", div, async () => {
 
-        const headers = ["Description", "Completed", "Date", "Signed By", "Manage"];
-        table.appendChild(createTableHeader(headers));
-        table.classList.add("alternating");
-        table.classList.add("management-table");
+        /* Belayer Signoff Header */
 
-        const res = await fetch("/get-rock-climbing-signoffs", {
+        const belayerSignoffHeader = document.createElement("h3");
+        belayerSignoffHeader.innerHTML = "Belayer Sign-Off";
+
+        div.appendChild(belayerSignoffHeader);
+        div.appendChild(createSpacer(20));
+
+        /* Belayer Signoff Table */
+
+        const belayerSignoffLoading = createLoading(true);
+        div.appendChild(belayerSignoffLoading);
+        div.appendChild(createSpacer(20));
+
+        const belayerSignoffTable = createTable([
+            TABLE_HEADER_NAMES.complete, TABLE_HEADER_NAMES.date, TABLE_HEADER_NAMES.signer, TABLE_HEADER_NAMES.toggle
+        ]);
+
+        belayerSignoffTable.classList.add("alternating");
+        belayerSignoffTable.classList.add("management-table");
+
+        const belayerSignoffPromise = fetch("/get-rock-climbing-belayer-signoff", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                user: getProfileUser()
+                user: profileUser
             })
         });
 
-        const values = (await res.json()).values;
+        belayerSignoffPromise.then(async res => {
+            const { value } = await res.json();
+            const tr = createManagementRow(undefined, undefined, "/set-rock-climbing-belayer-signoff", value);
 
-        ROCK_CLIMBING_SIGNOFFS.forEach(signoff => {
-            const [sectionName, items] = signoff;
+            belayerSignoffTable.appendChild(tr);
+            belayerSignoffLoading.replaceWith(belayerSignoffTable);
+        });
 
-            const titleRow = document.createElement("tr");
-            const titleCell = document.createElement("th");
-            titleCell.colSpan = headers.length;
-            titleCell.innerHTML = sectionName;
-            titleRow.append(titleCell);
-            table.appendChild(titleRow);
+        /* Signoffs Header */
 
-            items.forEach(item => {
-                const [id, display] = item;
-                const data = values[id] ?? {};
-                const tr = createManagementRow(id, display, "/set-rock-climbing-signoff", data);
+        const signoffsHeader = document.createElement("h3");
+        signoffsHeader.innerHTML = "Sign-Offs";
+        div.appendChild(signoffsHeader);
+        div.appendChild(createSpacer(20));
 
-                table.appendChild(tr);
+        /* Signoffs Table */
+
+        const signoffsLoading = createLoading(true);
+        div.appendChild(signoffsLoading);
+
+        const signoffsTable = document.createElement("table");
+        const headers = [
+            "Description",
+            TABLE_HEADER_NAMES.complete,
+            TABLE_HEADER_NAMES.date,
+            TABLE_HEADER_NAMES.signer,
+            TABLE_HEADER_NAMES.toggle
+        ];
+        signoffsTable.appendChild(createTableHeaders(headers));
+        signoffsTable.classList.add("alternating");
+        signoffsTable.classList.add("management-table");
+
+        const signoffsPromise = fetch("/get-rock-climbing-signoffs", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user: profileUser
             })
         });
 
-        loading.replaceWith(table);
+        signoffsPromise.then(async res => {
+            const { values } = await res.json();
+
+            ROCK_CLIMBING_SIGNOFFS.forEach(category => {
+                const [sectionName, items] = category;
+
+                const titleRow = document.createElement("tr");
+                const titleCell = document.createElement("th");
+                titleCell.colSpan = headers.length;
+                titleCell.innerHTML = sectionName;
+                titleRow.append(titleCell);
+                signoffsTable.appendChild(titleRow);
+
+                items.forEach(item => {
+                    const [id, display] = item;
+                    const data = values[id] ?? {};
+                    const tr = createManagementRow(id, display, "/set-rock-climbing-signoff", data);
+
+                    signoffsTable.appendChild(tr);
+                });
+            });
+
+            signoffsLoading.replaceWith(signoffsTable);
+        });
     });
 }
 

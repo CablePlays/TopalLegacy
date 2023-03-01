@@ -2,7 +2,7 @@ const express = require('express');
 const cookies = require('./cookies');
 const general = require('./general');
 
-async function render(req, res, path) {
+async function render(req, res, path, adminPage = false) {
     const loggedIn = cookies.isLoggedIn(req);
     let permissions;
 
@@ -13,31 +13,26 @@ async function render(req, res, path) {
         permissions = general.getPermissionsForLevel(0);
     }
 
+    const generateDisplays = condition => {
+        return {
+            block: (condition ? "block" : "none"),
+            flex: (condition ? "flex" : "none"),
+            inlineBlock: (condition ? "inline-block" : "none")
+        };
+    }
+
     const placeholders = {
         displays: {
+            adminPage: {
+                true: generateDisplays(adminPage)
+            },
             loggedIn: {
-                false: {
-                    block: (loggedIn ? "none" : "block"),
-                    flex: (loggedIn ? "none" : "flex"),
-                    inlineBlock: (loggedIn ? "none" : "inline-block")
-                },
-                true: {
-                    block: (loggedIn ? "block" : "none"),
-                    flex: (loggedIn ? "flex" : "none"),
-                    inlineBlock: (loggedIn ? "inline-block" : "none")
-                }
+                false: generateDisplays(!loggedIn),
+                true: generateDisplays(loggedIn)
             },
             permission: {
-                awards: {
-                    block: (permissions.awards ? "block" : "none"),
-                    flex: (permissions.awards ? "flex" : "none"),
-                    inlineBlock: (permissions.awards ? "inline-block" : "none")
-                },
-                permissions: {
-                    block: (permissions.permissions ? "block" : "none"),
-                    flex: (permissions.permissions ? "flex" : "none"),
-                    inlineBlock: (permissions.permissions ? "inline-block" : "none")
-                }
+                awards: generateDisplays(permissions.awards),
+                permissions: generateDisplays(permissions.permissions),
             }
         },
         user: cookies.getUser(req)
@@ -97,6 +92,7 @@ function router(path, options) {
             }
 
             /* Validate User */
+            // checks that the user in the user parameter is valid
 
             if (validateUser === true) {
                 const paramUser = params.get("user");
@@ -111,7 +107,7 @@ function router(path, options) {
         };
 
         if (await onGet()) {
-            render(req, res, path);
+            render(req, res, path, permission != null);
         }
     });
 
@@ -124,7 +120,7 @@ function redirectRouter(path) {
     router.get('/', async (req, res) => {
         const url = req.originalUrl;
         const params = url.split("?")[1];
-        
+
         res.redirect("/" + path + (params == null ? "" : "?" + params));
     });
 
@@ -133,7 +129,7 @@ function redirectRouter(path) {
 
 function acceptApp(app) {
     app.use('/', router("general/home"));
-    app.use('/login', router("general/login")); // require not logged in handled in router
+    app.use('/login', router("general/login", { loggedIn: false })); // require not logged in handled in router
     app.use('/mountaineering', router("general/mountaineering"));
     app.use('/permissions', router("general/permissions", { permission: "permissions" }));
     app.use('/search-users', router("general/search-users"));

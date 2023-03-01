@@ -1,9 +1,0 @@
-Eligibility page (for admin)
-Image in corner of screen indicating admin page
-Leaderboard page
-Logs page (award grant/revoke & permissions change)
-Popup showing checkboxes for each award (maybe top right) - make hideable
-
-Award Ideas:
-    - Mountain biking
-    - Horse riding

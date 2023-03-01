@@ -9,23 +9,23 @@ html
     link(rel="stylesheet" href="/stylesheets/global/design.css")
     link(rel="stylesheet" href="/stylesheets/global/footer.css")
     link(rel="stylesheet" href="/stylesheets/global/hamburger-icon.css")
-    link(rel="stylesheet" href="/stylesheets/global/loading.css")
+    link(rel="stylesheet" href="/stylesheets/global/images.css")
     link(rel="stylesheet" href="/stylesheets/global/record-input.css")
     link(rel="stylesheet" href="/stylesheets/global/records.css")
     link(rel="stylesheet" href="/stylesheets/global/sidebar.css")
     link(rel="stylesheet" href="/stylesheets/global/slideshow.css")
     link(rel="stylesheet" href="/stylesheets/global/topbar.css")
 
+    script(src="/javascripts/global/animated-text.js")
     script(src="/javascripts/global/award-status.js")
     script(src="/javascripts/global/cookies.js")
+    script(src="/javascripts//global/layout.js")
     script(src="/javascripts/global/record-input.js")
     script(src="/javascripts/global/rest.js")
     script(src="/javascripts/global/records.js")
     script(src="/javascripts/global/slideshow.js")
     script(src="/javascripts/global/theme.js")
     script(src="/javascripts/global/utility.js")
-    script(src="/javascripts/main.js")
-    script(src="/javascripts/global/animated-text.js")
   body
     .top-bar
       #nav-container
@@ -100,6 +100,10 @@ html
 
     .container
       block content
+      
+    #admin-icon(style=`display: ${displays.adminPage.true.block}`)
+      span This page requires a permission to view.
+      img(src="/images/admin-icon.png")
 
     footer
       p &copy 2023 

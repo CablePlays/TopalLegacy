@@ -1,15 +1,33 @@
-Awards:
-    - Drakensberg
-    - Kayaking
-    - Midmar Mile
-    - Rock Climbing
-    - Solitare
-    - Summit
-    - Traverse
-    - Venture
+> Awards
 
-Completed:
-    - Endurance
-    - Polar Bear
-    - Running
-    - Service
+Drakensberg
+Kayaking
+Midmar Mile
+Rock Climbing
+Solitare
+Summit
+Traverse
+Venture
+
+> Completed Awards
+
+Endurance
+Polar Bear
+Running
+Service
+
+> Todo
+
+Make slidershow have some loading indication
+
+> Ideas
+
+Eligibility page (for admin)
+Leaderboard page
+Logs page (award grant/revoke & permissions change)
+Popup showing checkboxes for each award (maybe top right) - make hideable
+
+> Award Ideas
+
+Mountain biking
+Horse riding

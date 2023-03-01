@@ -9,7 +9,7 @@ function createAwardStatus(display, promise) {
 
     // status
     clone.childNodes[0].childNodes[0].innerHTML = display;
-    clone.childNodes[0].childNodes[1].src = LOADING_IMAGE_PATH;
+    clone.childNodes[0].childNodes[1].src = IMAGE_LOADING;
     // date
     clone.childNodes[1].childNodes[1].innerHTML = LOADING_TEXT;
     // signer

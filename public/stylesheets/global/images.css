@@ -1,0 +1,35 @@
+#admin-icon {
+    bottom: 20px;
+    position: fixed;
+    right: 20px;
+}
+
+#admin-icon img {
+    height: 60px;
+    width: 60px;
+}
+
+#admin-icon span {
+    border-radius: 6px;
+    color: var(--color-background-accent-text);
+    background-color: var(--color-background-accent);
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    transform: translateY(calc(-100% - 10px));
+    visibility: hidden;
+    width: 120px;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+#admin-icon:hover span {
+    visibility: visible;
+}
+
+.loading {
+    height: 88px;
+    width: 88px;
+}

@@ -1,7 +1,11 @@
+/* Text */
 const LOADING_TEXT = "Loading...";
-const LOADING_IMAGE_PATH = "/images/loading.gif";
-const CHECKBOX_CHECKED_PATH = "/images/checked.png";
-const CHECKBOX_UNCHECKED_PATH = "/images/unchecked.png";
+
+/* Images */
+const IMAGE_ADMIN = "/images/admin-icon.gif";
+const IMAGE_CHECKBOX_CHECKED = "/images/checked.png";
+const IMAGE_CHECKBOX_UNCHECKED = "/images/unchecked.png";
+const IMAGE_LOADING = "/images/loading.gif";
 
 const AWARDS = [
     ["drakensberg", "Drakensberg"],
@@ -93,10 +97,6 @@ const ROCK_CLIMBING_SIGNOFFS = [
     ]
 ];
 
-function checkboxImage(checked) {
-    return (checked ? CHECKBOX_CHECKED_PATH : CHECKBOX_UNCHECKED_PATH);
-}
-
 function removeChildren(element) {
     while (element.firstChild) {
         element.firstChild.remove();
@@ -169,13 +169,17 @@ function createTable(headers) {
     return table;
 }
 
+function checkboxImage(checked) {
+    return (checked ? IMAGE_CHECKBOX_CHECKED : IMAGE_CHECKBOX_UNCHECKED);
+}
+
 function createCheckbox(condition) {
     const checkbox = document.createElement("img");
 
     if (typeof condition === "boolean") {
         checkbox.src = checkboxImage(condition);
     } else { // assume promise
-        checkbox.src = LOADING_IMAGE_PATH;
+        checkbox.src = IMAGE_LOADING;
         condition.then(val => checkbox.src = checkboxImage(val));
     }
 
@@ -183,7 +187,8 @@ function createCheckbox(condition) {
 }
 
 function createLoading(center = false) {
-    const loading = document.createElement("div");
+    const loading = document.createElement("img");
+    loading.src = IMAGE_LOADING;
     loading.classList.add("loading");
 
     if (center) {

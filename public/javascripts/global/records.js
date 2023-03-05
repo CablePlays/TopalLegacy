@@ -114,6 +114,5 @@ async function loadRecords(placeholder, recordType, targetUser, removable = true
         /* Display */
 
         loading.replaceWith(table);
-        return table;
     }
 }

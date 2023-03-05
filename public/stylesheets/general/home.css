@@ -11,21 +11,12 @@
 
 .container .card a {
     align-items: center;
-    background-color: rgb(255, 255, 255, 0.1);
-    border: 3px solid rgb(255, 255, 255);
     border-radius: 30px;
-    color: rgb(255, 255, 255);
     display: flex;
     font-size: 35px;
     height: 60px;
     padding: 16px;
     text-decoration: none;
-}
-
-.container .card a:hover {
-    background-color: var(--color-background);
-    border: none;
-    color: var(--color-background-text);
 }
 
 .container .card-basic {

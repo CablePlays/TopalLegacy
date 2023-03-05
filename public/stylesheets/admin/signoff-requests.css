@@ -1,0 +1,52 @@
+.container .item {
+    align-items: center;
+    background-color: var(--color-primary-500);
+    color: var(--color-primary-500-text);
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    padding: 16px;
+    row-gap: 20px;
+    text-align: center;
+    width: 500px;
+}
+
+.container .item a,
+.container .item button {
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 4px;
+    font-size: 15px;
+    min-width: 100px;
+    padding: 16px;
+    text-decoration: none;
+    width: 30%;
+}
+
+.container .item textarea {
+    height: 100px;
+    padding: 16px;
+    width: 90%;
+}
+
+.container .item .button-container {
+    column-gap: 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.container .none {
+    background-color: var(--color-primary-700);
+    border-radius: 4px;
+    color: var(--color-primary-700-text);
+    padding: 16px;
+}
+
+#requests-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}

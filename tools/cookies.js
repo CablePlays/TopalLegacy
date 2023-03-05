@@ -13,12 +13,22 @@ function getCookie(name, cookies) {
     return null;
 }
 
-function generateRemoveString(name) {
-    return `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+function removeCookies(res, cookies) {
+    const strings = [];
+
+    for (let cookie of cookies) {
+        strings.push(`${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`);
+    }
+
+    res.setHeader("Set-Cookie", strings);
 }
 
-function getUser(req) {
-    return getCookie("user_email", req.headers.cookie);
+function logOut(res) {
+    removeCookies(res, ["session_token", "user_id"]);
+}
+
+function getUserId(req) {
+    return getCookie("user_id", req.headers.cookie);
 }
 
 function getSessionToken(req) {
@@ -26,12 +36,13 @@ function getSessionToken(req) {
 }
 
 function isLoggedIn(req) {
-    return (getUser(req) != null) && (getSessionToken(req) != null);
+    return (getUserId(req) != null) && (getSessionToken(req) != null);
 }
 
 module.exports = {
-    generateRemoveString,
-    getUser,
+    removeCookies,
+    logOut,
+    getUserId,
     getSessionToken,
     isLoggedIn
 }

@@ -12,16 +12,21 @@ async function getAwards(user) {
     return (await res.json()).values;
 }
 
-async function getUserNames(user) {
-    const res = await fetch("/get-user-names", {
+async function getUserInfo(user) {
+    const res = await post("/get-user-info", { user });
+    return res.values;
+}
+
+async function post(endpoint, json) {
+    const res = await fetch(endpoint, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            user
-        })
+        body: JSON.stringify(json ?? {})
     });
 
-    return (await res.json()).values;
+    if (res.headers.get("content-type")?.includes("application/json")) {
+        return (await res.json());
+    }
 }

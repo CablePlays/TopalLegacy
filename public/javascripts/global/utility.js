@@ -23,6 +23,12 @@ const AWARDS = [
     ["venture", "Venture"],
 ];
 
+const PERMISSIONS = [
+    ["manageAwards", "Manage Awards"],
+    ["managePermissions", "Manage Permissions"],
+    ["viewLogs", "View Logs"]
+];
+
 function getAwardName(id) {
     for (let award of AWARDS) {
         if (award[0] === id) {
@@ -203,4 +209,16 @@ function createSpacer(space) {
     div.classList.add("spacer");
     div.classList.add("v" + space);
     return div;
+}
+
+function createElement(type, parentElement, consumer) {
+    const element = document.createElement(type);
+
+    if (typeof consumer === "string") {
+        element.innerHTML = consumer;
+    } else {
+        consumer(element);
+    }
+
+    parentElement.appendChild(element);
 }

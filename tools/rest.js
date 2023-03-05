@@ -9,74 +9,74 @@ const MAX_AWARD_RECENTS = 10;
 const CLIENT_ID = "65424431927-8mpphvtc9k2sct45lg02pfaidhpmhjsf.apps.googleusercontent.com";
 const client = new OAuth2Client(CLIENT_ID);
 
-function verify(token) {
-    return client.verifyIdToken({
-        idToken: token,
-        audience: CLIENT_ID
+/*
+    Runs an async function on an array of items and waits for all of them to be completed.
+*/
+async function doAllPromises(array, func) {
+    const promises = [];
+
+    for (let o of array) {
+        promises.push(func(o));
+    }
+
+    return Promise.all(promises);
+}
+
+async function provideUserInfoToStatus(status) {
+    const { message, signer } = status;
+
+    if (signer != null && await sqlDatabase.isUser(signer)) {
+        status.signer = await sqlDatabase.getUserInfo(signer);
+    }
+    if (message != null) {
+        const { from } = message;
+
+        if (from != null && await sqlDatabase.isUser(from)) {
+            message.from = await sqlDatabase.getUserInfo(from);
+        }
+    }
+}
+
+async function provideUserInfoToStatuses(statuses) {
+    await doAllPromises(Object.getOwnPropertyNames(statuses), async property => {
+        const status = statuses[property];
+        await provideUserInfoToStatus(statuses[property]);
     });
 }
 
-async function getNames(user) { // not user-safe
-    const { name, given_name, family_name } = await sqlDatabase.get(`SELECT * FROM users WHERE user = "${user}"`) ?? {};
-    return {
-        name,
-        given: given_name,
-        family: family_name,
-        email: user
-    };
-}
-
-async function provideNamesSingle(data) {
-    const signer = data.signer;
-
-    if (signer != null && await general.isUser(signer)) {
-        data.signer = await getNames(signer);
-    }
-}
-
-async function provideNames(data) {
-    const promises = [];
-
-    for (let a of Object.getOwnPropertyNames(data)) {
-        const b = data[a];
-        promises.push(provideNamesSingle(b));
-    }
-
-    await Promise.all(promises);
+function isValidAward(award) {
+    return [
+        "drakensberg",
+        "endurance",
+        "kayaking",
+        "midmarMile",
+        "mountainBiking",
+        "polarBear",
+        "rockClimbing",
+        "running",
+        "service",
+        "solitaire",
+        "summit",
+        "traverse",
+        "venture"
+    ].includes(award);
 }
 
 function awardRequests(app) {
-    function isValidAward(award) {
-        return [
-            "drakensberg",
-            "endurance",
-            "kayaking",
-            "midmarMile",
-            "mountainBiking",
-            "polarBear",
-            "rockClimbing",
-            "running",
-            "service",
-            "solitaire",
-            "summit",
-            "traverse",
-            "venture"
-        ].includes(award);
-    }
 
     /* Has */
 
     app.post("/get-awards", async (req, res) => { // permission: none
-        const user = cookies.getUser(req);
-        const targetUser = req.body.user ?? user;
+        const userId = cookies.getUserId(req);
+        const targetUserId = req.body.user ?? userId;
 
         let values = {};
 
-        if (targetUser != null && await general.isUser(targetUser)) {
-            const a = jsonDatabase.getUser(targetUser).get("awards");
+        if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
+            const a = jsonDatabase.getUser(targetUserId).get("awards");
 
             if (a != null) {
-                await provideNames(a);
+                await provideUserInfoToStatuses(a);
                 values = a;
             }
         }
@@ -88,19 +88,22 @@ function awardRequests(app) {
 
     /* Set */
 
-    app.post("/set-award", async (req, res) => { // permission: awards
+    app.post("/set-award", async (req, res) => { // permission: manageAwards
         if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            const userPermissions = await general.getPermissions(user);
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
 
-            if (userPermissions.awards) {
-                const { complete, id, user: targetUser } = req.body;
+            if (userPermissions.manageAwards) {
+                const { complete, id, user: targetUserId } = req.body;
 
-                if (id != null && user != null && isValidAward(id) && await general.isUser(targetUser)) {
-                    const db = jsonDatabase.getUser(targetUser);
-                    const path = `awards.${id}`;
+                if (id != null && userId != null && isValidAward(id) && await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
+                    const path = "awards." + id;
 
                     if (complete === true) {
+
+                        /* Recents */
+
                         const recentsDb = jsonDatabase.getRecents();
                         const recentAwards = recentsDb.get("awards") ?? [];
 
@@ -110,19 +113,26 @@ function awardRequests(app) {
                             recentAwards.pop();
                         }
 
+                        // add to start of recents
                         recentAwards.unshift({
                             date,
                             award: id,
-                            user: targetUser
+                            user: targetUserId
                         });
 
                         recentsDb.set("awards", recentAwards);
 
+                        /* User Data */
+
                         db.set(path, {
                             complete: true,
                             date,
-                            signer: user
+                            signer: userId
                         });
+
+                        /* Remove Signoff Requests */
+
+                        sqlDatabase.deleteMatchingSignoffRequest(targetUserId, id);
                     } else {
                         db.delete(path);
                     }
@@ -139,13 +149,13 @@ function milestoneRequests(app) {
     /* Has */
 
     app.post("/get-milestones", async (req, res) => { // permission: none
-        const user = cookies.getUser(req);
-        const targetUser = req.body.user ?? user;
+        const userId = cookies.getUserId(req);
+        const targetUserId = req.body.user ?? userId;
 
         let values = {};
 
-        if (targetUser != null) {
-            const awards = jsonDatabase.getUser(targetUser).get("awards") ?? {};
+        if (targetUserId != null) {
+            const awards = jsonDatabase.getUser(targetUserId).get("awards") ?? {};
             let totalAwards = Object.getOwnPropertyNames(awards).length;
 
             values = {
@@ -164,26 +174,39 @@ function milestoneRequests(app) {
 }
 
 function permissionRequests(app) {
+    function isValidPermission(permission) {
+        return [
+            "manageAwards",
+            "managePermissions",
+            "viewLogs"
+        ].includes(permission);
+    }
 
     /* Set */
 
-    app.post("/set-permission-level", async (req, res) => { // permission: permissions
+    app.post("/set-permission", async (req, res) => { // permission: managePermissions
         if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            let userPermissions = await general.getPermissions(user);
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
 
-            if (userPermissions.permissions) {
-                const { user: targetUser, level } = req.body;
+            if (userPermissions.managePermissions) {
+                const { user: targetUserEmail, permission, has } = req.body;
+                const targetUserId = await sqlDatabase.getUserId(targetUserEmail);
 
-                if (await general.isUser(targetUser)) {
-                    await sqlDatabase.run(`UPDATE users SET permission_level = ${level} WHERE user = "${targetUser}"`);
+                if (targetUserId == null) {
+                    res.json({
+                        status: "error",
+                        error: "invalid_user"
+                    });
+                } else if (isValidPermission(permission)) {
+                    jsonDatabase.getUser(targetUserId).set("permissions." + permission, has === true);
                     res.json({
                         status: "success"
                     });
                 } else {
                     res.json({
                         status: "error",
-                        error: "invalid_user"
+                        error: "invalid_permission"
                     });
                 }
 
@@ -199,20 +222,36 @@ function permissionRequests(app) {
 
     /* Get Permission Users */
 
-    app.post("/get-permission-users", async (req, res) => { // permission: permissions
-        let json = {};
+    app.post("/get-permission-users", async (req, res) => { // permission: managePermissions
+        const values = [];
 
         if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            let userPermissions = await general.getPermissions(user);
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
 
-            if (userPermissions.permissions) {
-                let records = await sqlDatabase.all("SELECT user, permission_level FROM users WHERE permission_level > 0");
-                json.records = records;
+            if (userPermissions.managePermissions) {
+                const promises = [];
+
+                jsonDatabase.forEachUser((id, db) => {
+                    const permissions = db.get("permissions") ?? {};
+
+                    if (permissions.manageAwards === true || permissions.managePermissions === true) {
+                        promises.push(new Promise(async r => {
+                            values.push({
+                                user: await sqlDatabase.getUserInfo(id),
+                                permissions
+                            });
+
+                            r();
+                        }));
+                    }
+                });
+
+                await Promise.all(promises);
             }
         }
 
-        res.json(json);
+        res.json({ values });
     });
 }
 
@@ -244,27 +283,27 @@ function rockClimbingRequests(app) {
 
     /* Get */
 
-    app.post(`/get-rock-climbing-signoffs`, async (req, res) => { // permission: awards
+    app.post(`/get-rock-climbing-signoffs`, async (req, res) => { // permission: manageAwards
         let values = {};
 
-        const user = cookies.getUser(req);
-        let { user: targetUser } = req.body;
+        const userId = cookies.getUserId(req);
+        let { user: targetUserId } = req.body;
 
         if (await general.sessionTokenValid(req)) {
-            if (targetUser == null) {
-                targetUser = user;
+            if (targetUserId == null) {
+                targetUserId = userId;
             } else {
-                let permissions = await general.getPermissions(user);
+                const permissions = jsonDatabase.getPermissions(userId);
 
-                if (!permissions.awards) {
-                    targetUser = null;
+                if (!permissions.manageAwards) {
+                    targetUserId = null;
                 }
             }
-            if (targetUser != null && await general.isUser(targetUser)) {
-                const a = await jsonDatabase.getUser(targetUser).get(SIGNOFFS_PATH);
+            if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
+                const a = await jsonDatabase.getUser(targetUserId).get(SIGNOFFS_PATH);
 
                 if (a != null) {
-                    await provideNames(a);
+                    await provideUserInfoToStatuses(a);
                     values = a;
                 }
             }
@@ -277,23 +316,23 @@ function rockClimbingRequests(app) {
 
     /* Set */
 
-    app.post(`/set-rock-climbing-signoff`, async (req, res) => { // permission: awards
+    app.post(`/set-rock-climbing-signoff`, async (req, res) => { // permission: manageAwards
         if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            const userPermissions = await general.getPermissions(user);
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
 
-            if (userPermissions.awards) {
-                const { id, complete, user: targetUser } = req.body;
+            if (userPermissions.manageAwards) {
+                const { id, complete, user: targetUserId } = req.body;
 
-                if (isValidRockClimbingSignoff(id) && await general.isUser(targetUser)) {
-                    const db = jsonDatabase.getUser(targetUser);
+                if (isValidRockClimbingSignoff(id) && await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
                     const path = SIGNOFFS_PATH + "." + id;
 
                     if (complete === true) {
                         db.set(path, {
                             complete: true,
                             date: new Date(),
-                            signer: user
+                            signer: userId
                         });
                     } else {
                         db.delete(path);
@@ -308,14 +347,14 @@ function rockClimbingRequests(app) {
     /* Get Belayer Signoff */
 
     app.post(`/get-rock-climbing-belayer-signoff`, async (req, res) => { // permission: none
-        const { user: targetUser } = req.body;
+        const { user: targetUserId } = req.body;
         let value = {};
 
-        if (targetUser != null && await general.isUser(targetUser)) {
-            const a = await jsonDatabase.getUser(targetUser).get(BELAYER_PATH);
+        if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
+            const a = await jsonDatabase.getUser(targetUserId).get(BELAYER_PATH);
 
             if (a != null) {
-                await provideNamesSingle(a);
+                await provideUserInfoToStatus(a);
                 value = a;
             }
         }
@@ -327,22 +366,22 @@ function rockClimbingRequests(app) {
 
     /* Set Belayer Signoff */
 
-    app.post(`/set-rock-climbing-belayer-signoff`, async (req, res) => { // permission: awards
+    app.post(`/set-rock-climbing-belayer-signoff`, async (req, res) => { // permission: manageAwards
         if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            const userPermissions = await general.getPermissions(user);
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
 
-            if (userPermissions.awards) {
-                const { complete, user: targetUser } = req.body;
+            if (userPermissions.manageAwards) {
+                const { complete, user: targetUserId } = req.body;
 
-                if (await general.isUser(targetUser)) {
-                    const db = jsonDatabase.getUser(targetUser);
+                if (await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
 
                     if (complete === true) {
                         db.set(BELAYER_PATH, {
                             complete: true,
                             date: new Date(),
-                            signer: user
+                            signer: userId
                         });
                     } else {
                         db.delete(BELAYER_PATH);
@@ -355,18 +394,123 @@ function rockClimbingRequests(app) {
     });
 }
 
+function signoffRequests(app) {
+
+    /* Request Signoff */
+
+    app.post("/request-signoff", async (req, res) => {
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const { award } = req.body;
+
+            if (isValidAward(award)) {
+                const complete = jsonDatabase.getUser(userId).get("awards." + award + ".complete") === true;
+
+                // check not completed & user does not have request for the award
+                if (!complete && !await sqlDatabase.doesSignoffRequestExist(userId, award)) {
+                    // remove message
+                    jsonDatabase.getUser(userId).delete("awards." + award + ".message");
+
+                    // add signoff
+                    await sqlDatabase.insertSignoffRequest(userId, award);
+                }
+            }
+        }
+
+        res.end();
+    });
+
+    /* Get Signoff Requests */
+
+    app.post("/get-signoff-requests", async (req, res) => { // permission: manageAwards
+        const json = {};
+
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
+
+            if (userPermissions.manageAwards) {
+                const values = [];
+
+                await doAllPromises(await sqlDatabase.getSignoffRequests(), async value => {
+                    value.user = await sqlDatabase.getUserInfo(value.user);
+                    values.push(value);
+                });
+
+                json.values = values;
+            }
+        }
+
+        res.json(json);
+    });
+
+    /* Decline Signoff Requests */
+
+    app.post("/decline-signoff-request", async (req, res) => { // permission: manageAwards
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
+
+            if (userPermissions.manageAwards) {
+                const { id, message } = req.body;
+                const signoffRequest = await sqlDatabase.getSignoffRequest(id);
+
+                if (signoffRequest != null) {
+                    const { award, user: signoffRequestUserId } = signoffRequest;
+                    await sqlDatabase.deleteSignoffRequest(id);
+
+                    if (message != null && message.replaceAll(" ", "").length > 0 && await sqlDatabase.isUser(signoffRequestUserId)) {
+                        jsonDatabase.getUser(signoffRequestUserId).set("awards." + award + ".message", {
+                            date: new Date(),
+                            content: message,
+                            from: userId
+                        });
+                    }
+                }
+            }
+        }
+
+        res.end();
+    });
+}
+
 function miscRequests(app) {
+
+    /* Status Data */
+    // used by the award status system
+
+    app.post("/get-status-data", async (req, res) => { // restrictions: self
+        const json = {};
+
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const { award } = req.body;
+
+            const awardStatus = jsonDatabase.getUser(userId).get("awards." + award);
+
+            if (awardStatus == null) {
+                json.award = {};
+            } else {
+                await provideUserInfoToStatus(awardStatus);
+                json.award = awardStatus;
+            }
+
+            json.requested = await sqlDatabase.doesSignoffRequestExist(userId, award);
+        }
+
+        res.json(json);
+    });
 
     /* Names */
 
-    app.post("/get-user-names", async (req, res) => { // permission: none
-        const targetUser = req.body.user;
+    app.post("/get-user-info", async (req, res) => { // permission: none
+        const { user: targetUserId } = req.body;
         let values;
 
-        if (targetUser == null) {
+        if (targetUserId == null) {
             values = {};
         } else {
-            values = await getNames(targetUser);
+            values = await sqlDatabase.getUserInfo(targetUserId);
         }
 
         res.json({
@@ -376,10 +520,10 @@ function miscRequests(app) {
 
     /* Invalidate Session Token */
 
-    app.post("/invalidate-session-token", async (req, res) => {
+    app.post("/invalidate-session-token", async (req, res) => { // restrictions: self
         if (await general.sessionTokenValid(req)) {
-            const user = cookies.getUser(req);
-            await sqlDatabase.replace("users", "user", user, { session_token: null });
+            const userId = cookies.getUserId(req);
+            await sqlDatabase.replace("users", "id", userId, { session_token: null });
         }
 
         res.end();
@@ -392,16 +536,12 @@ function miscRequests(app) {
         query = query.replaceAll(" ", "");
 
         const users = await sqlDatabase.all(
-            `SELECT * FROM users WHERE user LIKE "%${query}%" OR name LIKE "%${query}%" OR given_name LIKE "%${query}%"`);
+            `SELECT * FROM users WHERE email LIKE "%${query}%" OR name LIKE "%${query}%" OR given_name LIKE "%${query}%"`);
         const values = [];
 
         for (let user of users) {
-            const email = user.user;
-
-            values.push({
-                email,
-                names: await getNames(email)
-            });
+            const { id, name } = user;
+            values.push({ id, name });
         }
 
         res.json({
@@ -412,11 +552,11 @@ function miscRequests(app) {
     /* Get Distance Run */
 
     app.post("/get-distance-run", async (req, res) => { // permission: none
-        const { user: targetUser } = req.body;
+        const { user: targetUserId } = req.body;
         let value = 0;
 
-        if (targetUser != null) {
-            const result = await sqlDatabase.get(`SELECT SUM(distance) FROM running_records WHERE user = "${targetUser}"`);
+        if (targetUserId != null) {
+            const result = await sqlDatabase.get(`SELECT SUM(distance) FROM running_records WHERE user = "${targetUserId}"`);
             value = result["SUM(distance)"] ?? 0;
         }
 
@@ -428,11 +568,11 @@ function miscRequests(app) {
     /* Get Service Time */
 
     app.post("/get-service-time", async (req, res) => { // permission: none
-        const { user: targetUser } = req.body;
+        const { user: targetUserId } = req.body;
         let value = 0;
 
-        if (targetUser != null) {
-            const result = await sqlDatabase.get(`SELECT SUM(time) FROM service_records WHERE user = "${targetUser}"`);
+        if (targetUserId != null) {
+            const result = await sqlDatabase.get(`SELECT SUM(time) FROM service_records WHERE user = "${targetUserId}"`);
             value = result["SUM(time)"] ?? 0;
         }
 
@@ -449,8 +589,8 @@ function miscRequests(app) {
         const values = [];
 
         for (let recent of recents) {
-            const { user } = recent;
-            recent.names = await getNames(user);
+            const { user: userId } = recent;
+            recent.user = await sqlDatabase.getUserInfo(userId);
             values.push(recent);
         }
 
@@ -466,7 +606,10 @@ function miscRequests(app) {
         let decoded;
 
         try {
-            decoded = await verify(credential);
+            decoded = await client.verifyIdToken({
+                idToken: credential,
+                audience: CLIENT_ID
+            });
         } catch (error) {
             console.warn("Invalid JWT: " + error.message);
 
@@ -489,11 +632,12 @@ function miscRequests(app) {
             return;
         }
 
-        let sessionToken = await general.getSessionToken(email);
+        let { id, sessionToken } = await sqlDatabase.getUserDetails(email);
+
         const replace = {
-            family_name,
+            name,
             given_name,
-            name
+            family_name
         };
 
         if (sessionToken == null) { // create session token
@@ -501,11 +645,11 @@ function miscRequests(app) {
             replace.session_token = sessionToken;
         }
 
-        await sqlDatabase.replace("users", "user", email, replace);
+        await sqlDatabase.replace("users", "id", id, replace);
 
         res.setHeader("Set-Cookie", [
             `session_token=${sessionToken}`,
-            `user_email=${email}`
+            `user_id=${id}`
         ]);
         res.json({
             status: "success"
@@ -523,24 +667,24 @@ async function registerRecordType(app, name, table) {
 
     /* Get */
 
-    app.post(`/get-${name}-records`, async (req, res) => { // permission: none/awards
+    app.post(`/get-${name}-records`, async (req, res) => { // permission: none/manageAwards
         let json = {};
 
-        const user = cookies.getUser(req);
-        let { user: targetUser } = req.body;
+        const userId = cookies.getUserId(req);
+        let { user: targetUserId } = req.body;
 
         if (await general.sessionTokenValid(req)) {
-            if (targetUser == null) {
-                targetUser = user;
+            if (targetUserId == null) {
+                targetUserId = userId;
             } else {
-                let permissions = await general.getPermissions(user);
+                const permissions = jsonDatabase.getPermissions(userId);
 
-                if (!permissions.awards) { // check for permission to manage awards
-                    targetUser = null;
+                if (!permissions.manageAwards) {
+                    targetUserId = null;
                 }
             }
-            if (targetUser != null) {
-                json.records = await sqlDatabase.all(`SELECT * FROM ${table} WHERE user = "${targetUser}"`);
+            if (targetUserId != null) {
+                json.records = await sqlDatabase.all(`SELECT * FROM ${table} WHERE user = "${targetUserId}"`);
             }
         }
 
@@ -549,10 +693,10 @@ async function registerRecordType(app, name, table) {
 
     /* Add */
 
-    app.post(`/add-${name}-record`, async (req, res) => { // restricted: self
+    app.post(`/add-${name}-record`, async (req, res) => { // restrictions: self
         if (await general.sessionTokenValid(req)) {
             const record = req.body.record ?? {};
-            const user = cookies.getUser(req);
+            const userId = cookies.getUserId(req);
 
             let columnsString = "";
             let valuesString = "";
@@ -567,7 +711,7 @@ async function registerRecordType(app, name, table) {
                 valuesString += `"${record[column]}"`;
             }
 
-            await sqlDatabase.run(`INSERT INTO ${table} (user, ${columnsString}) VALUES ("${user}", ${valuesString})`);
+            await sqlDatabase.run(`INSERT INTO ${table} (user, ${columnsString}) VALUES ("${userId}", ${valuesString})`);
         }
 
         res.end();
@@ -575,11 +719,11 @@ async function registerRecordType(app, name, table) {
 
     /* Remove */
 
-    app.post(`/remove-${name}-record`, async (req, res) => { // restricted: self
+    app.post(`/remove-${name}-record`, async (req, res) => { // restrictions: self
         if (await general.sessionTokenValid(req)) {
             const { id } = req.body;
-            const user = cookies.getUser(req);
-            await sqlDatabase.run(`DELETE FROM ${table} WHERE id = ${id} AND user = "${user}"`);
+            const userId = cookies.getUserId(req);
+            await sqlDatabase.run(`DELETE FROM ${table} WHERE id = ${id} AND user = "${userId}"`);
         }
 
         res.end();
@@ -591,6 +735,7 @@ function acceptApp(app) {
     milestoneRequests(app);
     permissionRequests(app);
     rockClimbingRequests(app);
+    signoffRequests(app);
     miscRequests(app);
 
     registerRecordType(app, "endurance", "endurance_records");

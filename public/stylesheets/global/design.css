@@ -54,7 +54,7 @@
     --color-secondary-300: #fdc87f;
     --color-secondary-300-text: var(--color-black);
     --color-secondary-400: #fba127;
-    --color-secondary-400-text: var(--color-background-text);
+    --color-secondary-400-text: var(--color-black);
     --color-secondary-500: #fa9105;
     --color-secondary-500-text: var(--color-white);
     --color-secondary-600: #f07606;
@@ -181,4 +181,16 @@ table.alternating tr:nth-child(even) {
 
 .spacer.v80 {
     height: 80px;
+}
+
+.transparent-button {
+    background-color: rgb(255, 255, 255, 0.1);
+    border: 2px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+}
+
+.transparent-button:hover {
+    background-color: var(--color-background);
+    border: 2px solid var(--color-background);
+    color: var(--color-background-text);
 }

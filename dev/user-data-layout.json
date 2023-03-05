@@ -3,7 +3,12 @@
         "running": {
             "complete": false,
             "date": "DATE",
-            "signer": "A Name"
+            "signer": "A Name",
+            "message": {
+                "date": "DATE",
+                "from": "user ID",
+                "content": "Your records are not believable!"
+            }
         }
     },
     "permissions": {

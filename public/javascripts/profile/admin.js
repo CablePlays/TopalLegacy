@@ -80,7 +80,7 @@ async function setupAwardsTable() {
     loading.replaceWith(awardsTable);
 }
 
-/* Records */
+/* Sections */
 
 const dropdownSections = []; // [visible, toggle]
 

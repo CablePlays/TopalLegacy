@@ -1,26 +1,26 @@
-function createProfileButton(email) {
+function createProfileButton(userId) {
     const profileButton = document.createElement("button");
     profileButton.innerHTML = "Profile";
 
     profileButton.addEventListener("click", () => {
-        window.location.href = "/profile?user=" + email;
+        window.location.href = "/profile?user=" + userId;
     });
 
     return profileButton;
 }
 
-function createItem(user, display) {
+function createItem(userId, display) {
     const tr = document.createElement("tr");
-    const cell = document.createElement("td");
 
-    const displayElement = document.createElement("td");
-    displayElement.innerHTML = display;
-    cell.appendChild(displayElement);
+    const displayCell = document.createElement("td");
+    displayCell.innerHTML = display;
+    tr.appendChild(displayCell);
 
-    const profileButton = createProfileButton(user);
-    cell.appendChild(profileButton);
+    const buttonCell = document.createElement("td");
+    const profileButton = createProfileButton(userId);
+    buttonCell.appendChild(profileButton);
+    tr.appendChild(buttonCell);
 
-    tr.appendChild(cell);
     return tr;
 }
 
@@ -58,8 +58,8 @@ function setupSearch() {
         amountInfo.innerHTML = `${total === 0 ? "No" : total} user${total === 1 ? "" : "s"} found`;
 
         values.forEach(value => {
-            const { email, names } = value;
-            const row = createItem(email, names.name);
+            const { id, name } = value;
+            const row = createItem(id, name);
             table.appendChild(row);
         });
     });

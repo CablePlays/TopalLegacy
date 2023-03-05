@@ -4,11 +4,6 @@
     cursor: pointer;
 }
 
-.container td {
-    padding: 8px;
-    word-wrap: break-word;
-}
-
 .container td button {
     height: 30px;
     width: 90px;
@@ -33,15 +28,18 @@
 #results-table {
     max-width: 100%;
     table-layout: fixed;
-    width: 600px;
+    /* width: 600px; */
 }
 
 #results-table td {
-    align-items: center;
-    column-gap: 20px;
-    display: flex;
     font-size: 30px;
     height: 60px;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+#results-table td:last-child {
+    padding-left: 150px;
 }
 
 #results-table td button {

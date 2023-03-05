@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/admin/signoff-requests.css")
+  script(src="/javascripts/admin/signoff-requests.js")
+
+  h1 Sign-Off Requests
+  
+  .spacer.v20
+
+  .none.partial
+    h3#info-heading
+    p.
+      When a pupil thinks that one of their awards is ready for signing off,
+      they can submit a request which will appear here for you to review their progress.
+  
+  .spacer.v20
+
+  #requests-container

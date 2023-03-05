@@ -8,27 +8,49 @@
     border: 3px solid var(--color-secondary-600);
     border-radius: 4px;
     color: var(--color-secondary-400-text);
-    display: flex;
-    height: 100px;
-    justify-content: space-around;
     margin-left: 5%;
     padding: 10px;
     width: 90%;
 }
 
-.award-status-active div {
+.award-status-active button {
+    cursor: pointer;
+    padding: 8px;
+}
+
+.award-status-active .bottom {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.award-status-active .ruler {
+    background-color: var(--color-background-text);
+    height: 0.5px;
+    margin-left: 5%;
+    width: 90%;
+}
+
+.award-status-active .top {
+    display: flex;
+    flex-direction: row;
+    height: 100px;
+    justify-content: space-around;
+}
+
+.award-status-active .top div {
     display: flex;
     flex-direction: column;
+    height: 100%;
     justify-content: center;
 }
 
-.award-status-active .indication {
+.award-status-active .top .indication {
     align-items: center;
     column-gap: 20px;
     display: flex;
     flex-direction: row;
 }
 
-.award-status-active .indication img {
+.award-status-active .top .indication img {
     height: 80%;
 }

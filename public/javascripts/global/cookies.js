@@ -19,19 +19,12 @@ function getCookie(name) {
     return null;
 }
 
-function setCookie(cname, cvalue, exdays) {
-    let d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
 function removeCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
 }
 
-function getUser() {
-    return getCookie("user_email");
+function getUserId() {
+    return getCookie("user_id");
 }
 
 function getSessionToken() {
@@ -39,10 +32,10 @@ function getSessionToken() {
 }
 
 function isLoggedIn() {
-    return (getUser() != null) && (getSessionToken() != null);
+    return (getUserId() != null) && (getSessionToken() != null);
 }
 
-function logout() {
+function logOut() {
     removeCookie("session_token");
     removeCookie("user_email");
 }

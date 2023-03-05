@@ -47,7 +47,7 @@ async function setupTotal() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            user: getUser()
+            user: getUserId()
         })
     });
 

@@ -73,7 +73,7 @@ function createRecordInput(options, replace = "record-input") {
                         for (let i = 0; i < parts.length; i++) {
                             let n = parseInt(parts[i]);
 
-                            if (isNaN(n)) {
+                            if (isNaN(n) || n < 0) {
                                 valid = false;
                                 break;
                             }

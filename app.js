@@ -13,12 +13,15 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(express.json()); // for reading json post requests
 
+// routes
+routes.acceptApp(app);
+
 // simulate lag
 app.use((req, res, next) => {
-    setTimeout(next, 500);
+    setTimeout(next, 100);
 });
 
-routes.acceptApp(app);
+// rest
 rest(app);
 
 // catch 404 and forward to error handler

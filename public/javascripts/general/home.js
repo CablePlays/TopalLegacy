@@ -15,16 +15,17 @@ async function setupSlideshow() {
             cards.push(card);
         } else {
             values.forEach(value => {
-                const { award, names, user } = value;
+                const { award, user } = value;
 
                 const card = document.createElement("div");
                 card.classList.add("card");
                 card.classList.add("card-basic");
-                card.innerHTML = `${names.given} recently achieved the ${getAwardName(award)} award!`;
+                card.innerHTML = `${user.givenName} recently achieved the ${getAwardName(award)} award!`;
 
                 const profileElement = document.createElement("a");
+                profileElement.classList.add("transparent-button");
                 profileElement.innerHTML = "View Profile"
-                profileElement.href = `/profile?user=${user}`;
+                profileElement.href = `/profile?user=${user.id}`;
                 card.appendChild(profileElement);
 
                 cards.push(card);

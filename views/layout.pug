@@ -41,7 +41,6 @@ html
             a(href="/awards/endurance") Endurance
             a(href="/awards/kayaking") Kayaking
             a(href="/awards/midmar-mile") Midmar Mile
-            a(href="/awards/mountain-biking") Mountain Biking
             a(href="/mountaineering") Mountaineering
             a(href="/awards/polar-bear") Polar Bear
             a(href="/awards/rock-climbing") Rock Climbing
@@ -56,7 +55,7 @@ html
 
         .line
 
-        a(href=`/profile?user=${user}` style=`display: ${displays.loggedIn.true.flex}`) Profile
+        a(href=`/profile?user=${userId}` style=`display: ${displays.loggedIn.true.flex}`) Profile
         .line(style=`display: ${displays.loggedIn.true.flex}`)
 
         a(href="/settings") Settings
@@ -111,12 +110,25 @@ html
 
     template#award-status-template
       .award-status-active
-        .indication
-          h3
-          img
-        div
-          h3 Date
-          p
-        div
-          h3 Signed By
-          p
+        .top
+          .indication
+            h3
+            img
+          div
+            h3 Date
+            p
+          div
+            h3 Signed By
+            p
+        .bottom
+          .ruler
+          div
+          .request
+            .spacer.v20
+            button.transparent-button Request Sign-Off
+            div
+              h3 Sign-off Requested
+              p.partial.
+                You have requested for this award to be signed off.
+                Check back here later to see if your award has been signed off.
+                Otherwise, a staff member might have left you a message telling you why it wasn't.

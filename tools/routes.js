@@ -1,16 +1,17 @@
 const express = require('express');
 const cookies = require('./cookies');
 const general = require('./general');
+const jsonDatabase = require('./json-database');
+const sqlDatabase = require('./sql-database');
 
 async function render(req, res, path, adminPage = false) {
     const loggedIn = cookies.isLoggedIn(req);
-    let permissions;
+    const userId = cookies.getUserId(req);
+    let permissions = {};
 
     if (loggedIn && await general.sessionTokenValid(req)) {
-        const user = cookies.getUser(req);
-        permissions = await general.getPermissions(user);
-    } else {
-        permissions = general.getPermissionsForLevel(0);
+        const userId = cookies.getUserId(req);
+        permissions = jsonDatabase.getPermissions(userId);
     }
 
     const generateDisplays = condition => {
@@ -22,6 +23,7 @@ async function render(req, res, path, adminPage = false) {
     }
 
     const placeholders = {
+        userId,
         displays: {
             adminPage: {
                 true: generateDisplays(adminPage)
@@ -31,11 +33,10 @@ async function render(req, res, path, adminPage = false) {
                 true: generateDisplays(loggedIn)
             },
             permission: {
-                awards: generateDisplays(permissions.awards),
-                permissions: generateDisplays(permissions.permissions),
+                manageAwards: generateDisplays(permissions.manageAwards),
+                managePermissions: generateDisplays(permissions.managePermissions),
             }
-        },
-        user: cookies.getUser(req)
+        }
     };
 
     res.render(path, placeholders);
@@ -54,7 +55,7 @@ function router(path, options) {
         const params = new URLSearchParams(req.originalUrl.split("?")[1]);
 
         const isLoggedIn = cookies.isLoggedIn(req);
-        let userPermissions = general.getPermissionsForLevel(0);
+        let userPermissions = {};
 
         const onGet = async () => {
 
@@ -62,19 +63,19 @@ function router(path, options) {
 
             if (isLoggedIn) {
                 if (!await general.sessionTokenValid(req)) { // invalid session token
-                    general.logout(res);
+                    cookies.logOut(res);
                     if (requestedPath === "/") return true;  // requested destination desired; render
                     res.redirect("/"); // requested destination unwanted; redirect
                     return false;
                 }
 
-                const user = cookies.getUser(req);
-                userPermissions = await general.getPermissions(user);
+                const userId = cookies.getUserId(req);
+                userPermissions = jsonDatabase.getPermissions(userId);
             }
 
             /* Check Permission */
 
-            if (permission != null && (!isLoggedIn || userPermissions[permission] !== true)) {
+            if (permission != null && (!isLoggedIn || !userPermissions[permission])) {
                 render(req, res, "errors/not-found");
                 return false;
             }
@@ -97,7 +98,7 @@ function router(path, options) {
             if (validateUser === true) {
                 const paramUser = params.get("user");
 
-                if (paramUser == null || paramUser === "" || !await general.isUser(paramUser)) {
+                if (paramUser == null || paramUser === "" || !await sqlDatabase.isUser(paramUser)) {
                     render(req, res, "errors/invalid-user");
                     return false;
                 }
@@ -128,18 +129,22 @@ function redirectRouter(path) {
 }
 
 function acceptApp(app) {
+    // admin
+    app.use('/permissions', router("admin/permissions", { permission: "managePermissions" }));
+    app.use('/signoff-requests', router("admin/signoff-requests", { permission: "manageAwards" }));
+
+    // general
     app.use('/', router("general/home"));
     app.use('/login', router("general/login", { loggedIn: false })); // require not logged in handled in router
     app.use('/mountaineering', router("general/mountaineering"));
-    app.use('/permissions', router("general/permissions", { permission: "permissions" }));
     app.use('/search-users', router("general/search-users"));
     app.use('/settings', router("general/settings", { loggedIn: true }));
 
+    // awards
     app.use('/awards/drakensberg', router("awards/drakensberg", { loggedIn: true }));
     app.use('/awards/endurance', router("awards/endurance", { loggedIn: true }));
     app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
     app.use('/awards/midmar-mile', router("awards/midmar-mile", { loggedIn: true }));
-    app.use('/awards/mountain-biking', router("awards/mountain-biking", { loggedIn: true }));
     app.use('/awards/polar-bear', router("awards/polar-bear", { loggedIn: true }));
     app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
@@ -149,8 +154,9 @@ function acceptApp(app) {
     app.use('/awards/traverse', router("awards/traverse", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
 
+    // profile
     app.use('/profile', redirectRouter("profile/awards"));
-    app.use('/profile/admin', router("profile/admin", { permission: "awards", validateUser: true }));
+    app.use('/profile/admin', router("profile/admin", { permission: "manageAwards", validateUser: true }));
     app.use('/profile/awards', router("profile/awards", { validateUser: true }));
     app.use('/profile/milestones', router("profile/milestones", { validateUser: true }));
 }

@@ -1,0 +1,10 @@
+{
+    "request": {
+        "from": "user ID",
+        "award": "award"
+    },
+    "decline": {
+        "from": "user ID",
+        "message": "ur bad."
+    }
+}

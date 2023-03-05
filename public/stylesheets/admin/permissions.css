@@ -54,22 +54,16 @@ body {
     border: 2px solid rgb(0, 0, 0);
     border-radius: 4px;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    min-height: 100px;
-    overflow: hidden;
-    padding: 8px;
-    row-gap: 5px;
+    padding: 16px;
+    row-gap: 10px;
 }
 
-.user select {
-    float: right;
-    font-size: 30px;
-    height: 100px;
-    width: 250px;
+.user table td:last-child {
+    padding-left: 20px;
 }
 
-#add-user-info {
+#add-user-status {
     color: rgb(255, 255, 255);
     display: none;
 }

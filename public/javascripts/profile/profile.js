@@ -7,8 +7,8 @@ async function displayUserName() {
     const userTitle = document.getElementById("user-title");
     userTitle.innerHTML = LOADING_TEXT;
 
-    const names = await getUserNames(getProfileUser());
-    userTitle.innerHTML = names.name;
+    const userInfo = await getUserInfo(getProfileUser());
+    userTitle.innerHTML = userInfo.name;
 }
 
 function setupTabs() {

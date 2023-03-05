@@ -5,6 +5,8 @@ if (!fs.existsSync("database")) {
     fs.mkdirSync("database");
 }
 
+/* Use */
+
 function useDatabase(consumer) {
     const db = new sqlite3.Database("./database/database.db", sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, error => {
         if (error) console.warn(error.message);
@@ -90,12 +92,91 @@ async function replace(table, conditionColumn, conditionValue, values) {
     ]);
 }
 
-// create tables if they do not exist
+/* Users */
+
+/*
+    Checks that the given user is a valid one.
+*/
+async function isUser(userId) {
+    const record = await get(`SELECT * FROM users WHERE id = "${userId}"`);
+    return (record != null);
+}
+
+async function getUserId(userEmail) {
+    const record = await get(`SELECT id FROM users WHERE email = "${userEmail}"`);
+    return record?.id;
+}
+
+async function getSessionToken(userId) {
+    const record = await get(`SELECT session_token FROM users WHERE id = "${userId}"`);
+    return record?.session_token;
+}
+
+/*
+    Returns ID & session token from email.
+    Creates the user if does not exist.
+*/
+async function getUserDetails(userEmail) {
+    await run(`INSERT OR IGNORE INTO users (email) VALUES ("${userEmail}")`);
+    const record = await get(`SELECT * FROM users WHERE email = "${userEmail}"`);
+
+    if (record == null) {
+        throw new Error("Missing user record");
+    }
+
+    return {
+        id: record.id,
+        sessionToken: record.session_token
+    };
+}
+
+async function getUserInfo(userId) {
+    const { email, name, given_name, family_name } = await get(`SELECT * FROM users WHERE id = "${userId}"`) ?? {};
+
+    return {
+        id: userId,
+        email,
+        name,
+        givenName: given_name,
+        familyName: family_name,
+    };
+}
+
+/* Signoff Requests */
+
+function getSignoffRequest(id) {
+    return get(`SELECT * FROM signoff_requests WHERE id = ${id}`);
+}
+
+async function doesSignoffRequestExist(userId, award) {
+    const val = await get(`SELECT * FROM signoff_requests WHERE user = ${userId} AND award = "${award}"`);
+    return (val != null);
+}
+
+function getSignoffRequests() {
+    return all(`SELECT * FROM signoff_requests`);
+}
+
+function insertSignoffRequest(userId, award) {
+    return run(`INSERT INTO signoff_requests (user, award) VALUES (${userId}, "${award}")`);
+}
+
+function deleteSignoffRequest(id) {
+    return run(`DELETE FROM signoff_requests WHERE id = ${id}`);
+}
+
+function deleteMatchingSignoffRequest(userId, award) {
+    return run(`DELETE FROM signoff_requests WHERE user = ${userId} AND award = "${award}"`);
+}
+
+/* Create Tables */
+
 useDatabase(db => {
 
     /* General */
 
-    db.all("CREATE TABLE IF NOT EXISTS users (user TEXT PRIMARY KEY, name TEXT, given_name TEXT, family_name TEXT, permission_level INTEGER DEFAULT 0 NOT NULL, session_token TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, session_token TEXT, name TEXT, given_name TEXT, family_name TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS signoff_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, award TEXT NOT NULL)");
 
     /* Records */
 
@@ -106,8 +187,22 @@ useDatabase(db => {
 
 module.exports = {
     useDatabase,
+
     all,
     get,
     run,
-    replace
+    replace,
+
+    isUser,
+    getUserId,
+    getSessionToken,
+    getUserDetails,
+    getUserInfo,
+
+    getSignoffRequest,
+    doesSignoffRequestExist,
+    getSignoffRequests,
+    insertSignoffRequest,
+    deleteSignoffRequest,
+    deleteMatchingSignoffRequest
 }

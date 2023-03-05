@@ -1,8 +1,8 @@
 extends ../layout
 
 block content
-  link(rel="stylesheet" href="/stylesheets/general/permissions.css")
-  script(src="/javascripts/general/permissions.js")
+  link(rel="stylesheet" href="/stylesheets/admin/permissions.css")
+  script(src="/javascripts/admin/permissions.js")
 
   h1 Permissions Manager
   h3: i (See bottom of page for information about permissions)
@@ -15,23 +15,15 @@ block content
 
     .add-user
       h3 Add User
+
       .add-user-input-container
         input#add-user-input(type="text")
         h3 @treverton.co.za
+
       button#add-user-button Add
-      h4#add-user-info
+      h4#add-user-status
 
     .spacer.v20
-    
-    #users-loading.loading.center
-    template#user-template
-      .user
-        h1 4jencal@treverton.co.za
-        select
-          option(value="0") None
-          option(value="1") Awards
-          option(value="2") Permissions
-
     #permissions-container
 
   .spacer.v20
@@ -56,3 +48,8 @@ block content
           Allows the user to manage other users' permissions.
           Users with this permission are also able to sign off on other users' awards.
           This permission is required to view this page.
+
+    template#user-template
+      .user
+        h1
+        table

@@ -9,7 +9,7 @@ async function setupSignoffs() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                user: getUser()
+                user: getUserId()
             })
         });
 
@@ -75,19 +75,14 @@ async function setupSignoffs() {
 }
 
 function setupBelayerSignoff() {
-    const res =  fetch("/get-rock-climbing-belayer-signoff", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getUser()
-        })
-    });
     const promise = new Promise(async r => {
-        const a = await res;
-        const json = await a.json();
-        r(json.value);
+        const json = await post("/get-rock-climbing-belayer-signoff", {
+            user: getUserId()
+        });
+        r({
+            award: json.value,
+            requested: null
+        });
     });
 
     const status = createAwardStatus("Belayer Signoff", promise);

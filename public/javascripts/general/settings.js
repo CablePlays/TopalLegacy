@@ -11,12 +11,14 @@ function setupButtons() {
         logOut();
         window.location.reload();
     });
-    handleButton("logout-all", async () => {
-        await fetch("/invalidate-session-token", {
-            method: "POST"
-        });
+    handleButton("logout-all", () => {
+        promptConfirmation("You're about to log out of all devices you are signed into.", async () => {
+            await fetch("/invalidate-session-token", {
+                method: "POST"
+            });
 
-        window.location.href = "/";
+            window.location.href = "/";
+        });
     });
     handleButton("signoff-requests", () => window.location.href = "/signoff-requests");
     handleButton("manage-permissions", () => window.location.href = "/permissions");

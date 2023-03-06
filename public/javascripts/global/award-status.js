@@ -44,37 +44,41 @@ function createAwardStatus(display, promise, awardId) {
 
             /* Message */
 
-            const messageElement = bottom.children[1];
+            const declineElement = bottom.children[1];
 
             if (decline != null) {
                 const { date: declineDate, message: declineMessage, user: declineUser } = decline;
 
-                messageElement.appendChild(createSpacer(20));
-                createElement("h3", messageElement, "Request declined by " + declineUser.name);
-                createElement("p", messageElement, formatDate(declineDate));
+                declineElement.appendChild(createSpacer(20));
+                createElement("h3", declineElement, "Request declined by " + declineUser.name);
+                createElement("p", declineElement, formatDate(declineDate));
 
                 if (declineMessage != null) {
-                    createElement("p", messageElement, declineMessage);
+                    createElement("p", declineElement, declineMessage);
                 }
             }
 
             /* Request */
 
             const requestElement = bottom.children[2];
-            const requestButton = requestElement.children[1];
-            const requestedIndication = requestElement.children[2];
+            const requestDiv = requestElement.children[0];
+            const requestButton = requestDiv.children[3];
+            const requestedDiv = requestElement.children[1];
 
             if (requested === true) {
-                requestButton.style.display = "none";
+                requestDiv.style.display = "none";
             } else {
-                requestedIndication.style.display = "none";
-                requestButton.addEventListener("click", () => {
-                    messageElement.style.display = "none";
-                    requestButton.style.display = "none";
-                    requestedIndication.style.display = "block";
+                requestedDiv.style.display = "none";
 
-                    post("/request-signoff", {
-                        award: awardId
+                requestButton.addEventListener("click", () => {
+                    promptConfirmation(`You're about to request a sign-off on your ${getAwardName(awardId)} award.`, () => {
+                        declineElement.style.display = "none";
+                        requestDiv.style.display = "none";
+                        requestedDiv.style.display = "block";
+
+                        post("/request-signoff", {
+                            award: awardId
+                        });
                     });
                 });
             }

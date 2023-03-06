@@ -7,9 +7,9 @@ const TABLE_HEADER_NAMES = {
 
 /* Awards */
 
-function createManagementRow(id, display, endpoint, data, reload) {
-    const complete = data.complete === true;
-    const { date, signer } = data;
+function createManagementRow(id, display, promptTextSupplier, endpoint, status, reload = false) {
+    const complete = status.complete === true;
+    const { date, signer } = status;
     const reloadText = "Reload to view";
 
     const tr = document.createElement("tr");
@@ -37,19 +37,21 @@ function createManagementRow(id, display, endpoint, data, reload) {
     toggleCell.addEventListener("click", () => {
         const newComplete = !complete;
 
-        const newTr = createManagementRow(id, display, endpoint, { complete: newComplete }, newComplete);
-        tr.replaceWith(newTr);
+        promptConfirmation(promptTextSupplier(newComplete), () => {
+            const newTr = createManagementRow(id, display, promptTextSupplier, endpoint, { complete: newComplete }, newComplete);
+            tr.replaceWith(newTr);
 
-        fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                complete: newComplete,
-                id,
-                user: getProfileUser(),
-            })
+            fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    complete: newComplete,
+                    id,
+                    user: getProfileUser(),
+                })
+            });
         });
     });
     tr.appendChild(toggleCell);
@@ -67,12 +69,16 @@ async function setupAwardsTable() {
         "Award", TABLE_HEADER_NAMES.complete, TABLE_HEADER_NAMES.date, TABLE_HEADER_NAMES.signer, TABLE_HEADER_NAMES.toggle
     ]));
 
-    const completedAwards = await getAwards(getProfileUser());
+    const userAwardData = await getAwards(getProfileUser());
 
     AWARDS.forEach(award => {
         const [id, display] = award;
-        const data = completedAwards[id] ?? {};
-        const tr = createManagementRow(id, display, "/set-award", data);
+        const data = userAwardData[id] ?? {};
+
+        const tr = createManagementRow(id, display,
+            c => c ? `You're about to grant this user the ${display} Award.`
+                : `You're about to revoke the ${display} Award from this user.`,
+            "/set-award", data);
 
         awardsTable.appendChild(tr);
     });
@@ -210,7 +216,10 @@ function setupRockClimbingSection() {
 
         belayerSignoffPromise.then(async res => {
             const { value } = await res.json();
-            const tr = createManagementRow(undefined, undefined, "/set-rock-climbing-belayer-signoff", value);
+            const tr = createManagementRow(undefined, undefined,
+                c => c ? "You are about to grant this user the belayer sign-off."
+                    : "You are about to revoke the belayer sign-off from this user.",
+                "/set-rock-climbing-belayer-signoff", value);
 
             belayerSignoffTable.appendChild(tr);
             belayerSignoffLoading.replaceWith(belayerSignoffTable);
@@ -266,7 +275,10 @@ function setupRockClimbingSection() {
                 items.forEach(item => {
                     const [id, display] = item;
                     const data = values[id] ?? {};
-                    const tr = createManagementRow(id, display, "/set-rock-climbing-signoff", data);
+                    const tr = createManagementRow(id, display,
+                        c => c ? "You're about to grant this user a rock climbing sign-off."
+                            : "You're about to revoke a rock climbing sign-off from this user.",
+                        "/set-rock-climbing-signoff", data);
 
                     signoffsTable.appendChild(tr);
                 });

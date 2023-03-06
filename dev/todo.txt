@@ -19,13 +19,12 @@ Service
 > Todo
 
 See what happens when adding a record from console with null values
-Confirmation dialog
 
 > Ideas
 
 Leaderboard page
-Logs page (award grant/revoke & permissions change)
-Popup showing checkboxes for each award (maybe top right) - make hideable
+Logs page (award+signoffs grant/revoke & permissions change)
+Popup showing checkboxes for each award indicating completion (maybe top right) - make hideable
 Make login loading faster or add indication of working
 Make website work well on mobile devices
 

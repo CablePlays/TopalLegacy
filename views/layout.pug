@@ -6,18 +6,19 @@ html
 
     link(rel="stylesheet" href="/stylesheets/global/award-design.css")
     link(rel="stylesheet" href="/stylesheets/global/award-status.css")
+    link(rel="stylesheet" href="/stylesheets/global/confirmation.css")
     link(rel="stylesheet" href="/stylesheets/global/design.css")
     link(rel="stylesheet" href="/stylesheets/global/footer.css")
     link(rel="stylesheet" href="/stylesheets/global/hamburger-icon.css")
     link(rel="stylesheet" href="/stylesheets/global/images.css")
     link(rel="stylesheet" href="/stylesheets/global/record-input.css")
     link(rel="stylesheet" href="/stylesheets/global/records.css")
-    link(rel="stylesheet" href="/stylesheets/global/sidebar.css")
     link(rel="stylesheet" href="/stylesheets/global/slideshow.css")
     link(rel="stylesheet" href="/stylesheets/global/topbar.css")
 
     script(src="/javascripts/global/animated-text.js")
     script(src="/javascripts/global/award-status.js")
+    script(src="/javascripts/global/confirmation.js")
     script(src="/javascripts/global/cookies.js")
     script(src="/javascripts//global/layout.js")
     script(src="/javascripts/global/record-input.js")
@@ -58,44 +59,11 @@ html
         a(href=`/profile?user=${userId}` style=`display: ${displays.loggedIn.true.flex}`) Profile
         .line(style=`display: ${displays.loggedIn.true.flex}`)
 
-        a(href="/settings") Settings
-
-        .line
+        a(href="/settings" style=`display: ${displays.loggedIn.true.flex}`) Settings
+        .line(style=`display: ${displays.loggedIn.true.flex}`)
 
         a(href="/login" style=`display: ${displays.loggedIn.false.flex}`) Login
         .line(style=`display: ${displays.loggedIn.false.flex}`)
-
-      #sidebar-button.menu-bar
-        .bar1
-        .bar2
-        .bar3
-
-    #sidebar
-      ul
-        li
-          a(href="/") Home
-
-        li
-          .item
-            input#awards-checkbox(type="checkbox")
-            label(for="awards-checkbox") Awards
-
-            ul
-              li
-                a(href="/awards/midmar-mile") Midmar Mile
-              li
-                a(href="/awards/polar-bear") Polar Bear
-              li
-                a(href="/awards/running") Running
-
-        li
-          a(href="/search-users") Find Someone
-
-        li
-          a(href="/settings") Settings
-
-        li
-          a.login-button Login
 
     .container
       block content
@@ -107,6 +75,14 @@ html
     footer
       p &copy 2023 
         a(href="/") TOPAL
+    
+    #confirmation(style="display: none")
+      .dialog
+        h2 Are You Sure?
+        h3 You are about to do something with major consequences.
+        .button-container
+          button.transparent-button Nevermind
+          button.transparent-button I'm Certain
 
     template#award-status-template
       .award-status-active
@@ -124,9 +100,15 @@ html
           .ruler
           div
           .request
-            .spacer.v20
-            button.transparent-button Request Sign-Off
             div
+              .spacer.v20
+              p.partial.
+                Think you're ready for your award to be signed off?
+                Submit a request to notify staff members.
+              .spacer.v10
+              button.transparent-button Request Sign-Off
+            div
+              .spacer.v20
               h3 Sign-off Requested
               p.partial.
                 You have requested for this award to be signed off.

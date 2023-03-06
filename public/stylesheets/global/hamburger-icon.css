@@ -1,3 +1,10 @@
+/* 
+    .menu-bar
+        .bar1
+        .bar2
+        .bar3 
+*/
+
 .menu-bar {
     align-items: center;
     display: flex;

@@ -24,7 +24,7 @@ function createAwardStatus(display, promise, awardId) {
     promise.then(json => {
         const { award, requested } = json;
         const complete = award.complete === true;
-        const { date, message, signer } = award;
+        const { date, decline, signer } = award;
 
         /* Top */
 
@@ -46,13 +46,16 @@ function createAwardStatus(display, promise, awardId) {
 
             const messageElement = bottom.children[1];
 
-            if (message != null) {
-                const { content, date: messageDate, from } = message;
+            if (decline != null) {
+                const { date: declineDate, message: declineMessage, user: declineUser } = decline;
 
                 messageElement.appendChild(createSpacer(20));
-                createElement("h3", messageElement, "Request declined by " + from.name);
-                createElement("p", messageElement, formatDate(messageDate));
-                createElement("p", messageElement, content);
+                createElement("h3", messageElement, "Request declined by " + declineUser.name);
+                createElement("p", messageElement, formatDate(declineDate));
+
+                if (declineMessage != null) {
+                    createElement("p", messageElement, declineMessage);
+                }
             }
 
             /* Request */

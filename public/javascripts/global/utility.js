@@ -216,8 +216,10 @@ function createElement(type, parentElement, consumer) {
 
     if (typeof consumer === "string") {
         element.innerHTML = consumer;
-    } else {
+    } else if (typeof consumer === "function") {
         consumer(element);
+    } else {
+        throw new Error("Invalid consumer: " + consumer);
     }
 
     parentElement.appendChild(element);

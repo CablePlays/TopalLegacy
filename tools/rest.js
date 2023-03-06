@@ -23,16 +23,16 @@ async function doAllPromises(array, func) {
 }
 
 async function provideUserInfoToStatus(status) {
-    const { message, signer } = status;
+    const { decline, signer } = status;
 
     if (signer != null && await sqlDatabase.isUser(signer)) {
         status.signer = await sqlDatabase.getUserInfo(signer);
     }
-    if (message != null) {
-        const { from } = message;
+    if (decline != null) {
+        const { user } = decline;
 
-        if (from != null && await sqlDatabase.isUser(from)) {
-            message.from = await sqlDatabase.getUserInfo(from);
+        if (user != null && await sqlDatabase.isUser(user)) {
+            decline.user = await sqlDatabase.getUserInfo(user);
         }
     }
 }
@@ -408,8 +408,8 @@ function signoffRequests(app) {
 
                 // check not completed & user does not have request for the award
                 if (!complete && !await sqlDatabase.doesSignoffRequestExist(userId, award)) {
-                    // remove message
-                    jsonDatabase.getUser(userId).delete("awards." + award + ".message");
+                    // remove decline
+                    jsonDatabase.getUser(userId).delete("awards." + award + ".decline");
 
                     // add signoff
                     await sqlDatabase.insertSignoffRequest(userId, award);
@@ -452,20 +452,24 @@ function signoffRequests(app) {
             const userPermissions = jsonDatabase.getPermissions(userId);
 
             if (userPermissions.manageAwards) {
-                const { id, message } = req.body;
-                const signoffRequest = await sqlDatabase.getSignoffRequest(id);
+                const { id: signoffRequestId, message } = req.body;
+                const signoffRequest = await sqlDatabase.getSignoffRequest(signoffRequestId);
 
                 if (signoffRequest != null) {
                     const { award, user: signoffRequestUserId } = signoffRequest;
-                    await sqlDatabase.deleteSignoffRequest(id);
+                    await sqlDatabase.deleteSignoffRequest(signoffRequestId);
 
-                    if (message != null && message.replaceAll(" ", "").length > 0 && await sqlDatabase.isUser(signoffRequestUserId)) {
-                        jsonDatabase.getUser(signoffRequestUserId).set("awards." + award + ".message", {
-                            date: new Date(),
-                            content: message,
-                            from: userId
-                        });
+                    const declineJson = {
+                        date: new Date(),
+                        user: userId
                     }
+
+                    // add message
+                    if (message != null && message.replaceAll(" ", "").length > 0 && await sqlDatabase.isUser(signoffRequestUserId)) {
+                        declineJson.message = message;
+                    }
+
+                    jsonDatabase.getUser(signoffRequestUserId).set("awards." + award + ".decline", declineJson);
                 }
             }
         }

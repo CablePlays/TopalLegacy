@@ -50,7 +50,7 @@ async function loadRequests() {
         div.appendChild(buttonDiv);
 
         const messageDescriptionElement = document.createElement("p");
-        messageDescriptionElement.innerHTM = "Before you decline a sign-off, add a message for the student down below telling them why it was declined."
+        messageDescriptionElement.innerHTML = "Before you decline a sign-off, add a message for the student down below telling them why it was declined."
         div.appendChild(messageDescriptionElement);
 
         const messageElement = document.createElement("textarea");

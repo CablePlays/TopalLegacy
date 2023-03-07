@@ -110,7 +110,7 @@ function awardRequests(app) {
                         const date = new Date();
 
                         if (recentAwards.length >= MAX_AWARD_RECENTS) {
-                            recentAwards.pop();
+                            recentAwards.pop(); // remove from end
                         }
 
                         // add to start of recents

@@ -20,8 +20,6 @@ function setupButtons() {
             window.location.href = "/";
         });
     });
-    handleButton("signoff-requests", () => window.location.href = "/signoff-requests");
-    handleButton("manage-permissions", () => window.location.href = "/permissions");
 
     const toggleDarkButton = document.getElementById("toggle-dark-button");
     const updateToggleDarkButtonText = enabled => toggleDarkButton.innerHTML = (enabled ? "On" : "Off");

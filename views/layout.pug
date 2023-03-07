@@ -65,11 +65,14 @@ html
         a(href="/login" style=`display: ${displays.loggedIn.false.flex}`) Login
         .line(style=`display: ${displays.loggedIn.false.flex}`)
 
+        a(href="/admin" style=`display: ${displays.permission.any.flex}`) Admin
+        .line(style=`display: ${displays.permission.any.flex}`)
+
     .container
       block content
       
     #admin-icon(style=`display: ${displays.adminPage.true.block}`)
-      span This page requires a permission to view.
+      span This page requires special privileges to view.
       img(src="/images/admin-icon.png")
 
     footer

@@ -33,6 +33,7 @@ async function render(req, res, path, adminPage = false) {
                 true: generateDisplays(loggedIn)
             },
             permission: {
+                any: generateDisplays(general.hasAnyPermission(permissions)),
                 manageAwards: generateDisplays(permissions.manageAwards),
                 managePermissions: generateDisplays(permissions.managePermissions),
             }
@@ -75,7 +76,8 @@ function router(path, options) {
 
             /* Check Permission */
 
-            if (permission != null && (!isLoggedIn || !userPermissions[permission])) {
+            if (permission != null && (!isLoggedIn || (permission === "any")
+                ? !general.hasAnyPermission(userPermissions) : !userPermissions[permission])) {
                 render(req, res, "errors/not-found");
                 return false;
             }
@@ -130,6 +132,7 @@ function redirectRouter(path) {
 
 function acceptApp(app) {
     // admin
+    app.use('/admin', router("admin/admin", { permission: "any" }));
     app.use('/permissions', router("admin/permissions", { permission: "managePermissions" }));
     app.use('/signoff-requests', router("admin/signoff-requests", { permission: "manageAwards" }));
 

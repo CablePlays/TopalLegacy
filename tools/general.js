@@ -1,6 +1,10 @@
 const cookies = require("./cookies");
 const sqlDatabase = require('./sql-database');
 
+function hasAnyPermission(permissions) {
+    return permissions.manageAwards || permissions.managePermissions;
+}
+
 async function sessionTokenValid(req) { // requires logged in
     const userId = cookies.getUserId(req);
     if (userId == null) return false;
@@ -13,5 +17,6 @@ async function sessionTokenValid(req) { // requires logged in
 }
 
 module.exports = {
+    hasAnyPermission,
     sessionTokenValid
 }

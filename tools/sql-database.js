@@ -24,8 +24,11 @@ function all(sql) {
         useDatabase(db => {
             db.serialize(() => {
                 db.all(sql, [], (error, rows) => {
-                    if (error) throw error;
-                    resolve(rows);
+                    if (error) {
+                        console.error(error.message);
+                    } else {
+                        resolve(rows);
+                    }
                 });
             });
         });
@@ -37,8 +40,11 @@ function get(sql) {
         useDatabase(db => {
             db.serialize(() => {
                 db.get(sql, [], (error, row) => {
-                    if (error) throw error;
-                    resolve(row);
+                    if (error) {
+                        console.error(error.message);
+                    } else {
+                        resolve(row);
+                    }
                 });
             });
         });
@@ -50,8 +56,11 @@ function run(sql) {
         useDatabase(db => {
             db.serialize(() => {
                 db.run(sql, [], error => {
-                    if (error) throw error;
-                    resolve();
+                    if (error) {
+                        console.error(error.message);
+                    } else {
+                        resolve();
+                    }
                 });
             });
         });
@@ -180,9 +189,10 @@ useDatabase(db => {
 
     /* Records */
 
-    db.all("CREATE TABLE IF NOT EXISTS endurance_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS running_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS service_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT NOT NULL, date TEXT NOT NULL, service TEXT NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS endurance_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS midmar_mile_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL)");
+    db.all("CREATE TABLE IF NOT EXISTS running_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS service_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, service TEXT NOT NULL, time INTEGER NOT NULL, description TEXT)");
 });
 
 module.exports = {

@@ -1,5 +1,5 @@
 function setupRecordInput() {
-    createRecordInput({
+   const element =  createRecordInput({
         endpoint: "/add-running-record",
         inputs: [
             {
@@ -35,6 +35,8 @@ function setupRecordInput() {
             }
         ]
     });
+
+    document.getElementById("record-input").replaceWith(element);
 }
 
 async function setupTotal() {

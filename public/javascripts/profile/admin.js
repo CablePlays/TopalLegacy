@@ -25,11 +25,11 @@ function createManagementRow(id, display, promptTextSupplier, endpoint, status, 
     tr.appendChild(completeCell);
 
     const dateCell = document.createElement("td");
-    dateCell.innerHTML = (reload ? reloadText : (date == null) ? "N/A" : formatDate(date));
+    dateCell.innerHTML = (reload ? reloadText : (date == null) ? MISSING_TEXT : formatDate(date));
     tr.appendChild(dateCell);
 
     const signedByCell = document.createElement("td");
-    signedByCell.innerHTML = (reload ? reloadText : signer?.name ?? "N/A");
+    signedByCell.innerHTML = (reload ? reloadText : signer?.name ?? MISSING_TEXT);
     tr.appendChild(signedByCell);
 
     const toggleCell = document.createElement("td");
@@ -177,6 +177,15 @@ function setupRecordsSection(title, recordType) {
     });
 }
 
+function setupSingletonRecordsSection(title, recordType) {
+    const placeholder = document.createElement("div");
+
+    setupSection(title, placeholder, async () => {
+        const div = await loadSingletonRecord(recordType, getProfileUser());
+        placeholder.replaceWith(div);
+    });
+}
+
 function setupRockClimbingSection() {
     const div = document.createElement("div");
     const profileUser = getProfileUser();
@@ -291,9 +300,11 @@ function setupRockClimbingSection() {
 
 function setupSections() {
     setupRecordsSection("Endurance Records", "endurance");
+    setupRecordsSection("Midmar Mile Training", "midmarMile");
     setupRockClimbingSection();
     setupRecordsSection("Running Records", "running");
     setupRecordsSection("Service Records", "service");
+    setupSingletonRecordsSection("Solitaire Record", "solitaire");
 }
 
 /* Load */

@@ -1,5 +1,6 @@
 /* Text */
 const LOADING_TEXT = "Loading...";
+const MISSING_TEXT = "N/A";
 
 /* Images */
 const IMAGE_ADMIN = "/images/admin-icon.gif";
@@ -218,9 +219,8 @@ function createElement(type, parentElement, consumer) {
         element.innerHTML = consumer;
     } else if (typeof consumer === "function") {
         consumer(element);
-    } else {
-        throw new Error("Invalid consumer: " + consumer);
     }
 
     parentElement.appendChild(element);
+    return element;
 }

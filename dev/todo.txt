@@ -2,9 +2,7 @@
 
 Drakensberg
 Kayaking
-Midmar Mile
 Rock Climbing
-Solitare
 Summit
 Traverse
 Venture
@@ -12,13 +10,15 @@ Venture
 > Completed Awards
 
 Endurance
+Midmar Mile
 Polar Bear
 Running
 Service
+Solitare
 
 > Todo
 
-See what happens when adding a record from console with null values
+...
 
 > Ideas
 
@@ -27,6 +27,11 @@ Logs page (award+signoffs grant/revoke & permissions change)
 Popup showing checkboxes for each award indicating completion (maybe top right) - make hideable
 Make login loading faster or add indication of working
 Make website work well on mobile devices
+Make recents cap out due to date as well as number
+
+> Possible
+
+Upload sketch of area for solitaire award
 
 > Award Ideas
 

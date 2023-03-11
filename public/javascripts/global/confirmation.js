@@ -6,6 +6,7 @@ function _getConfirmation() {
 
 function _hideConfirmation() {
     _getConfirmation().style.display = "none";
+    _onConfirm = null;
 }
 
 function promptConfirmation(text, onConfirm) {
@@ -31,7 +32,6 @@ window.addEventListener("load", () => {
     buttonContainer.children[1].addEventListener("click", () => {
         if (_onConfirm != null) {
             _onConfirm();
-            _onConfirm = null;
         }
 
         _hideConfirmation();

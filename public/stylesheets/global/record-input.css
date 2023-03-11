@@ -6,7 +6,7 @@
     flex-direction: column;
     margin-left: auto;
     margin-right: auto;
-    min-width: 360px;
+    min-width: 320px;
     overflow: hidden;
     padding: 16px;
     width: 60%;
@@ -41,6 +41,9 @@
 .record-input input[type="date"],
 .record-input input[type="text"],
 .record-input textarea {
+    border: none;
+    border-left: 2px solid var(--color-background-opposite);
+    border-top: 2px solid var(--color-background-opposite);
     min-height: 40px;
     padding: 8px;
 }

@@ -1,6 +1,6 @@
 function setupRecordInput() {
     const element = createRecordInput({
-        endpoint: "/add-endurance-record",
+        endpoint: "/add-midmarMile-record",
         inputs: [
             {
                 id: "date",
@@ -14,11 +14,11 @@ function setupRecordInput() {
                 type: "range",
                 required: true,
                 range: {
-                    min: 5000,
-                    max: 100000,
-                    step: 100,
-                    value: 10000,
-                    display: value => (value / 1000) + "km"
+                    min: 100,
+                    max: 3000,
+                    step: 25,
+                    value: 800,
+                    display: value => value + "m"
                 }
             },
             {
@@ -26,12 +26,6 @@ function setupRecordInput() {
                 name: "Time",
                 type: "duration",
                 required: true
-            },
-            {
-                id: "description",
-                name: "Description",
-                description: "To make your record more reliable, describe how you felt and what the weather was like.",
-                type: "text_long"
             }
         ]
     });
@@ -40,6 +34,6 @@ function setupRecordInput() {
 }
 
 window.addEventListener("load", () => {
+    loadRecords("records-table", "midmarMile");
     setupRecordInput();
-    loadRecords("records-table", "endurance");
 });

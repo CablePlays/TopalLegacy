@@ -1,5 +1,9 @@
-function createRecordInput(options, replace = "record-input") {
-    const { title: titleText, successMessage, endpoint } = options;
+/*
+    Handles creating records by generating a UI using options.
+*/
+
+function createRecordInput(options) {
+    const { endpoint, inputs: providedInputs, successMessage, title: titleText, } = options;
 
     const container = document.createElement("div");
     container.classList.add("record-input");
@@ -14,7 +18,7 @@ function createRecordInput(options, replace = "record-input") {
 
     append(createSpacer(20));
 
-    options.inputs?.forEach(input => {
+    providedInputs?.forEach(input => {
         const { id, name, description, type, required, range } = input;
 
         /* Name */
@@ -179,14 +183,8 @@ function createRecordInput(options, replace = "record-input") {
 
             /* Request */
 
-            fetch(endpoint, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    record
-                })
+            post(endpoint, {
+                value: record
             });
 
             used = true;
@@ -196,8 +194,7 @@ function createRecordInput(options, replace = "record-input") {
 
     append(button);
 
-    /* Replace */
+    /* Return */
 
-    const placeholder = document.getElementById(replace);
-    placeholder.parentElement.replaceChild(container, placeholder);
+    return container;
 }

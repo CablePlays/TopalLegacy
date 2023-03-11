@@ -20,7 +20,7 @@ async function loadRequests() {
     const signoffRequests = (await post("/get-signoff-requests")).values;
 
     for (let request of signoffRequests) {
-        const { award, id, user } = request;
+        const { award, id: requestId, user } = request;
 
         const div = document.createElement("div");
         div.classList.add("item");
@@ -37,7 +37,8 @@ async function loadRequests() {
         buttonDiv.classList.add("button-container");
 
         const profileElement = document.createElement("a");
-        profileElement.innerHTML = "View Profile";
+        profileElement.innerHTML = "Review";
+        profileElement.target = "_blank";
         profileElement.href = `/profile/admin?user=${user.id}`;
         profileElement.classList.add("transparent-button");
         buttonDiv.appendChild(profileElement);
@@ -47,10 +48,27 @@ async function loadRequests() {
         declineElement.classList.add("transparent-button");
         buttonDiv.appendChild(declineElement);
 
+        const grantElement = document.createElement("button");
+        grantElement.innerHTML = "Grant";
+        grantElement.classList.add("transparent-button");
+        grantElement.addEventListener("click", () => {
+            promptConfirmation(`You're about to grant ${user.name} the ${getAwardName(award)} Award.`, () => {
+                post("/set-award", {
+                    id: award,
+                    complete: true,
+                    user: user.id
+                });
+
+                div.remove();
+                checkCount();
+            });
+        });
+        buttonDiv.appendChild(grantElement);
+
         div.appendChild(buttonDiv);
 
         const messageDescriptionElement = document.createElement("p");
-        messageDescriptionElement.innerHTML = "Before you decline a sign-off, add a message for the student down below telling them why it was declined."
+        messageDescriptionElement.innerHTML = "Before you decline a sign-off, leave a message for the student down below telling them why it was declined."
         div.appendChild(messageDescriptionElement);
 
         const messageElement = document.createElement("textarea");
@@ -58,13 +76,22 @@ async function loadRequests() {
 
         // decline button function
         declineElement.addEventListener("click", () => {
-            post("/decline-signoff-request", {
-                id,
-                message: messageElement.value
-            });
+            const message = messageElement.value;
+            const handle = () => {
+                post("/decline-signoff-request", {
+                    id: requestId,
+                    message
+                });
 
-            div.remove();
-            checkCount();
+                div.remove();
+                checkCount();
+            }
+
+            if (message == null || message.replaceAll(" ", "").length === 0) {
+                promptConfirmation("You haven't left a message for the pupil.", handle);
+            } else {
+                handle();
+            }
         });
 
         container.appendChild(div);

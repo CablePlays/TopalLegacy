@@ -125,9 +125,9 @@ meter::-webkit-meter-optimum-value {
     -webkit-transition: width 1s;
 }
 
-ol,
-ul {
-    padding-left: 20px;
+ol li,
+ul li {
+    margin-left: 20px;
 }
 
 table.alternating tr:nth-child(odd) {
@@ -181,6 +181,19 @@ table.alternating tr:nth-child(even) {
 
 .spacer.v80 {
     height: 80px;
+}
+
+.theme-button {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+}
+
+.theme-button:hover {
+    background-color: var(--color-button-hover);
+}
+
+.theme-button:active {
+    background-color: var(--color-button-active);
 }
 
 .transparent-button {

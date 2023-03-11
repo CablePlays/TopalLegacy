@@ -22,6 +22,26 @@ async function doAllPromises(array, func) {
     return Promise.all(promises);
 }
 
+async function selfOrManageAwards(req, func) {
+    if (await general.sessionTokenValid(req)) {
+        const userId = cookies.getUserId(req);
+        let { user: targetUserId } = req.body;
+
+        if (targetUserId == null) {
+            targetUserId = userId;
+        } else {
+            const permissions = jsonDatabase.getPermissions(userId);
+
+            if (!permissions.manageAwards) {
+                targetUserId = null;
+            }
+        }
+        if (targetUserId != null) {
+            await func(targetUserId);
+        }
+    }
+}
+
 async function provideUserInfoToStatus(status) {
     const { decline, signer } = status;
 
@@ -252,145 +272,6 @@ function permissionRequests(app) {
         }
 
         res.json({ values });
-    });
-}
-
-function rockClimbingRequests(app) {
-    const ROCK_CLIMBING_PATH = "rockClimbing";
-    const BELAYER_PATH = ROCK_CLIMBING_PATH + ".belayer";
-    const SIGNOFFS_PATH = ROCK_CLIMBING_PATH + ".signoffs";
-
-    function isValidRockClimbingSignoff(award) {
-        const valid = [
-            ["knots", 4],
-            ["harness", 7],
-            ["belaying", 11],
-            ["wallLeadClimb", 3],
-            ["abseiling", 3],
-            ["finalTests", 3]
-        ];
-
-        for (let type of valid) {
-            for (let i = 1; i <= type[1]; i++) {
-                if (award === type[0] + i) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /* Get */
-
-    app.post(`/get-rock-climbing-signoffs`, async (req, res) => { // permission: manageAwards
-        let values = {};
-
-        const userId = cookies.getUserId(req);
-        let { user: targetUserId } = req.body;
-
-        if (await general.sessionTokenValid(req)) {
-            if (targetUserId == null) {
-                targetUserId = userId;
-            } else {
-                const permissions = jsonDatabase.getPermissions(userId);
-
-                if (!permissions.manageAwards) {
-                    targetUserId = null;
-                }
-            }
-            if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
-                const a = await jsonDatabase.getUser(targetUserId).get(SIGNOFFS_PATH);
-
-                if (a != null) {
-                    await provideUserInfoToStatuses(a);
-                    values = a;
-                }
-            }
-        }
-
-        res.json({
-            values
-        });
-    });
-
-    /* Set */
-
-    app.post(`/set-rock-climbing-signoff`, async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
-            const userId = cookies.getUserId(req);
-            const userPermissions = jsonDatabase.getPermissions(userId);
-
-            if (userPermissions.manageAwards) {
-                const { id, complete, user: targetUserId } = req.body;
-
-                if (isValidRockClimbingSignoff(id) && await sqlDatabase.isUser(targetUserId)) {
-                    const db = jsonDatabase.getUser(targetUserId);
-                    const path = SIGNOFFS_PATH + "." + id;
-
-                    if (complete === true) {
-                        db.set(path, {
-                            complete: true,
-                            date: new Date(),
-                            signer: userId
-                        });
-                    } else {
-                        db.delete(path);
-                    }
-                }
-            }
-        }
-
-        res.end();
-    });
-
-    /* Get Belayer Signoff */
-
-    app.post(`/get-rock-climbing-belayer-signoff`, async (req, res) => { // permission: none
-        const { user: targetUserId } = req.body;
-        let value = {};
-
-        if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
-            const a = await jsonDatabase.getUser(targetUserId).get(BELAYER_PATH);
-
-            if (a != null) {
-                await provideUserInfoToStatus(a);
-                value = a;
-            }
-        }
-
-        res.json({
-            value
-        });
-    });
-
-    /* Set Belayer Signoff */
-
-    app.post(`/set-rock-climbing-belayer-signoff`, async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
-            const userId = cookies.getUserId(req);
-            const userPermissions = jsonDatabase.getPermissions(userId);
-
-            if (userPermissions.manageAwards) {
-                const { complete, user: targetUserId } = req.body;
-
-                if (await sqlDatabase.isUser(targetUserId)) {
-                    const db = jsonDatabase.getUser(targetUserId);
-
-                    if (complete === true) {
-                        db.set(BELAYER_PATH, {
-                            complete: true,
-                            date: new Date(),
-                            signer: userId
-                        });
-                    } else {
-                        db.delete(BELAYER_PATH);
-                    }
-                }
-            }
-        }
-
-        res.end();
     });
 }
 
@@ -661,18 +542,36 @@ function miscRequests(app) {
     });
 }
 
-async function registerRecordType(app, name, table) {
-    async function getColumns() {
-        let allColumns = await sqlDatabase.get(`SELECT GROUP_CONCAT(name, ',') FROM PRAGMA_TABLE_INFO('${table}')`);
-        allColumns = allColumns["GROUP_CONCAT(name, ',')"];
-        const allColumnsArray = allColumns.split(",");
-        return allColumnsArray.slice(2, allColumnsArray.length);
+function rockClimbingRequests(app) {
+    const ROCK_CLIMBING_PATH = "rockClimbing";
+    const BELAYER_PATH = ROCK_CLIMBING_PATH + ".belayer";
+    const SIGNOFFS_PATH = ROCK_CLIMBING_PATH + ".signoffs";
+
+    function isValidRockClimbingSignoff(award) {
+        const valid = [
+            ["knots", 4],
+            ["harness", 7],
+            ["belaying", 11],
+            ["wallLeadClimb", 3],
+            ["abseiling", 3],
+            ["finalTests", 3]
+        ];
+
+        for (let type of valid) {
+            for (let i = 1; i <= type[1]; i++) {
+                if (award === type[0] + i) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /* Get */
 
-    app.post(`/get-${name}-records`, async (req, res) => { // permission: none/manageAwards
-        let json = {};
+    app.post(`/get-rock-climbing-signoffs`, async (req, res) => { // permission: manageAwards
+        let values = {};
 
         const userId = cookies.getUserId(req);
         let { user: targetUserId } = req.body;
@@ -687,10 +586,166 @@ async function registerRecordType(app, name, table) {
                     targetUserId = null;
                 }
             }
-            if (targetUserId != null) {
-                json.records = await sqlDatabase.all(`SELECT * FROM ${table} WHERE user = "${targetUserId}"`);
+            if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
+                const a = await jsonDatabase.getUser(targetUserId).get(SIGNOFFS_PATH);
+
+                if (a != null) {
+                    await provideUserInfoToStatuses(a);
+                    values = a;
+                }
             }
         }
+
+        res.json({
+            values
+        });
+    });
+
+    /* Set */
+
+    app.post(`/set-rock-climbing-signoff`, async (req, res) => { // permission: manageAwards
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
+
+            if (userPermissions.manageAwards) {
+                const { id, complete, user: targetUserId } = req.body;
+
+                if (isValidRockClimbingSignoff(id) && await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
+                    const path = SIGNOFFS_PATH + "." + id;
+
+                    if (complete === true) {
+                        db.set(path, {
+                            complete: true,
+                            date: new Date(),
+                            signer: userId
+                        });
+                    } else {
+                        db.delete(path);
+                    }
+                }
+            }
+        }
+
+        res.end();
+    });
+
+    /* Get Belayer Signoff */
+
+    app.post(`/get-rock-climbing-belayer-signoff`, async (req, res) => { // permission: none
+        const { user: targetUserId } = req.body;
+        let value = {};
+
+        if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
+            const a = await jsonDatabase.getUser(targetUserId).get(BELAYER_PATH);
+
+            if (a != null) {
+                await provideUserInfoToStatus(a);
+                value = a;
+            }
+        }
+
+        res.json({
+            value
+        });
+    });
+
+    /* Set Belayer Signoff */
+
+    app.post(`/set-rock-climbing-belayer-signoff`, async (req, res) => { // permission: manageAwards
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
+
+            if (userPermissions.manageAwards) {
+                const { complete, user: targetUserId } = req.body;
+
+                if (await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
+
+                    if (complete === true) {
+                        db.set(BELAYER_PATH, {
+                            complete: true,
+                            date: new Date(),
+                            signer: userId
+                        });
+                    } else {
+                        db.delete(BELAYER_PATH);
+                    }
+                }
+            }
+        }
+
+        res.end();
+    });
+}
+
+function solitaireRequests(app) {
+    const PATH = "solitaire";
+    const KEYS = ["date", "location", "othersInvolved", "supervisors", "items", "experienceDescription"];
+
+    app.post("/get-solitaire-record", async (req, res) => { // permission: none/manageAwards
+        const json = {};
+
+        await selfOrManageAwards(req, async targetUserId => {
+            const db = jsonDatabase.getUser(targetUserId);
+            const value = db.get(PATH);
+
+            json.exists = (value != null);
+            json.value = value ?? {};
+        });
+
+        res.json(json);
+    });
+
+    app.post("/set-solitaire-record", async (req, res) => { // restrictions: self
+        const json = {};
+
+        if (await general.sessionTokenValid(req)) {
+            const { value } = req.body;
+
+            if (value != null) {
+                const userId = cookies.getUserId(req);
+                const setting = {};
+
+                for (let key of KEYS) {
+                    setting[key] = value[key];
+                }
+
+                jsonDatabase.getUser(userId).set(PATH, setting);
+            }
+        }
+
+        res.json(json);
+    });
+
+    app.post("/remove-solitaire-record", async (req, res) => { // restrictions: self
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            jsonDatabase.getUser(userId).delete(PATH);
+        }
+
+        res.end();
+    });
+}
+
+async function registerRecordType(app, name, table) {
+    async function getColumns() {
+        let allColumns = await sqlDatabase.get(`SELECT GROUP_CONCAT(name, ',') FROM PRAGMA_TABLE_INFO('${table}')`);
+        allColumns = allColumns["GROUP_CONCAT(name, ',')"];
+        const allColumnsArray = allColumns.split(",");
+        return allColumnsArray.slice(2, allColumnsArray.length);
+    }
+
+    /* Get */
+
+    app.post(`/get-${name}-records`, async (req, res) => { // permission: none/manageAwards
+        const json = {};
+
+        await selfOrManageAwards(req, async targetUserId => {
+            json.values = await sqlDatabase.all(`SELECT * FROM ${table} WHERE user = "${targetUserId}"`);
+        });
 
         res.json(json);
     });
@@ -699,23 +754,36 @@ async function registerRecordType(app, name, table) {
 
     app.post(`/add-${name}-record`, async (req, res) => { // restrictions: self
         if (await general.sessionTokenValid(req)) {
-            const record = req.body.record ?? {};
+            const record = req.body.value ?? {};
             const userId = cookies.getUserId(req);
 
+            const columns = await getColumns();
+            let valid = true;
             let columnsString = "";
             let valuesString = "";
 
-            for (let column of await getColumns()) {
-                if (columnsString.length > 0) {
+            for (let i = 0; i < columns.length; i++) {
+                if (i > 0) {
                     columnsString += ", ";
                     valuesString += ", ";
                 }
 
+                const column = columns[i];
+
                 columnsString += column;
-                valuesString += `"${record[column]}"`;
+                const val = record[column];
+
+                if (val == null) {
+                    valid = false;
+                    break;
+                }
+
+                valuesString += val == null ? null : `"${val}"`;
             }
 
-            await sqlDatabase.run(`INSERT INTO ${table} (user, ${columnsString}) VALUES ("${userId}", ${valuesString})`);
+            if (valid) {
+                await sqlDatabase.run(`INSERT INTO ${table} (user, ${columnsString}) VALUES ("${userId}", ${valuesString})`);
+            }
         }
 
         res.end();
@@ -738,11 +806,14 @@ function acceptApp(app) {
     awardRequests(app);
     milestoneRequests(app);
     permissionRequests(app);
-    rockClimbingRequests(app);
     signoffRequests(app);
     miscRequests(app);
 
+    rockClimbingRequests(app);
+    solitaireRequests(app);
+
     registerRecordType(app, "endurance", "endurance_records");
+    registerRecordType(app, "midmarMile", "midmar_mile_records");
     registerRecordType(app, "running", "running_records");
     registerRecordType(app, "service", "service_records");
 }

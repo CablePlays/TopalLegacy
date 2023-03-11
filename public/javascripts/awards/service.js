@@ -1,5 +1,5 @@
 function setupRecordInput() {
-    createRecordInput({
+    const element = createRecordInput({
         endpoint: "/add-service-record",
         inputs: [
             {
@@ -44,6 +44,8 @@ function setupRecordInput() {
             }
         ]
     });
+
+    document.getElementById("record-input").replaceWith(element);
 }
 
 async function setupTotal() {

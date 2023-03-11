@@ -1,6 +1,8 @@
 extends ../layout
 
 block content
+  script(src="/javascripts/awards/midmar-mile.js")
+
   h1 Midmar Mile Award
   .spacer.v20
 
@@ -22,6 +24,24 @@ block content
       li
         p If you miss a session due to an official school activity then you are counted as having been at that session.
 
+    .spacer.v20
+
+    .notice
+      .spacer.v20
+      ul
+        li Treverton pool is 25m (square)
+        li Treverton dam is 210m end to end
+        li A mile is approximately 1600m
+      .spacer.v20
+
+  .spacer.v40
+  .award-status(data-award="midmarMile")
   .spacer.v40
 
-  .award-status(data-award="midmarMile")
+  #record-input
+
+  .spacer.v40
+  h2 Records
+  .spacer.v20
+
+  #records-table

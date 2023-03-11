@@ -1,6 +1,9 @@
 extends ../layout
 
 block content
+  link(rel="stylesheet" href="/stylesheets/awards/solitare.css")
+  script(src="/javascripts/awards/solitare.js")
+
   h1 Solitaire Award
   .award-description
     p.
@@ -52,5 +55,77 @@ block content
       li Devices and other distractions
 
   .spacer.v40
-
   .award-status(data-award="solitaire")
+  .spacer.v40
+
+  .questions
+    h2 Solitare Questionnaire
+    p.partial.
+      Make use of this opportunity to the best of your ability.
+      Do not be tempted to cheat as you only cheat yourself in the end.
+      Here are some questions to help you focus on things other than hunger or boredom.
+    .spacer.v20
+
+    .question-types
+      .question-type
+        h3 Family
+        ul
+          li Describe the members of your family.
+          li How well do you relate to each other?
+          li Have you done things to harm this relationship?
+          li What are your family goals for the future?
+
+      .question-type
+        h3 School
+        ul
+          li Describe your special friends.
+          li Why are they your friends?
+          li What do you see in them?
+          li What do they see in you?
+          li Describe your feelings towards:
+            ul
+              li Adademics
+              li Sport
+              li Dormitory life
+
+      .question-type
+        h3 Outdoor Persuits
+        ul
+          li In what ways are you making use of the O.P. programme?
+          li What do you hope to achieve?
+
+      .question-type
+        h3 Environment
+        ul
+          li Do you care for the natural environment?
+          li Does it concern you to see it harmed?
+          li In what ways are you enjoying this time in the environment?
+
+      .question-type
+        h3 Solitaire
+        ul
+          li What are your aims for this excercise? Have you achieved these?
+          li How have your attitudes changed during the last 48 hours?
+          li Describe your hunger, loneliness, fears, wonders, excitement, peace and satisfaction.
+
+      .question-type
+        h3 Letter
+        ul
+          li Write a letter yo yourself and set goals for the years ahead.
+          li Here are some things you can consider when writing your letter:
+            ul.letter-items
+              li Academics
+              li Sport
+              li O.P.
+              li Family
+              li Friends
+              li Personal habits
+              li Religious convictions
+              li Career
+
+  .spacer.v40
+
+  #record
+    h2 Solitaire Record
+    .spacer.v20
+    #record-placeholder

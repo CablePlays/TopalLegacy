@@ -29,5 +29,13 @@
                 "signer": "ID"
             }
         }
+    },
+    "solitaire": {
+        "date": "DATE",
+        "location": "",
+        "othersInvolved": "",
+        "supervisors": "",
+        "items": "",
+        "experienceDescription": ""
     }
 }

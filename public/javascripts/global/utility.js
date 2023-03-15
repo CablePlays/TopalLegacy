@@ -215,12 +215,19 @@ function createSpacer(space) {
 function createElement(type, parentElement, consumer) {
     const element = document.createElement(type);
 
-    if (typeof consumer === "string") {
-        element.innerHTML = consumer;
-    } else if (typeof consumer === "function") {
+    if (typeof consumer === "function") {
         consumer(element);
+    } else if (consumer != null) {
+        element.innerHTML = consumer;
     }
 
-    parentElement.appendChild(element);
+    if (parentElement != null) {
+        parentElement.appendChild(element);
+    }
+
     return element;
+}
+
+function ensureElement(elementOrId) {
+    return (typeof elementOrId === "string") ? document.getElementById(elementOrId) : elementOrId;
 }

@@ -2,18 +2,117 @@
     Handles displaying records using either a table or a list for singletons.
 */
 
-const recordSingletonDisplays = {
+const _flexibleDisplayColumns = {
+    mountaineering: [
+        {
+            name: "Start Date",
+            type: "date",
+            id: "start_date"
+        },
+        {
+            name: "Area",
+            type: "text_short",
+            id: "area"
+        },
+        {
+            name: "Number Of Days",
+            type: "text_short",
+            id: "days"
+        },
+        {
+            name: "Hike Distance",
+            type: "text_short",
+            id: "distance"
+        },
+        {
+            name: "Altitude Gained",
+            type: "text_short",
+            id: "altitude_gained"
+        },
+        {
+            name: "Number In Party",
+            type: "text_short",
+            id: "party_number"
+        },
+        {
+            name: "Shelter",
+            type: "radio",
+            options: [
+                ["bivi", "Bivi"],
+                ["hut", "Hut"],
+                ["cave", "Cave"],
+                ["tent", "Tent"],
+                ["combination", "Combination"],
+                ["other", "Other"],
+            ],
+            id: "shelter"
+        },
+        {
+            name: "Was the majority of the hike on a trail/path?",
+            type: "boolean",
+            id: "trail"
+        },
+        {
+            name: "Were you the leader of the group?",
+            type: "boolean",
+            id: "leader"
+        },
+        {
+            name: "Was the majority of the hike above 2000m?",
+            type: "boolean",
+            id: "majority_above_2000m"
+        },
+        {
+            name: "Route",
+            type: "text_long",
+            id: "route"
+        },
+        {
+            name: "Weather Conditions",
+            type: "text_long",
+            id: "weather"
+        },
+        {
+            name: "Situations Dealt With",
+            type: "text_long",
+            id: "situations"
+        }
+    ],
     solitaire: [
-        ["Date", record => formatDate(record.date)],
-        ["Location", record => record.location],
-        ["Others Involved", record => record.othersInvolved],
-        ["Supervisors", record => record.supervisors],
-        ["What I Took With Me", record => record.items],
-        ["The Experience", record => record.experienceDescription]
+        {
+            name: "Date",
+            type: "date",
+            id: "date"
+        },
+        {
+            name: "Location",
+            type: "text_short",
+            id: "location"
+        },
+        {
+            name: "Others Involved",
+            type: "text_short",
+            id: "othersInvolved"
+        },
+        {
+            name: "Supervisors",
+            type: "text_short",
+            id: "supervisors"
+        },
+        {
+            name: "What I Took With Me",
+            type: "text_short",
+            id: "items"
+        },
+        {
+            name: "The Experience Described In One Paragraph",
+            type: "text_long",
+            id: "experienceDescription"
+        }
     ]
-}
+};
 
-const recordColumns = {
+const _tableDisplayColumns = {
     endurance: [
         ["Date", record => formatDate(record.date)],
         ["Distance", record => (record.distance / 1000) + "km"],
@@ -37,136 +136,263 @@ const recordColumns = {
         ["Hours", record => formatDuration(record.time, false)],
         ["Description", record => record.description],
     ]
-}
+};
 
-async function setupSingletonRecord(type, recordInputOptions) {
-    const { exists, value } = await post(`/get-${type}-record`);
-    return (exists ? _loadSingletonRecord(type, value, true) : createRecordInput(recordInputOptions));
-}
+function createFlexibleRD(options) {
+    const {
+        inputOptions,
+        placeholder,
+        removable = true,
+        recordType,
+        singleton,
+        targetUser: targetUserId
+    } = options;
 
-async function loadSingletonRecord(type, targetUserId) {
-    const { exists, value } = await post(`/get-${type}-record`, {
-        user: targetUserId
-    });
+    const items = _flexibleDisplayColumns[recordType];
 
-    return _loadSingletonRecord(type, exists ? value : null, false);
-}
+    function createSection(itemsUsing, value) {
+        for (let item of itemsUsing) {
+            const { id } = item;
+            delete item.id;
+            item.value = value[id];
+        }
 
-/*
-    Loads a single record.
-*/
-function _loadSingletonRecord(type, record, removable) {
-    const items = recordSingletonDisplays[type];
+        if (removable === true) {
+            itemsUsing.push({
+                type: "custom",
+                consumer: (div, section) => {
+                    div.classList.add("remove-card");
 
-    const div = document.createElement("div");
-    div.classList.add("record-singleton");
+                    createElement("h3", div, "Remove Record");
+                    createElement("button", div, "Remove").addEventListener("click", () => {
+                        post(`/remove-${recordType}-record`, { id: value.id });
 
-    const itemContainer = createElement("div", div);
-    itemContainer.classList.add("item-container");
+                        if (singleton) {
+                            window.location.reload();
+                        } else {
+                            section.remove();
+                        }
+                    });
+                }
+            });
+        }
 
-    for (let item of items) {
-        const section = createElement("div", itemContainer);
-        createElement("h3", section, item[0]);
-        createElement("p", section, (record == null) ? MISSING_TEXT : item[1](record));
+        return createFlexibleDisplay(itemsUsing);
     }
 
-    if (removable) {
-        const removeElement = createElement("button", div, "Remove Record");
+    const container = document.createElement("div");
 
-        removeElement.addEventListener("click", async () => {
-            await post(`/remove-${type}-record`);
-            window.location.reload();
+    const loading = createLoading(true);
+    container.appendChild(loading);
+
+    if (singleton) {
+        post(`/get-${recordType}-record`, {
+            user: targetUserId
+        }).then(res => {
+            const { exists, value } = res;
+
+            loading.remove();
+
+            if (exists) {
+                container.appendChild(createSection(items, value));
+            } else if (inputOptions != null) {
+                inputOptions.recordType = recordType;
+                container.appendChild(createRecordInput(inputOptions));
+            }
+        });
+    } else {
+        post(`/get-${recordType}-records`, {
+            user: targetUserId
+        }).then(res => {
+            const { values } = res;
+
+            loading.remove();
+            container.classList.add("flexible-record-display-container");
+
+            for (let value of values) {
+                const clonedItems = [];
+
+                for (let item of items) {
+                    clonedItems.push({ ...item });
+                }
+
+                const section = createSection(clonedItems, value);
+                container.appendChild(section);
+            }
         });
     }
 
-    return div;
+    /* Placeholder */
+
+    if (placeholder != null) {
+        ensureElement(placeholder).replaceWith(container);
+    }
+
+    return container;
 }
 
 /*
-    Loads a table of records.
+    Types:
+        - boolean
+        - custom
+        - date
+        - radio
+        - text_long
+        - text_short
 */
-async function loadRecords(placeholder, recordType, targetUser, removable = true) {
-    if (typeof placeholder === "string") {
-        placeholder = document.getElementById(placeholder);
+function createFlexibleDisplay(items) {
+    const container = document.createElement("div");
+    container.classList.add("flexible-record-display");
+
+    for (let item of items) {
+        const { name, type, value } = item;
+
+        switch (type) {
+            case "boolean":
+                createElement("div", container, div => {
+                    div.classList.add("boolean-container");
+
+                    createElement("h3", div, name);
+                    const booleanElement = createCheckbox(value === 1);
+                    div.appendChild(booleanElement);
+                });
+
+                break;
+            case "custom":
+                const { consumer } = item;
+
+                createElement("div", container, div => {
+                    consumer(div, container);
+                });
+
+                break;
+            case "date":
+                createElement("div", container, div => {
+                    createElement("h3", div, name);
+                    createElement("p", div, formatDate(value));
+                });
+
+                break;
+            case "radio":
+                createElement("div", container, div => {
+                    const { options } = item;
+
+                    createElement("h3", div, name);
+
+                    let radioContainer = createElement("div", div);
+                    radioContainer.classList.add("radio-container");
+
+                    console.log(value);
+                    for (let option of options) {
+                        const [optionId, optionDisplay] = option;
+
+                        const radioOption = createElement("div", radioContainer);
+                        radioOption.classList.add("radio-option");
+
+                        createElement("p", radioOption, optionDisplay);
+                        radioOption.appendChild(createCheckbox(value === optionId));
+                    }
+                });
+
+                break;
+            case "text_long":
+                createElement("div", container, div => {
+                    createElement("h3", div, name);
+                    createElement("p", div, value).classList.add("text-long");
+                });
+
+                break;
+            case "text_short":
+                createElement("div", container, div => {
+                    createElement("h3", div, name);
+                    createElement("p", div, value);
+                });
+
+                break;
+            default: throw new Error("Invalid type: " + type);
+        }
     }
 
-    const columns = recordColumns[recordType];
+    return container;
+}
+
+function createTableRD(options) {
+    const {
+        placeholder,
+        recordType,
+        removable = true,
+        targetUser: targetUserId
+    } = options;
+
+    const container = document.createElement("div");
+    const columns = _tableDisplayColumns[recordType];
 
     /* Loading */
 
     const loading = createLoading(true);
-    placeholder.replaceWith(loading);
+    container.appendChild(loading);
 
     /* Get Records */
 
-    const { values } = await post(`/get-${recordType}-records`, {
-        user: targetUser
-    });
+    post(`/get-${recordType}-records`, {
+        user: targetUserId
+    }).then(res => {
+        const { values } = res;
 
-    /* Create Table */
+        /* Create Table */
 
-    const table = document.createElement("table");
-    table.classList.add("records-table");
+        const table = document.createElement("table");
+        table.classList.add("records-table");
 
-    const topRow = document.createElement("tr");
+        const topRow = createElement("tr", table);
 
-    columns.forEach(column => {
-        const th = document.createElement("th");
-        th.innerHTML = column[0];
-        topRow.append(th);
-    });
-
-    if (removable) { // removeable column
-        table.classList.add("removable");
-
-        const th = document.createElement("th");
-        th.innerHTML = "Remove";
-        topRow.append(th);
-    }
-
-    table.appendChild(topRow);
-
-    /* Populate Table */
-
-    if (values != null) {
-        values.forEach(record => {
-            const tr = document.createElement("tr");
-
-            columns.forEach(column => {
-                const td = document.createElement("td");
-                td.innerHTML = column[1](record);
-                tr.appendChild(td);
-            });
-
-            table.appendChild(tr);
-
-            /* Remove Cell */
-
-            if (removable) {
-                const id = record.id;
-                const removeCell = document.createElement("td");
-                removeCell.innerHTML = "X";
-
-                removeCell.addEventListener("click", () => {
-                    tr.remove();
-
-                    fetch(`/remove-${recordType}-record`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            id
-                        })
-                    });
-                });
-
-                tr.appendChild(removeCell);
-            }
+        columns.forEach(column => {
+            createElement("th", topRow, column[0]);
         });
 
-        /* Display */
+        /* Removeable Column */
 
-        loading.replaceWith(table);
+        if (removable === true) {
+            table.classList.add("removable");
+            createElement("th", topRow, "Remove");
+        }
+
+        /* Populate Table */
+
+        if (values != null) {
+            values.forEach(record => {
+                const tr = createElement("tr", table);
+
+                /* Info Cells */
+
+                columns.forEach(column => {
+                    createElement("td", tr, column[1](record));
+                });
+
+                /* Remove Cell */
+
+                if (removable) {
+                    const { id } = record;
+                    const removeCell = createElement("td", tr, "X");
+
+                    removeCell.addEventListener("click", () => {
+                        tr.remove();
+                        post(`/remove-${recordType}-record`, { id });
+                    });
+                }
+            });
+
+            /* Display */
+
+            loading.replaceWith(table);
+        }
+    });
+
+    /* Placeholder */
+
+    if (placeholder != null) {
+        ensureElement(placeholder).replaceWith(container);
     }
+
+    return container;
 }

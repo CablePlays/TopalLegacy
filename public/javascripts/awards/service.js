@@ -1,6 +1,6 @@
 function setupRecordInput() {
     const element = createRecordInput({
-        endpoint: "/add-service-record",
+        recordType: "service",
         inputs: [
             {
                 id: "date",
@@ -69,7 +69,10 @@ async function setupTotal() {
 }
 
 window.addEventListener("load", () => {
-    loadRecords("records-table", "service");
     setupRecordInput();
     setupTotal();
+    createTableRD({
+        placeholder: "record-display",
+        recordType: "service"
+    });
 });

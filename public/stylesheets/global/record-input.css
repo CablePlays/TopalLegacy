@@ -9,7 +9,7 @@
     min-width: 320px;
     overflow: hidden;
     padding: 16px;
-    width: 60%;
+    width: 70%;
 }
 
 .record-input button {
@@ -32,20 +32,39 @@
     background-color: rgb(250, 250, 250);
 }
 
-.record-input input,
-.record-input textarea {
-    background-color: var(--color-background);
-    color: var(--color-background-text);
+.record-input input[type="checkbox"] {
+    min-height: 30px;
+    min-width: 30px;
 }
 
 .record-input input[type="date"],
 .record-input input[type="text"],
+.record-input select {
+    height: 40px;
+    padding: 8px;
+}
+
 .record-input textarea {
+    height: 80px;
+    padding: 16px;
+}
+
+.record-input input,
+.record-input select,
+.record-input textarea {
+    background-color: var(--color-background);
     border: none;
     border-left: 2px solid var(--color-background-opposite);
     border-top: 2px solid var(--color-background-opposite);
-    min-height: 40px;
-    padding: 8px;
+    color: var(--color-background-text);
+}
+
+.record-input .input-container {
+    align-items: end;
+    column-gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 10px;
 }
 
 .record-input .success-message {

@@ -34,6 +34,9 @@ function setupRecordInput() {
 }
 
 window.addEventListener("load", () => {
-    loadRecords("records-table", "midmarMile");
     setupRecordInput();
+    createTableRD({
+        placeholder: "record-display",
+        recordType: "midmarMile"
+    });
 });

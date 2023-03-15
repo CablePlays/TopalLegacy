@@ -169,20 +169,30 @@ function setupSection(title, element, load) {
     dropdownSections.push(data);
 }
 
-function setupRecordsSection(title, recordType) {
+function createFlexibleRDSection(title, recordType, singleton) {
     const placeholder = document.createElement("div");
 
     setupSection(title, placeholder, () => {
-        loadRecords(placeholder, recordType, getProfileUser(), false);
+        createFlexibleRD({
+            placeholder,
+            recordType,
+            removable: false,
+            singleton,
+            targetUser: getProfileUser()
+        });
     });
 }
 
-function setupSingletonRecordsSection(title, recordType) {
+function createTableRDSection(title, recordType) {
     const placeholder = document.createElement("div");
 
-    setupSection(title, placeholder, async () => {
-        const div = await loadSingletonRecord(recordType, getProfileUser());
-        placeholder.replaceWith(div);
+    setupSection(title, placeholder, () => {
+        createTableRD({
+            placeholder,
+            recordType,
+            removable: false,
+            targetUser: getProfileUser()
+        });
     });
 }
 
@@ -299,12 +309,13 @@ function setupRockClimbingSection() {
 }
 
 function setupSections() {
-    setupRecordsSection("Endurance Records", "endurance");
-    setupRecordsSection("Midmar Mile Training", "midmarMile");
+    createTableRDSection("Endurance Records", "endurance");
+    createTableRDSection("Midmar Mile Training", "midmarMile");
+    createFlexibleRDSection("Mountaineering Records", "mountaineering");
     setupRockClimbingSection();
-    setupRecordsSection("Running Records", "running");
-    setupRecordsSection("Service Records", "service");
-    setupSingletonRecordsSection("Solitaire Record", "solitaire");
+    createTableRDSection("Running Records", "running");
+    createTableRDSection("Service Records", "service");
+    createFlexibleRDSection("Solitaire Record", "solitaire", true);
 }
 
 /* Load */

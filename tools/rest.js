@@ -699,7 +699,7 @@ function solitaireRequests(app) {
         res.json(json);
     });
 
-    app.post("/set-solitaire-record", async (req, res) => { // restrictions: self
+    app.post("/add-solitaire-record", async (req, res) => { // restrictions: self
         const json = {};
 
         if (await general.sessionTokenValid(req)) {
@@ -778,7 +778,11 @@ async function registerRecordType(app, name, table) {
                     break;
                 }
 
-                valuesString += val == null ? null : `"${val}"`;
+                if (typeof val === "string") {
+                    valuesString += `"${val}"`;
+                } else {
+                    valuesString += val;
+                }
             }
 
             if (valid) {
@@ -814,6 +818,7 @@ function acceptApp(app) {
 
     registerRecordType(app, "endurance", "endurance_records");
     registerRecordType(app, "midmarMile", "midmar_mile_records");
+    registerRecordType(app, "mountaineering", "mountaineering_records");
     registerRecordType(app, "running", "running_records");
     registerRecordType(app, "service", "service_records");
 }

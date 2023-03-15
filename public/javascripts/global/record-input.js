@@ -2,8 +2,23 @@
     Handles creating records by generating a UI using options.
 */
 
+/*
+    Types:
+        - boolean
+        - date
+        - duration
+        - range
+        - selection
+        - text_long
+        - text_short
+*/
 function createRecordInput(options) {
-    const { endpoint, inputs: providedInputs, successMessage, title: titleText, } = options;
+    const {
+        recordType,
+        inputs: providedInputs,
+        successMessage,
+        title: titleText,
+    } = options;
 
     const container = document.createElement("div");
     container.classList.add("record-input");
@@ -19,37 +34,34 @@ function createRecordInput(options) {
     append(createSpacer(20));
 
     providedInputs?.forEach(input => {
-        const { id, name, description, type, required, range } = input;
-
-        /* Name */
-
-        const nameElement = document.createElement("h3");
-        nameElement.innerHTML = name;
-        append(nameElement);
+        const { id, name, description, type, required } = input;
+        const descriptionElements = [];
 
         /* Description */
 
         if (description != null) {
-            const descriptionElement = document.createElement("p");
-            descriptionElement.innerHTML = description;
-            append(descriptionElement);
+            descriptionElements.push(createElement("p", null, description));
         }
 
         /* Input */
 
+        let singleRow = false;
         let inputElement;
         let inputSupplier;
 
         switch (type) {
+            case "boolean":
+                singleRow = true;
+                inputElement = document.createElement("input");
+                inputElement.type = "checkbox";
+                inputSupplier = () => inputElement.checked;
+                break;
             case "date":
                 inputElement = document.createElement("input");
                 inputElement.type = "date";
                 setDateCurrent(inputElement);
 
-                inputSupplier = () => {
-                    const value = inputElement.value;
-                    if (value) return new Date(value);
-                }
+                inputSupplier = () => inputElement.value;
                 break;
             case "duration":
                 inputElement = document.createElement("input");
@@ -97,6 +109,8 @@ function createRecordInput(options) {
                 inputSupplier = () => savedValue;
                 break;
             case "range":
+                const { range } = input;
+
                 inputElement = document.createElement("input");
                 inputElement.type = "range";
 
@@ -115,8 +129,26 @@ function createRecordInput(options) {
                         inputElement.addEventListener("input", updateDisplay);
                         updateDisplay();
 
-                        append(rangeDisplay);
+                        descriptionElements.push(rangeDisplay);
                     }
+                }
+
+                inputSupplier = () => +inputElement.value;
+                break;
+            case "selection":
+                const { options, value } = input.selection ?? {};
+                inputElement = document.createElement("select");
+
+                if (value == null) {
+                    createElement("option", inputElement, "select...").value = "";
+                }
+
+                for (let option of options) {
+                    createElement("option", inputElement, option[1]).value = option[0];
+                }
+
+                if (value != null) {
+                    inputElement.value = value;
                 }
 
                 inputSupplier = () => inputElement.value;
@@ -133,15 +165,44 @@ function createRecordInput(options) {
             default: throw new Error("Invalid type: " + type);
         }
 
+        const textContainer = (singleRow ? document.createElement("div") : container);
+
+        /* Name */
+
+        const nameElement = document.createElement("h3");
+        nameElement.innerHTML = name;
+        textContainer.appendChild(nameElement);
+
+        /* Description */
+
+        descriptionElements.forEach(elemet => {
+            textContainer.appendChild(elemet);
+        });
+
+        /* Input */
+
+        if (singleRow) {
+            const inputContainer = document.createElement("div");
+            inputContainer.classList.add("input-container");
+
+            inputContainer.appendChild(textContainer);
+            inputContainer.appendChild(inputElement);
+
+            append(inputContainer);
+        } else {
+            append(createSpacer(20));
+            append(inputElement);
+        }
+
+        append(createSpacer(20));
+
+        /* Save */
+
         inputs[id] = {
             nameElement,
             required,
             supplier: inputSupplier
         };
-
-        append(createSpacer(20)); // spacer
-        append(inputElement);
-        append(createSpacer(20)); // spacer
     });
 
     /* Button */
@@ -153,7 +214,9 @@ function createRecordInput(options) {
     let used = false;
 
     button.addEventListener("click", () => {
-        if (used) return;
+        if (used) {
+            return;
+        }
 
         const record = {};
         let valid = true; // all inputs are valid
@@ -183,7 +246,7 @@ function createRecordInput(options) {
 
             /* Request */
 
-            post(endpoint, {
+            post(`/add-${recordType}-record`, {
                 value: record
             });
 

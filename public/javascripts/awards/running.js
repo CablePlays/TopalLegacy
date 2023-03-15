@@ -1,6 +1,6 @@
 function setupRecordInput() {
    const element =  createRecordInput({
-        endpoint: "/add-running-record",
+        recordType: "running",
         inputs: [
             {
                 id: "date",
@@ -60,7 +60,11 @@ async function setupTotal() {
 }
 
 window.addEventListener("load", () => {
-    loadRecords("records-table", "running");
     setupRecordInput();
     setupTotal();
+
+    createTableRD({
+        placeholder: "record-display",
+        recordType: "running"
+    });
 });

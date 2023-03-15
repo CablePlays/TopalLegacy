@@ -139,7 +139,7 @@ function acceptApp(app) {
     // general
     app.use('/', router("general/home"));
     app.use('/login', router("general/login", { loggedIn: false })); // require not logged in handled in router
-    app.use('/mountaineering', router("general/mountaineering"));
+    app.use('/mountaineering', router("general/mountaineering", { loggedIn: true }));
     app.use('/search-users', router("general/search-users"));
     app.use('/settings', router("general/settings", { loggedIn: true }));
 

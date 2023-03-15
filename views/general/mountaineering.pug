@@ -2,13 +2,24 @@ extends ../layout
 
 block content
   link(rel="stylesheet" href="/stylesheets/general/mountaineering.css")
+  script(src="/javascripts/awards/mountaineering.js")
 
   h1 Mountaineering
   p There are three hiking awards that you can achieve.
 
   .spacer.v40
 
-  .a-container.partial
-    a(href="awards/drakensberg") Drakensberg Award
-    a(href="awards/summit") Summit Award
-    a(href="awards/traverse") Traverse Award
+  .link-container.partial
+    a(href="awards/drakensberg") Drakensberg Award &#8594
+    a(href="awards/summit") Summit Award &#8594
+    a(href="awards/traverse") Traverse Award &#8594
+
+  .spacer.v40
+
+  #record-input
+
+  .spacer.v40
+
+  h2 Mountaineering Records
+  .spacer.v20
+  #record-display

@@ -37,3 +37,21 @@
     max-width: 1200px;
     width: 100%;
 }
+
+.test {
+    background-color: rgb(255, 255, 255, 0.1);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 300px;
+    gap: 10px;
+    /* padding: 16px; */
+}
+
+.test .c {
+    background-color: var(--color-primary-500);
+    border-radius: 4px;
+    flex: 1;
+    /* flex-basis: 49%; */
+}

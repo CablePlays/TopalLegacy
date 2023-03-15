@@ -1,9 +1,10 @@
-.a-container {
+.container .link-container {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    row-gap: 20px;
 }
 
-.a-container a {
+.container .link-container a {
     background-color: var(--color-primary-500);
     border-radius: 4px;
     color: var(--color-primary-500-text);
@@ -12,7 +13,7 @@
     text-decoration: none;
 }
 
-.a-container a:hover {
+.container .link-container a:hover {
     background-color: var(--color-primary-600);
     color: var(--color-primary-600-text);
 }

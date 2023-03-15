@@ -1,6 +1,6 @@
 function setupRecordInput() {
     const element = createRecordInput({
-        endpoint: "/add-endurance-record",
+        recordType: "endurance",
         inputs: [
             {
                 id: "date",
@@ -41,5 +41,8 @@ function setupRecordInput() {
 
 window.addEventListener("load", () => {
     setupRecordInput();
-    loadRecords("records-table", "endurance");
+    createTableRD({
+        placeholder: "record-display",
+        recordType: "endurance"
+    });
 });

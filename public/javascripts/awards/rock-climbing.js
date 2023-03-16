@@ -16,8 +16,7 @@ function setupBelayerSignoff() {
 window.addEventListener("load", () => {
     setupBelayerSignoff();
     createSignoffDisplay({
-        headings: true,
-        items: ROCK_CLIMBING_SIGNOFFS,
+        items: rockClimbingSignoffs,
         placeholder: "signoffs",
         type: "rockClimbing",
         additions: {

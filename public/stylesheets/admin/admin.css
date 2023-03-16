@@ -21,8 +21,8 @@
 }
 
 .container .section a:hover {
-    background-color: var(--color-primary-700);
-    color: var(--color-primary-700-text);
+    background-color: var(--color-primary-600);
+    color: var(--color-primary-600-text);
 }
 
 .container .section-container {

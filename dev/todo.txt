@@ -1,6 +1,5 @@
 > Awards
 
-Drakensberg
 Kayaking
 Rock Climbing
 Summit
@@ -9,6 +8,7 @@ Venture
 
 > Completed Awards
 
+Drakensberg
 Endurance
 Midmar Mile
 Polar Bear
@@ -28,6 +28,7 @@ Popup showing checkboxes for each award indicating completion (maybe top right) 
 Make login loading faster or add indication of working
 Make website work well on mobile devices
 Make recents cap out due to date as well as number
+Scroll to top of page button
 
 > Possible
 

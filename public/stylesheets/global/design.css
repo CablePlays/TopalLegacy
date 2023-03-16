@@ -89,6 +89,11 @@
     --color-secondary-700-text: var(--color-white); */
 }
 
+a.link {
+    color: rgb(0, 200, 255);
+    text-decoration: underline;
+}
+
 body {
     background-color: var(--color-background);
     color: var(--color-background-text);

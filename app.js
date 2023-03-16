@@ -18,7 +18,7 @@ routes.acceptApp(app);
 
 // simulate lag
 app.use((req, res, next) => {
-    setTimeout(next, 100);
+    setTimeout(next, 500);
 });
 
 // rest

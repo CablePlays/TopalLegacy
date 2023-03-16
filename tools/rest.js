@@ -401,6 +401,13 @@ function signoffRequests(app) {
                     }
                 }
             }
+        } else if (type === "drakensberg") {
+            return [
+                "cooker",
+                "backPack",
+                "ecologicalAwareness",
+                "pitchTent"
+            ].includes(id);
         }
 
         return false;

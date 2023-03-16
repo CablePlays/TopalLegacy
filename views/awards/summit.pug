@@ -1,6 +1,8 @@
 extends ../layout
 
 block content
+  script(src="/javascripts/awards/summit.js")
+
   h1 Summit Award
   .spacer.v20
 
@@ -12,14 +14,14 @@ block content
         You must have completed the Drakensberg Award,
         but you can also earn it at the same time if enough time is spent on the escarpment.
       li You shall have logged a total of four nights hiking in the Berg, including a 700m ascent.
-      li You shall have the following sign-offs from an instructor or a staff member leading the Berg trip:
-        .spacer.v20
-        ul
-          li Passed the hiking preparedness test
-          li Passed the map reading test
-          li Passed the route finding test
-        .spacer.v20
+      li You must have all the necessary sign-offs.
 
   .spacer.v40
 
   .award-status(data-award="summit")
+
+  .spacer.v40
+
+  h2 Sign-Offs
+  .spacer.v20
+  #signoffs

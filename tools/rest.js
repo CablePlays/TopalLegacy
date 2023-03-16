@@ -384,7 +384,14 @@ function signoffRequests(app) {
     /* Set */
 
     function isValidSignoff(type, id) {
-        if (type === "rockClimbing") {
+        if (type === "drakensberg") {
+            return [
+                "cooker",
+                "backPack",
+                "ecologicalAwareness",
+                "pitchTent"
+            ].includes(id);
+        } else if (type === "rockClimbing") {
             const valid = [
                 ["knots", 4],
                 ["harness", 7],
@@ -401,12 +408,11 @@ function signoffRequests(app) {
                     }
                 }
             }
-        } else if (type === "drakensberg") {
+        } else if (type === "summit") {
             return [
-                "cooker",
-                "backPack",
-                "ecologicalAwareness",
-                "pitchTent"
+                "mapReading",
+                "preparedness",
+                "routeFinding"
             ].includes(id);
         }
 

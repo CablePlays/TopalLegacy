@@ -73,6 +73,12 @@ const rockClimbingSignoffs = [
     ]
 ];
 
+const summitSignoffs = [
+    ["preparedness", "Passed hiking preparedness test"],
+    ["mapReading", "Passed map reading test"],
+    ["routeFinding", "Passed route finding test"]
+];
+
 function hasHeadings(signoffs) {
     return Array.isArray(signoffs[0][1]);
 }

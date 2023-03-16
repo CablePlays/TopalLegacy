@@ -29,6 +29,8 @@ async function selfOrManageAwards(req, func) {
 
         if (targetUserId == null) {
             targetUserId = userId;
+        } else if (!await sqlDatabase.isUser(targetUserId)) {
+            targetUserId = null;
         } else {
             const permissions = jsonDatabase.getPermissions(userId);
 
@@ -276,6 +278,7 @@ function permissionRequests(app) {
 }
 
 function signoffRequests(app) {
+    const SIGNOFFS_PATH = "signoffs";
 
     /* Request Signoff */
 
@@ -351,6 +354,79 @@ function signoffRequests(app) {
                     }
 
                     jsonDatabase.getUser(signoffRequestUserId).set("awards." + award + ".decline", declineJson);
+                }
+            }
+        }
+
+        res.end();
+    });
+
+    /* Get */
+
+    app.post(`/get-signoffs`, async (req, res) => { // permission: none/manageAwards
+        const { type } = req.body;
+        let values = {};
+
+        await selfOrManageAwards(req, async targetUserId => {
+            const a = await jsonDatabase.getUser(targetUserId).get(SIGNOFFS_PATH + "." + type);
+
+            if (a != null) {
+                await provideUserInfoToStatuses(a);
+                values = a;
+            }
+        });
+
+        res.json({
+            values
+        });
+    });
+
+    /* Set */
+
+    function isValidSignoff(type, id) {
+        if (type === "rockClimbing") {
+            const valid = [
+                ["knots", 4],
+                ["harness", 7],
+                ["belaying", 11],
+                ["wallLeadClimb", 3],
+                ["abseiling", 3],
+                ["finalTests", 3]
+            ];
+
+            for (let a of valid) {
+                for (let i = 1; i <= a[1]; i++) {
+                    if (id === a[0] + i) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    app.post(`/set-signoff`, async (req, res) => { // permission: manageAwards
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
+
+            if (userPermissions.manageAwards) {
+                const { complete, id, type, user: targetUserId } = req.body;
+
+                if (isValidSignoff(type, id) && await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
+                    const path = SIGNOFFS_PATH + "." + type + "." + id;
+
+                    if (complete === true) {
+                        db.set(path, {
+                            complete: true,
+                            date: new Date(),
+                            signer: userId
+                        });
+                    } else {
+                        db.delete(path);
+                    }
                 }
             }
         }
@@ -543,93 +619,7 @@ function miscRequests(app) {
 }
 
 function rockClimbingRequests(app) {
-    const ROCK_CLIMBING_PATH = "rockClimbing";
-    const BELAYER_PATH = ROCK_CLIMBING_PATH + ".belayer";
-    const SIGNOFFS_PATH = ROCK_CLIMBING_PATH + ".signoffs";
-
-    function isValidRockClimbingSignoff(award) {
-        const valid = [
-            ["knots", 4],
-            ["harness", 7],
-            ["belaying", 11],
-            ["wallLeadClimb", 3],
-            ["abseiling", 3],
-            ["finalTests", 3]
-        ];
-
-        for (let type of valid) {
-            for (let i = 1; i <= type[1]; i++) {
-                if (award === type[0] + i) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /* Get */
-
-    app.post(`/get-rock-climbing-signoffs`, async (req, res) => { // permission: manageAwards
-        let values = {};
-
-        const userId = cookies.getUserId(req);
-        let { user: targetUserId } = req.body;
-
-        if (await general.sessionTokenValid(req)) {
-            if (targetUserId == null) {
-                targetUserId = userId;
-            } else {
-                const permissions = jsonDatabase.getPermissions(userId);
-
-                if (!permissions.manageAwards) {
-                    targetUserId = null;
-                }
-            }
-            if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
-                const a = await jsonDatabase.getUser(targetUserId).get(SIGNOFFS_PATH);
-
-                if (a != null) {
-                    await provideUserInfoToStatuses(a);
-                    values = a;
-                }
-            }
-        }
-
-        res.json({
-            values
-        });
-    });
-
-    /* Set */
-
-    app.post(`/set-rock-climbing-signoff`, async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
-            const userId = cookies.getUserId(req);
-            const userPermissions = jsonDatabase.getPermissions(userId);
-
-            if (userPermissions.manageAwards) {
-                const { id, complete, user: targetUserId } = req.body;
-
-                if (isValidRockClimbingSignoff(id) && await sqlDatabase.isUser(targetUserId)) {
-                    const db = jsonDatabase.getUser(targetUserId);
-                    const path = SIGNOFFS_PATH + "." + id;
-
-                    if (complete === true) {
-                        db.set(path, {
-                            complete: true,
-                            date: new Date(),
-                            signer: userId
-                        });
-                    } else {
-                        db.delete(path);
-                    }
-                }
-            }
-        }
-
-        res.end();
-    });
+    const BELAYER_PATH = "rockClimbing.belayerSignoff";
 
     /* Get Belayer Signoff */
 

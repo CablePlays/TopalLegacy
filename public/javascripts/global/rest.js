@@ -1,20 +1,11 @@
 async function getAwards(user) {
-    const res = await fetch("/get-awards", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user
-        })
-    });
-
-    return (await res.json()).values;
+    const json = await post("/get-awards", { user });
+    return json.values;
 }
 
 async function getUserInfo(user) {
-    const res = await post("/get-user-info", { user });
-    return res.values;
+    const json = await post("/get-user-info", { user });
+    return json.values;
 }
 
 async function post(endpoint, json) {

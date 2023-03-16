@@ -282,7 +282,6 @@ function createFlexibleDisplay(items) {
                     let radioContainer = createElement("div", div);
                     radioContainer.classList.add("radio-container");
 
-                    console.log(value);
                     for (let option of options) {
                         const [optionId, optionDisplay] = option;
 

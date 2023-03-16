@@ -1,26 +1,26 @@
-.signoffs-table {
+.signoff-display {
     max-width: 100%;
     width: 700px;
 }
 
-.signoffs-table img {
+.signoff-display img {
     height: 40px;
 }
 
-.signoffs-table td {
+.signoff-display td {
     height: 60px;
     vertical-align: middle;
 }
 
-.signoffs-table tr>:not(:nth-child(1)) {
+.signoff-display tr>:not(:first-child) {
     padding-left: 20px;
 }
 
-.signoffs-table tr:not(:first-child) th {
+.signoff-display tr:not(:first-child) th {
     padding-top: 20px;
 }
 
-.signoffs-table .line {
+.signoff-display .line {
     background-color: var(--color-background-opposite);
     height: 0.5px;
 }

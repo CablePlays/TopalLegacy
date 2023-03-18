@@ -106,12 +106,6 @@ function createTableHeaders(headers) {
     return tr;
 }
 
-function createTable(headers) {
-    const table = document.createElement("table");
-    table.appendChild(createTableHeaders(headers));
-    return table;
-}
-
 function checkboxImage(checked) {
     return (checked ? IMAGE_CHECKBOX_CHECKED : IMAGE_CHECKBOX_UNCHECKED);
 }

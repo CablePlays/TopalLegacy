@@ -194,6 +194,9 @@ useDatabase(db => {
     db.all("CREATE TABLE IF NOT EXISTS mountaineering_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, start_date TEXT NOT NULL, area TEXT NOT NULL, days INTEGER NOT NULL, distance INTEGER NOT NULL, altitude_gained INTEGER NOT NULL, party_size INTEGER NOT NULL, shelter_type TEXT NOT NULL, trail INTEGER NOT NULL, leader INTEGER NOT NULL, majority_above_2000m INTEGER NOT NULL, route TEXT, weather TEXT, situations TEXT)");
     db.all("CREATE TABLE IF NOT EXISTS running_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
     db.all("CREATE TABLE IF NOT EXISTS service_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, service TEXT NOT NULL, time INTEGER NOT NULL, description TEXT)");
+
+    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, area TEXT, party_size INTEGER, weather TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_subrecords (id INTEGER PRIMARY KEY AUTOINCREMENT, record_id INTEGER NOT NULL, route_name TEXT, method TEXT, grade TEXT, pitches INTEGER)");
 });
 
 module.exports = {

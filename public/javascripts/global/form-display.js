@@ -16,7 +16,10 @@ function createRecordInput(options) {
     const {
         recordType,
         inputs: providedInputs,
-        successMessage,
+        placeholder,
+        subrecords,
+        onFirstRecordSet, // runnable fired when record is first set
+        successMessage = "Successfully created new record!",
         title: titleText,
     } = options;
 
@@ -144,7 +147,11 @@ function createRecordInput(options) {
                 }
 
                 for (let option of options) {
-                    createElement("option", inputElement, option[1]).value = option[0];
+                    if (Array.isArray(options[0])) {
+                        createElement("option", inputElement, option[1]).value = option[0];
+                    } else {
+                        createElement("option", inputElement, option);
+                    }
                 }
 
                 if (value != null) {
@@ -207,11 +214,20 @@ function createRecordInput(options) {
 
     /* Button */
 
-    const button = document.createElement("button");
-    button.innerHTML = "Create";
+    const button = createElement("button", null, "Create");
     button.classList.add("create-button");
 
     let used = false;
+    let recordId;
+
+    const setRecord = a => {
+        if (recordId == null) {
+            onFirstRecordSet();
+        }
+
+        container.scrollIntoView();
+        recordId = a;
+    };
 
     button.addEventListener("click", () => {
         if (used) {
@@ -237,18 +253,29 @@ function createRecordInput(options) {
 
             /* Success Message */
 
-            append(createSpacer(10)); // spacer
+            append(createSpacer(10));
 
             const successMessageElement = document.createElement("p");
-            successMessageElement.innerHTML = successMessage ?? "Successfully created new record!";
+            successMessageElement.innerHTML = successMessage;
             successMessageElement.classList.add("success-message");
             append(successMessageElement);
 
             /* Request */
 
-            post(`/add-${recordType}-record`, {
-                value: record
-            });
+            if (subrecords) {
+                if (recordId == null) {
+                    return;
+                }
+
+                post(`/add-${recordType}-subrecord`, {
+                    recordId,
+                    value: record
+                });
+            } else {
+                post(`/add-${recordType}-record`, {
+                    value: record
+                });
+            }
 
             used = true;
             window.location.reload();
@@ -257,7 +284,11 @@ function createRecordInput(options) {
 
     append(button);
 
-    /* Return */
+    /* Placeholder */
 
-    return container;
+    if (placeholder != null) {
+        ensureElement(placeholder).replaceWith(container);
+    }
+
+    return (subrecords ? { container, setRecord } : container);
 }

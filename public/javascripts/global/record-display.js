@@ -11,27 +11,27 @@ const _flexibleDisplayColumns = {
         },
         {
             name: "Area",
-            type: "text_short",
+            type: "textShort",
             id: "area"
         },
         {
             name: "Number Of Days",
-            type: "text_short",
+            type: "textShort",
             id: "days"
         },
         {
             name: "Hike Distance",
-            type: "text_short",
+            type: "textShort",
             id: "distance"
         },
         {
             name: "Altitude Gained",
-            type: "text_short",
+            type: "textShort",
             id: "altitude_gained"
         },
         {
             name: "Number In Party",
-            type: "text_short",
+            type: "textShort",
             id: "party_number"
         },
         {
@@ -64,18 +64,47 @@ const _flexibleDisplayColumns = {
         },
         {
             name: "Route",
-            type: "text_long",
+            type: "textLong",
             id: "route"
         },
         {
             name: "Weather Conditions",
-            type: "text_long",
+            type: "textLong",
             id: "weather"
         },
         {
             name: "Situations Dealt With",
-            type: "text_long",
+            type: "textLong",
             id: "situations"
+        }
+    ],
+    rockClimbing: [
+        {
+            name: "Date",
+            type: "date",
+            id: "date"
+        },
+        {
+            name: "Area",
+            type: "textShort",
+            id: "area"
+        },
+        {
+            name: "Number In Party",
+            type: "textShort",
+            id: "party_size"
+        },
+        {
+            name: "Weather",
+            type: "textShort",
+            id: "weather"
+        },
+        {
+            name: "Climbs",
+            type: "subrecordsTable",
+            subrecordsTable: {
+                buttonText: "Add Climb"
+            }
         }
     ],
     solitaire: [
@@ -86,27 +115,27 @@ const _flexibleDisplayColumns = {
         },
         {
             name: "Location",
-            type: "text_short",
+            type: "textShort",
             id: "location"
         },
         {
             name: "Others Involved",
-            type: "text_short",
+            type: "textShort",
             id: "othersInvolved"
         },
         {
             name: "Supervisors",
-            type: "text_short",
+            type: "textShort",
             id: "supervisors"
         },
         {
             name: "What I Took With Me",
-            type: "text_short",
+            type: "textShort",
             id: "items"
         },
         {
             name: "The Experience Described In One Paragraph",
-            type: "text_long",
+            type: "textLong",
             id: "experienceDescription"
         }
     ]
@@ -138,12 +167,22 @@ const _tableDisplayColumns = {
     ]
 };
 
+const _tableDisplayColumnsSubrecords = {
+    rockClimbing: [
+        ["Route Name", record => record.route_name],
+        ["Method", record => record.method],
+        ["Grade", record => record.grade],
+        ["Pitches", record => record.pitches],
+    ]
+};
+
 function createFlexibleRD(options) {
     const {
         inputOptions,
         placeholder,
         removable = true,
         recordType,
+        setRecord, // links to subrecords form
         singleton,
         targetUser: targetUserId
     } = options;
@@ -152,9 +191,24 @@ function createFlexibleRD(options) {
 
     function createSection(itemsUsing, value) {
         for (let item of itemsUsing) {
-            const { id } = item;
-            delete item.id;
-            item.value = value[id];
+            const { id, type } = item;
+
+            // supply values using IDs
+            if (id != null) {
+                delete item.id;
+                item.value = value[id];
+            }
+
+            // supply subrecords table data
+            if (type === "subrecordsTable") {
+                item.subrecordsTable = {
+                    ...item.subrecordsTable,
+                    recordId: value.id,
+                    recordType,
+                    removable,
+                    setRecord
+                };
+            }
         }
 
         if (removable === true) {
@@ -236,6 +290,7 @@ function createFlexibleRD(options) {
         - boolean
         - custom
         - date
+        - number
         - radio
         - text_long
         - text_short
@@ -273,6 +328,31 @@ function createFlexibleDisplay(items) {
                 });
 
                 break;
+            case "subrecordsTable":
+                const { subrecordsTable } = item;
+                const { buttonText, recordId, recordType, removable, setRecord } = subrecordsTable;
+
+                createElement("div", container, div => {
+                    div.style.flexBasis = "100%";
+
+                    createElement("h3", div, name);
+                    div.appendChild(createSpacer(20));
+
+                    if (setRecord != null) {
+                        createElement("button", div, buttonText).addEventListener("click", () => {
+                            setRecord(recordId);
+                        });
+                        div.appendChild(createSpacer(20));
+                    }
+
+                    div.appendChild(createTableRD({
+                        recordId,
+                        recordType,
+                        removable
+                    }));
+                });
+
+                break;
             case "radio":
                 createElement("div", container, div => {
                     const { options } = item;
@@ -294,14 +374,14 @@ function createFlexibleDisplay(items) {
                 });
 
                 break;
-            case "text_long":
+            case "textLong":
                 createElement("div", container, div => {
                     createElement("h3", div, name);
                     createElement("p", div, value).classList.add("text-long");
                 });
 
                 break;
-            case "text_short":
+            case "textShort":
                 createElement("div", container, div => {
                     createElement("h3", div, name);
                     createElement("p", div, value);
@@ -320,11 +400,13 @@ function createTableRD(options) {
         placeholder,
         recordType,
         removable = true,
+        recordId, // for subrecords
         targetUser: targetUserId
     } = options;
 
     const container = document.createElement("div");
-    const columns = _tableDisplayColumns[recordType];
+    const subrecords = (recordId != null);
+    const columns = (subrecords ? _tableDisplayColumnsSubrecords : _tableDisplayColumns)[recordType];
 
     /* Loading */
 
@@ -333,9 +415,13 @@ function createTableRD(options) {
 
     /* Get Records */
 
-    post(`/get-${recordType}-records`, {
+    const promise = (subrecords ? post(`/get-${recordType}-subrecords`, {
+        recordId
+    }) : post(`/get-${recordType}-records`, {
         user: targetUserId
-    }).then(res => {
+    }));
+
+    promise.then(res => {
         const { values } = res;
 
         /* Create Table */
@@ -376,15 +462,15 @@ function createTableRD(options) {
 
                     removeCell.addEventListener("click", () => {
                         tr.remove();
-                        post(`/remove-${recordType}-record`, { id });
+                        post(`/remove-${recordType}-${subrecords ? "sub" : ""}record`, { id });
                     });
                 }
             });
-
-            /* Display */
-
-            loading.replaceWith(table);
         }
+
+        /* Display */
+
+        loading.replaceWith(table);
     });
 
     /* Placeholder */

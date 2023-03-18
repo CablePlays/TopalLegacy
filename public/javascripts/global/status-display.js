@@ -3,9 +3,14 @@
     complete, date complete and signer.
 */
 
-function createAwardStatus(display, promise, awardId) {
-    const template = document.getElementById("award-status-template");
-    const clone = template.content.cloneNode(true).firstChild;
+function createAwardStatus(options) {
+    const {
+        awardStatus,
+        display,
+        id
+    } = options;
+
+    const clone = document.getElementById("status-display-template").content.cloneNode(true).firstChild;
     const top = clone.children[0];
     const bottom = clone.children[1];
 
@@ -21,10 +26,11 @@ function createAwardStatus(display, promise, awardId) {
 
     bottom.style.display = "none";
 
-    promise.then(json => {
-        const { award, requested } = json;
-        const complete = award.complete === true;
-        const { date, decline, signer } = award;
+    post(awardStatus ? "/get-status-data" : "/get-approval", {
+        id
+    }).then(json => {
+        const { status, requested } = json;
+        const { complete, date, decline, signer } = status ?? {};
 
         /* Top */
 
@@ -39,7 +45,7 @@ function createAwardStatus(display, promise, awardId) {
 
         /* Bottom */
 
-        if (!complete && requested !== null) {
+        if (awardStatus && !complete) {
             bottom.style.display = "block";
 
             /* Message */
@@ -71,13 +77,13 @@ function createAwardStatus(display, promise, awardId) {
                 requestedDiv.style.display = "none";
 
                 requestButton.addEventListener("click", () => {
-                    promptConfirmation(`You're about to request a sign-off on your ${getAwardName(awardId)} award.`, () => {
+                    promptConfirmation(`You're about to request a sign-off on your ${getAwardName(id)} award.`, () => {
                         declineElement.style.display = "none";
                         requestDiv.style.display = "none";
                         requestedDiv.style.display = "block";
 
-                        post("/request-signoff", {
-                            award: awardId
+                        post("/request-award", {
+                            award: id
                         });
                     });
                 });
@@ -88,15 +94,23 @@ function createAwardStatus(display, promise, awardId) {
     return clone;
 }
 
-window.addEventListener("load", () => {
-    const statuses = [...document.getElementsByClassName("award-status")]; // put into array to prevent original from shrinking on remove
+function _loadStatuses(className, awardStatus) {
+    const statuses = [...document.getElementsByClassName(className)]; // put into array to prevent original from shrinking on remove
     if (statuses.length === 0) return;
 
     for (let status of statuses) {
-        const award = status.getAttribute("data-award");
-        const promise = post("/get-status-data", { award });
+        const id = status.getAttribute("data-id");
+        const display = status.getAttribute("data-display") ?? "Complete";
 
-        const awardStatus = createAwardStatus("Complete", promise, award);
-        status.parentElement.replaceChild(awardStatus, status);
+        status.replaceWith(createAwardStatus({
+            awardStatus,
+            display,
+            id
+        }));
     }
+}
+
+window.addEventListener("load", () => {
+    _loadStatuses("award-status", true);
+    _loadStatuses("approval-status", false);
 });

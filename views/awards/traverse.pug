@@ -1,6 +1,8 @@
 extends ../layout
 
 block content
+  script(src="/javascripts/awards/traverse.js")
+
   h1 Traverse Award
   .spacer.v20
 
@@ -21,10 +23,20 @@ block content
             p.
               Summary of facts about at least three mountain accidents, their causes,
               the rescue action taken and possible preventative measures which could have been taken.
-            p Source library: Books and Backpacker Magazine, Dragon's Wrath, newspapers, articles
+            p Source library: books and Backpacker Magazine, Dragon's Wrath, newspapers, articles
           li Ability to prepare a detailed hike plan proven by presentation of one such plans below.
-        .spacer.v20
+
+    .spacer.v20
+
+    .notice You can record hikes at the <a class="link" href="/mountaineering">mountaineering</a> page.
 
   .spacer.v40
 
-  .award-status(data-award="traverse")
+  .award-status(data-id="traverse")
+
+  .spacer.v40
+
+  h2 Sign-Offs
+  p For more information about these sign-offs, see the third point of the requirements.
+  .spacer.v20
+  #signoffs

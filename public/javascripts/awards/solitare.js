@@ -1,5 +1,6 @@
 async function setupRecord() {
-    const element = createFlexibleRD({
+    createFlexibleRD({
+        placeholder: "record-placeholder",
         recordType: "solitaire",
         removable: true,
         singleton: true,
@@ -47,8 +48,6 @@ async function setupRecord() {
             ]
         }
     });
-
-    document.getElementById("record-placeholder").replaceWith(element);
 }
 
 window.addEventListener("load", () => {

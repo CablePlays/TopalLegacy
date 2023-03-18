@@ -77,7 +77,7 @@ async function setupAwardsTable() {
 
 const dropdownSections = []; // [visible, toggle]
 
-function createSection(title, element, load) {
+function createSection(title, load) {
     const section = document.createElement("div");
     let loaded = false;
 
@@ -99,7 +99,8 @@ function createSection(title, element, load) {
     /* Bottom */
 
     const bottomDiv = createElement("div", section);
-    bottomDiv.appendChild(element);
+    const container = document.createElement("div");
+    bottomDiv.appendChild(container);
 
     section.appendChild(createSpacer(40));
 
@@ -133,8 +134,8 @@ function createSection(title, element, load) {
             });
 
             if (!loaded) { // load
-                if (load != null) load();
                 loaded = true;
+                load(container);
             }
         }
 
@@ -149,9 +150,7 @@ function createSection(title, element, load) {
 }
 
 function createFlexibleRDSection(title, recordType, singleton) {
-    const placeholder = document.createElement("div");
-
-    createSection(title, placeholder, () => {
+    createSection(title, placeholder => {
         createFlexibleRD({
             placeholder,
             recordType,
@@ -163,11 +162,9 @@ function createFlexibleRDSection(title, recordType, singleton) {
 }
 
 function createTableRDSection(title, recordType) {
-    const placeholder = document.createElement("div");
-
-    createSection(title, placeholder, () => {
+    createSection(title, div => {
         createTableRD({
-            placeholder,
+            placeholder: div,
             recordType,
             removable: false,
             targetUser: getProfileUser()
@@ -185,14 +182,14 @@ function createSignoffTable(options) {
     container.appendChild(loadingElement);
 
     const table = document.createElement("table");
-    const headers = [
+    const headings = [
         "Description",
         _TABLE_HEADER_NAMES.complete,
         _TABLE_HEADER_NAMES.date,
         _TABLE_HEADER_NAMES.signer,
         _TABLE_HEADER_NAMES.toggle
     ];
-    table.appendChild(createTableHeaders(headers));
+    table.appendChild(createTableHeaders(headings));
     table.classList.add("alternating");
     table.classList.add("management-table");
 
@@ -223,7 +220,7 @@ function createSignoffTable(options) {
                 const [groupHeading, groupItems] = group;
 
                 const titleRow = createElement("tr", table);
-                createElement("th", titleRow, groupHeading).colSpan = headers.length;
+                createElement("th", titleRow, groupHeading).colSpan = headings.length;
 
                 groupItems.forEach(createItemRows);
             });
@@ -235,67 +232,48 @@ function createSignoffTable(options) {
     });
 }
 
-function createSignoffsSection(title, options) {
-    const div = document.createElement("div");
+function createApprovalTable(options) {
+    const {
+        approvalId, container,
+        promptTextSupplier = c => c ? "You're about to grant this user a sign-off." : "You're about to revoke a sign-off from this user."
+    } = options;
 
-    createSection(title, div, () => {
-        options.container = div;
-        createSignoffTable(options);
+    const loadingElement = createLoading(true);
+    container.appendChild(loadingElement);
+
+    const table = document.createElement("table");
+    const headings = [
+        _TABLE_HEADER_NAMES.complete,
+        _TABLE_HEADER_NAMES.date,
+        _TABLE_HEADER_NAMES.signer,
+        _TABLE_HEADER_NAMES.toggle
+    ];
+    table.appendChild(createTableHeaders(headings));
+    table.classList.add("alternating");
+    table.classList.add("management-table");
+
+    post("/get-approval", {
+        id: approvalId,
+        user: getProfileUser()
+    }).then(async res => {
+        const { status } = res;
+
+        const tr = createManagementRow({
+            id: approvalId,
+            promptTextSupplier,
+            endpoint: "/set-approval",
+            status: status
+        });
+
+        table.appendChild(tr);
+        loadingElement.replaceWith(table);
     });
 }
 
-function setupRockClimbingSection() {
-    const div = document.createElement("div");
-    const profileUser = getProfileUser();
-
-    createSection("Rock Climbing", div, async () => {
-
-        /* Belayer Signoff Header */
-
-        const belayerSignoffHeader = document.createElement("h3");
-        belayerSignoffHeader.innerHTML = "Belayer Sign-Off";
-
-        div.appendChild(belayerSignoffHeader);
-        div.appendChild(createSpacer(20));
-
-        /* Belayer Signoff Table */
-
-        const belayerSignoffLoading = createLoading(true);
-        div.appendChild(belayerSignoffLoading);
-        div.appendChild(createSpacer(20));
-
-        const belayerSignoffTable = createTable([
-            _TABLE_HEADER_NAMES.complete, _TABLE_HEADER_NAMES.date, _TABLE_HEADER_NAMES.signer, _TABLE_HEADER_NAMES.toggle
-        ]);
-
-        belayerSignoffTable.classList.add("alternating");
-        belayerSignoffTable.classList.add("management-table");
-
-        post("/get-rock-climbing-belayer-signoff", {
-            user: profileUser
-        }).then(async res => {
-            const { value } = res;
-            const tr = createManagementRow({
-                promptTextSupplier: c => c ? "You are about to grant this user the belayer sign-off."
-                    : "You are about to revoke the belayer sign-off from this user.",
-                endpoint: "/set-rock-climbing-belayer-signoff",
-                status: value
-            });
-
-            belayerSignoffTable.appendChild(tr);
-            belayerSignoffLoading.replaceWith(belayerSignoffTable);
-        });
-
-        /* Signoffs */
-
-        createElement("h3", div, "Sign-Offs");
-        div.appendChild(createSpacer(20));
-
-        createSignoffTable({
-            container: div,
-            items: rockClimbingSignoffs,
-            signoffType: "rockClimbing"
-        });
+function createSignoffsSection(title, options) {
+    createSection(title, div => {
+        options.container = div;
+        createSignoffTable(options);
     });
 }
 
@@ -307,13 +285,61 @@ function setupSections() {
     createTableRDSection("Endurance Records", "endurance");
     createTableRDSection("Midmar Mile Training", "midmarMile");
     createFlexibleRDSection("Mountaineering Records", "mountaineering");
-    setupRockClimbingSection();
+    createSection("Rock Climbing", div => {
+
+        /* Belayer Signoff */
+
+        createElement("h3", div, "Belayer Sign-Off");
+        div.appendChild(createSpacer(20));
+
+        createApprovalTable({
+            approvalId: "rockClimbingBelayer",
+            container: div
+        });
+
+        /* Signoffs */
+
+        div.appendChild(createSpacer(20));
+        createElement("h3", div, "Sign-Offs");
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            items: rockClimbingSignoffs,
+            signoffType: "rockClimbing"
+        });
+
+        /* Records */
+
+        div.appendChild(createSpacer(20));
+        createElement("h3", div, "Records");
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createFlexibleRD({
+            recordType: "rockClimbing",
+            removable: false,
+            targetUser: getProfileUser()
+        }));
+    });
     createTableRDSection("Running Records", "running");
     createTableRDSection("Service Records", "service");
     createFlexibleRDSection("Solitaire Record", "solitaire", true);
     createSignoffsSection("Summit Sign-Offs", {
         items: summitSignoffs,
         signoffType: "summit"
+    });
+    createSignoffsSection("Traverse Sign-Offs", {
+        items: traverseSignoffs,
+        signoffType: "traverse"
+    });
+    createSection("Venture Award", div => {
+        createElement("h3", div, "Proposal Approved");
+        div.appendChild(createSpacer(20));
+
+        createApprovalTable({
+            approvalId: "ventureProposal",
+            container: div
+        });
     });
 }
 

@@ -1,5 +1,10 @@
-function setupRecordInput() {
-    const element = createRecordInput({
+window.addEventListener("load", () => {
+    createFlexibleRD({
+        placeholder: "record-display",
+        recordType: "mountaineering"
+    });
+    createRecordInput({
+        placeholder: "record-input",
         recordType: "mountaineering",
         inputs: [
             {
@@ -114,15 +119,5 @@ function setupRecordInput() {
                 required: true
             }
         ]
-    });
-
-    document.getElementById("record-input").replaceWith(element);
-}
-
-window.addEventListener("load", () => {
-    setupRecordInput();
-    createFlexibleRD({
-        placeholder: "record-display",
-        recordType: "mountaineering"
     });
 });

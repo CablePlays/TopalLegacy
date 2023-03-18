@@ -16,15 +16,7 @@
     padding: 8px;
 }
 
-.flexible-record-display .remove-card {
-    background-color: var(--color-primary-600);
-    color: var(--color-primary-600-text);
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
-}
-
-.flexible-record-display .remove-card button {
+.flexible-record-display button {
     background-color: var(--color-background);
     border: none;
     border-radius: 4px;
@@ -32,6 +24,14 @@
     cursor: pointer;
     height: 30px;
     width: 200px;
+}
+
+.flexible-record-display .remove-card {
+    background-color: var(--color-primary-600);
+    color: var(--color-primary-600-text);
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
 }
 
 .flexible-record-display .text-long::before {

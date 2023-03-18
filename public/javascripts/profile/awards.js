@@ -38,22 +38,16 @@ function setupAwards() {
                 const label = document.createElement("h3");
                 label.innerHTML = "Belayer Signoff";
                 card.appendChild(label);
-                
+
                 card.appendChild(createSpacer(20));
 
                 const image = createCheckbox(new Promise(async r => {
-                    const res = await fetch("/get-rock-climbing-belayer-signoff", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            user: getProfileUser()
-                        })
+                    const { status } = await post("/get-approval", {
+                        id: "rockClimbingBelayer",
+                        user: getProfileUser()
                     });
 
-                    const { value } = await res.json();
-                    r(value.complete === true);
+                    r(status.complete === true);
                 }));
                 image.classList.add("checkbox");
                 card.appendChild(image);

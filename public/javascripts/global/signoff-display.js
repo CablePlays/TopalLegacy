@@ -79,6 +79,11 @@ const summitSignoffs = [
     ["routeFinding", "Passed route finding test"]
 ];
 
+const traverseSignoffs = [
+    ["summary", "Summary of facts"],
+    ["hikePlan", "Detailed hike plan"]
+];
+
 function hasHeadings(signoffs) {
     return Array.isArray(signoffs[0][1]);
 }

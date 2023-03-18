@@ -101,6 +101,10 @@ body {
     transition: background-color 0.25s;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 h1 {
     font-size: 55px;
 }

@@ -1,10 +1,10 @@
 > Awards
 
 Kayaking
-Rock Climbing
-Summit
+
+> Current Awards
+
 Traverse
-Venture
 
 > Completed Awards
 
@@ -12,9 +12,12 @@ Drakensberg
 Endurance
 Midmar Mile
 Polar Bear
+Rock Climbing
 Running
 Service
 Solitare
+Summit
+Venture
 
 > Todo
 

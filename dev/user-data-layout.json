@@ -16,16 +16,13 @@
         "managePermissions": false,
         "viewLogs": false
     },
+    "approvals": {
+        "belayer": "STATUS"
+    },
     "signoffs": {
         "rockClimbing": {
-            "belayer": "STATUS",
-            "signoffs": {
-                "knots1": "STATUS"
-            }
+            "knots1": "STATUS"
         }
-    },
-    "rockClimbing": {
-        "belayerSignoff": "STATUS"
     },
     "solitaire": {
         "date": "DATE",

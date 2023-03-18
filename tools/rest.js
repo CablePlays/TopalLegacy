@@ -28,18 +28,13 @@ async function selfOrManageAwards(req, func) {
         let { user: targetUserId } = req.body;
 
         if (targetUserId == null) {
-            targetUserId = userId;
-        } else if (!await sqlDatabase.isUser(targetUserId)) {
-            targetUserId = null;
-        } else {
+            await func(userId);
+        } else if (await sqlDatabase.isUser(targetUserId)) {
             const permissions = jsonDatabase.getPermissions(userId);
 
-            if (!permissions.manageAwards) {
-                targetUserId = null;
+            if (permissions.manageAwards) {
+                await func(targetUserId);
             }
-        }
-        if (targetUserId != null) {
-            await func(targetUserId);
         }
     }
 }
@@ -278,11 +273,12 @@ function permissionRequests(app) {
 }
 
 function signoffRequests(app) {
+    const APPROVALS_PATH = "approvals";
     const SIGNOFFS_PATH = "signoffs";
 
-    /* Request Signoff */
+    /* Request Award */
 
-    app.post("/request-signoff", async (req, res) => {
+    app.post("/request-award", async (req, res) => {
         if (await general.sessionTokenValid(req)) {
             const userId = cookies.getUserId(req);
             const { award } = req.body;
@@ -304,9 +300,9 @@ function signoffRequests(app) {
         res.end();
     });
 
-    /* Get Signoff Requests */
+    /* Get Award Requests */
 
-    app.post("/get-signoff-requests", async (req, res) => { // permission: manageAwards
+    app.post("/get-award-requests", async (req, res) => { // permission: manageAwards
         const json = {};
 
         if (await general.sessionTokenValid(req)) {
@@ -328,9 +324,9 @@ function signoffRequests(app) {
         res.json(json);
     });
 
-    /* Decline Signoff Requests */
+    /* Decline Award Requests */
 
-    app.post("/decline-signoff-request", async (req, res) => { // permission: manageAwards
+    app.post("/decline-award-request", async (req, res) => { // permission: manageAwards
         if (await general.sessionTokenValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
@@ -361,9 +357,9 @@ function signoffRequests(app) {
         res.end();
     });
 
-    /* Get */
+    /* Get Signoffs */
 
-    app.post(`/get-signoffs`, async (req, res) => { // permission: none/manageAwards
+    app.post("/get-signoffs", async (req, res) => { // permission: none/manageAwards
         const { type } = req.body;
         let values = {};
 
@@ -381,7 +377,7 @@ function signoffRequests(app) {
         });
     });
 
-    /* Set */
+    /* Set Signoff */
 
     function isValidSignoff(type, id) {
         if (type === "drakensberg") {
@@ -414,12 +410,17 @@ function signoffRequests(app) {
                 "preparedness",
                 "routeFinding"
             ].includes(id);
+        } else if (type === "traverse") {
+            return [
+                "hikePlan",
+                "summary"
+            ].includes(id);
         }
 
         return false;
     }
 
-    app.post(`/set-signoff`, async (req, res) => { // permission: manageAwards
+    app.post("/set-signoff", async (req, res) => { // permission: manageAwards
         if (await general.sessionTokenValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
@@ -446,30 +447,88 @@ function signoffRequests(app) {
 
         res.end();
     });
+
+    /* Get Approval */
+
+    app.post("/get-approval", async (req, res) => { // permission: none
+        const userId = cookies.getUserId(req);
+        const { id, user: targetUserId = userId } = req.body;
+        let status = {}; // same as in get-status-data
+
+        if (await sqlDatabase.isUser(targetUserId)) {
+            const a = await jsonDatabase.getUser(targetUserId).get(APPROVALS_PATH + "." + id);
+
+            if (a != null) {
+                await provideUserInfoToStatus(a);
+                status = a;
+            }
+        }
+
+        res.json({
+            status
+        });
+    });
+
+    /* Set Approval */
+
+    function isValidApproval(id) {
+        return [
+            "rockClimbingBelayer",
+            "ventureProposal"
+        ].includes(id);
+    }
+
+    app.post("/set-approval", async (req, res) => { // permission: manageAwards
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            const userPermissions = jsonDatabase.getPermissions(userId);
+
+            if (userPermissions.manageAwards) {
+                const { complete, id, user: targetUserId } = req.body;
+
+                if (isValidApproval(id) && await sqlDatabase.isUser(targetUserId)) {
+                    const db = jsonDatabase.getUser(targetUserId);
+                    const path = APPROVALS_PATH + "." + id;
+
+                    if (complete === true) {
+                        db.set(path, {
+                            complete: true,
+                            date: new Date(),
+                            signer: userId
+                        });
+                    } else {
+                        db.delete(path);
+                    }
+                }
+            }
+        }
+
+        res.end();
+    });
 }
 
 function miscRequests(app) {
 
     /* Status Data */
-    // used by the award status system
+    // used by the status system
 
     app.post("/get-status-data", async (req, res) => { // restrictions: self
         const json = {};
 
         if (await general.sessionTokenValid(req)) {
             const userId = cookies.getUserId(req);
-            const { award } = req.body;
+            const { id } = req.body;
 
-            const awardStatus = jsonDatabase.getUser(userId).get("awards." + award);
+            const awardStatus = jsonDatabase.getUser(userId).get("awards." + id);
 
             if (awardStatus == null) {
-                json.award = {};
+                json.status = {};
             } else {
                 await provideUserInfoToStatus(awardStatus);
-                json.award = awardStatus;
+                json.status = awardStatus;
             }
 
-            json.requested = await sqlDatabase.doesSignoffRequestExist(userId, award);
+            json.requested = await sqlDatabase.doesSignoffRequestExist(userId, id);
         }
 
         res.json(json);
@@ -631,59 +690,6 @@ function miscRequests(app) {
     });
 }
 
-function rockClimbingRequests(app) {
-    const BELAYER_PATH = "rockClimbing.belayerSignoff";
-
-    /* Get Belayer Signoff */
-
-    app.post(`/get-rock-climbing-belayer-signoff`, async (req, res) => { // permission: none
-        const { user: targetUserId } = req.body;
-        let value = {};
-
-        if (targetUserId != null && await sqlDatabase.isUser(targetUserId)) {
-            const a = await jsonDatabase.getUser(targetUserId).get(BELAYER_PATH);
-
-            if (a != null) {
-                await provideUserInfoToStatus(a);
-                value = a;
-            }
-        }
-
-        res.json({
-            value
-        });
-    });
-
-    /* Set Belayer Signoff */
-
-    app.post(`/set-rock-climbing-belayer-signoff`, async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
-            const userId = cookies.getUserId(req);
-            const userPermissions = jsonDatabase.getPermissions(userId);
-
-            if (userPermissions.manageAwards) {
-                const { complete, user: targetUserId } = req.body;
-
-                if (await sqlDatabase.isUser(targetUserId)) {
-                    const db = jsonDatabase.getUser(targetUserId);
-
-                    if (complete === true) {
-                        db.set(BELAYER_PATH, {
-                            complete: true,
-                            date: new Date(),
-                            signer: userId
-                        });
-                    } else {
-                        db.delete(BELAYER_PATH);
-                    }
-                }
-            }
-        }
-
-        res.end();
-    });
-}
-
 function solitaireRequests(app) {
     const PATH = "solitaire";
     const KEYS = ["date", "location", "othersInvolved", "supervisors", "items", "experienceDescription"];
@@ -733,34 +739,36 @@ function solitaireRequests(app) {
     });
 }
 
-async function registerRecordType(app, name, table) {
-    async function getColumns() {
-        let allColumns = await sqlDatabase.get(`SELECT GROUP_CONCAT(name, ',') FROM PRAGMA_TABLE_INFO('${table}')`);
+async function registerRecordType(app, name, table, subrecordsTable) {
+    async function getColumns(tableName) {
+        let allColumns = await sqlDatabase.get(`SELECT GROUP_CONCAT(name, ',') FROM PRAGMA_TABLE_INFO('${tableName}')`);
         allColumns = allColumns["GROUP_CONCAT(name, ',')"];
         const allColumnsArray = allColumns.split(",");
-        return allColumnsArray.slice(2, allColumnsArray.length);
+        return allColumnsArray.slice(2, allColumnsArray.length); // exclude ID and user columns
     }
 
     /* Get */
 
     app.post(`/get-${name}-records`, async (req, res) => { // permission: none/manageAwards
-        const json = {};
+        let values = {};
 
         await selfOrManageAwards(req, async targetUserId => {
-            json.values = await sqlDatabase.all(`SELECT * FROM ${table} WHERE user = "${targetUserId}"`);
+            values = await sqlDatabase.all(`SELECT * FROM ${table} WHERE user = "${targetUserId}"`);
         });
 
-        res.json(json);
+        res.json({
+            values
+        });
     });
 
     /* Add */
 
     app.post(`/add-${name}-record`, async (req, res) => { // restrictions: self
         if (await general.sessionTokenValid(req)) {
-            const record = req.body.value ?? {};
+            const { value = {} } = req.body;
             const userId = cookies.getUserId(req);
 
-            const columns = await getColumns();
+            const columns = await getColumns(table);
             let valid = true;
             let columnsString = "";
             let valuesString = "";
@@ -774,7 +782,7 @@ async function registerRecordType(app, name, table) {
                 const column = columns[i];
 
                 columnsString += column;
-                const val = record[column];
+                const val = value[column];
 
                 if (val == null) {
                     valid = false;
@@ -802,11 +810,123 @@ async function registerRecordType(app, name, table) {
         if (await general.sessionTokenValid(req)) {
             const { id } = req.body;
             const userId = cookies.getUserId(req);
-            await sqlDatabase.run(`DELETE FROM ${table} WHERE id = ${id} AND user = "${userId}"`);
+
+            if (subrecordsTable == null) {
+                await sqlDatabase.run(`DELETE FROM ${table} WHERE id = ${id} AND user = "${userId}"`);
+            } else {
+                const record = await sqlDatabase.get(`SELECT * FROM ${table} WHERE id = ${id} AND user = "${userId}"`);
+
+                if (record != null) {
+                    await Promise.all([
+                        sqlDatabase.run(`DELETE FROM ${table} WHERE id = ${id} AND user = "${userId}"`),
+                        sqlDatabase.run(`DELETE FROM ${subrecordsTable} WHERE record_id = ${id}`)
+                    ]);
+                }
+            }
         }
 
         res.end();
     });
+
+    if (subrecordsTable != null) {
+
+        /* Get */
+
+        app.post(`/get-${name}-subrecords`, async (req, res) => { // permission: none/manageAwards
+            let values = {};
+
+            if (await general.sessionTokenValid(req)) {
+                const { recordId } = req.body;
+                const userId = cookies.getUserId(req);
+                const permissions = jsonDatabase.getPermissions(userId);
+
+                let canAccess;
+
+                if (permissions.manageAwards) {
+                    canAccess = true;
+                } else {
+                    const { user: recordUserId } = await sqlDatabase.get(`SELECT * FROM ${table} WHERE id = "${recordId}"`);
+                    canAccess = (recordUserId === userId);
+                }
+                if (canAccess) {
+                    values = await sqlDatabase.all(`SELECT * FROM ${subrecordsTable} WHERE record_id = "${recordId}"`);
+                }
+            }
+
+            res.json({
+                values
+            });
+        });
+
+        /* Add */
+
+        app.post(`/add-${name}-subrecord`, async (req, res) => { // restrictions: self
+            if (await general.sessionTokenValid(req)) {
+                const { recordId, value = {} } = req.body;
+                const userId = cookies.getUserId(req);
+
+                const record = await sqlDatabase.get(`SELECT * FROM ${table} WHERE id = "${recordId}" AND user = "${userId}"`);
+
+                if (record != null) { // user owns record
+                    const columns = await getColumns(subrecordsTable);
+                    let valid = true;
+                    let columnsString = "";
+                    let valuesString = "";
+
+                    for (let i = 0; i < columns.length; i++) {
+                        if (i > 0) {
+                            columnsString += ", ";
+                            valuesString += ", ";
+                        }
+
+                        const column = columns[i];
+
+                        columnsString += column;
+                        const val = value[column];
+
+                        if (val == null) {
+                            valid = false;
+                            break;
+                        }
+
+                        if (typeof val === "string") {
+                            valuesString += `"${val}"`;
+                        } else {
+                            valuesString += val;
+                        }
+                    }
+
+                    if (valid) {
+                        await sqlDatabase.run(`INSERT INTO ${subrecordsTable} (record_id, ${columnsString}) VALUES (${recordId}, ${valuesString})`);
+                    }
+                }
+            }
+
+            res.end();
+        });
+
+        /* Remove */
+
+        app.post(`/remove-${name}-subrecord`, async (req, res) => { // restrictions: self
+            if (await general.sessionTokenValid(req)) {
+                const { id } = req.body;
+                const userId = cookies.getUserId(req);
+
+                const subrecord = await sqlDatabase.get(`SELECT * FROM ${subrecordsTable} WHERE id = "${id}"`);
+
+                if (subrecord != null) {
+                    const { record_id: recordId } = subrecord;
+                    const record = await sqlDatabase.get(`SELECT * FROM ${table} WHERE id = ${recordId} AND user = "${userId}"`);
+
+                    if (record != null) { // user owns subrecord
+                        await sqlDatabase.run(`DELETE FROM ${subrecordsTable} WHERE id = "${id}"`);
+                    }
+                }
+            }
+
+            res.end();
+        });
+    }
 }
 
 function acceptApp(app) {
@@ -816,12 +936,13 @@ function acceptApp(app) {
     signoffRequests(app);
     miscRequests(app);
 
-    rockClimbingRequests(app);
     solitaireRequests(app);
 
     registerRecordType(app, "endurance", "endurance_records");
     registerRecordType(app, "midmarMile", "midmar_mile_records");
     registerRecordType(app, "mountaineering", "mountaineering_records");
+    registerRecordType(app, "rockClimbing", "rock_climbing_records", "rock_climbing_subrecords");
+    registerRecordType(app, "rockClimbingSub", "rock_climbing_subrecords");
     registerRecordType(app, "running", "running_records");
     registerRecordType(app, "service", "service_records");
 }

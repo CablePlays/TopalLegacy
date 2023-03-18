@@ -1,5 +1,32 @@
-function setupRecordInput() {
-   const element =  createRecordInput({
+async function setupTotal() {
+    const distanceLabel = document.getElementById("total-distance-label");
+    distanceLabel.innerHTML = LOADING_TEXT;
+
+    const res = await fetch("/get-distance-run", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user: getUserId()
+        })
+    });
+
+    const { value } = await res.json();
+
+    distanceLabel.innerHTML = `${value / 1000}km / 100km`;
+    document.getElementById("total-distance-meter").value = value;
+}
+
+window.addEventListener("load", () => {
+    setupTotal();
+
+    createTableRD({
+        placeholder: "record-display",
+        recordType: "running"
+    });
+    createRecordInput({
+        placeholder: "record-input",
         recordType: "running",
         inputs: [
             {
@@ -34,37 +61,5 @@ function setupRecordInput() {
                 type: "text_long"
             }
         ]
-    });
-
-    document.getElementById("record-input").replaceWith(element);
-}
-
-async function setupTotal() {
-    const distanceLabel = document.getElementById("total-distance-label");
-    distanceLabel.innerHTML = LOADING_TEXT;
-
-    const res = await fetch("/get-distance-run", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getUserId()
-        })
-    });
-
-    const { value } = await res.json();
-
-    distanceLabel.innerHTML = `${value / 1000}km / 100km`;
-    document.getElementById("total-distance-meter").value = value;
-}
-
-window.addEventListener("load", () => {
-    setupRecordInput();
-    setupTotal();
-
-    createTableRD({
-        placeholder: "record-display",
-        recordType: "running"
     });
 });

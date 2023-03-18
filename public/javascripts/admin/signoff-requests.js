@@ -17,7 +17,7 @@ async function loadRequests() {
     const loading = createLoading(true);
     container.replaceWith(loading);
 
-    const signoffRequests = (await post("/get-signoff-requests")).values;
+    const signoffRequests = (await post("/get-award-requests")).values;
 
     for (let request of signoffRequests) {
         const { award, id: requestId, user } = request;
@@ -78,7 +78,7 @@ async function loadRequests() {
         declineElement.addEventListener("click", () => {
             const message = messageElement.value;
             const handle = () => {
-                post("/decline-signoff-request", {
+                post("/decline-award-request", {
                     id: requestId,
                     message
                 });

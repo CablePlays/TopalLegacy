@@ -7,32 +7,32 @@ const _flexibleDisplayColumns = {
         {
             name: "Start Date",
             type: "date",
-            id: "start_date"
+            valueProvider: "start_date"
         },
         {
             name: "Area",
             type: "textShort",
-            id: "area"
+            valueProvider: "area"
         },
         {
             name: "Number Of Days",
             type: "textShort",
-            id: "days"
+            valueProvider: "days"
         },
         {
             name: "Hike Distance",
             type: "textShort",
-            id: "distance"
+            valueProvider: record => (record.distance / 1000) + "km"
         },
         {
             name: "Altitude Gained",
             type: "textShort",
-            id: "altitude_gained"
+            valueProvider: record => record.altitude_gained + "m"
         },
         {
             name: "Number In Party",
             type: "textShort",
-            id: "party_number"
+            valueProvider: "party_number"
         },
         {
             name: "Shelter",
@@ -45,65 +45,116 @@ const _flexibleDisplayColumns = {
                 ["combination", "Combination"],
                 ["other", "Other"],
             ],
-            id: "shelter"
+            valueProvider: "shelter"
         },
         {
             name: "Was the majority of the hike on a trail/path?",
             type: "boolean",
-            id: "trail"
+            valueProvider: "trail"
         },
         {
             name: "Were you the leader of the group?",
             type: "boolean",
-            id: "leader"
+            valueProvider: "leader"
         },
         {
             name: "Was the majority of the hike above 2000m?",
             type: "boolean",
-            id: "majority_above_2000m"
+            valueProvider: "majority_above_2000m"
         },
         {
             name: "Route",
             type: "textLong",
-            id: "route"
+            valueProvider: "route"
         },
         {
             name: "Weather Conditions",
             type: "textLong",
-            id: "weather"
+            valueProvider: "weather"
         },
         {
             name: "Situations Dealt With",
             type: "textLong",
-            id: "situations"
+            valueProvider: "situations"
         }
     ],
-    rockClimbing: [
+    riverTrip: [
         {
             name: "Date",
             type: "date",
-            id: "date"
+            valueProvider: "date"
         },
         {
-            name: "Area",
+            name: "Put In",
+            type: "time",
+            valueProvider: "put_in"
+        },
+        {
+            name: "Take Out",
+            type: "time",
+            valueProvider: "take_out"
+        },
+        {
+            name: "Hours On River",
             type: "textShort",
-            id: "area"
+            valueProvider: record => formatDuration(record.time, false)
+        },
+        {
+            name: "Distance On River",
+            type: "textShort",
+            valueProvider: record => (record.distance / 1000) + "km"
         },
         {
             name: "Number In Party",
             type: "textShort",
-            id: "party_size"
+            valueProvider: "party_size"
+        },
+        {
+            name: "River",
+            type: "textShort",
+            valueProvider: "river"
+        },
+        {
+            name: "Water Level",
+            type: "textShort",
+            valueProvider: "water_level"
+        },
+        {
+            name: "Boat",
+            type: "textShort",
+            valueProvider: "boat"
+        },
+        {
+            customType: "signer"
+        }
+    ],
+    rockClimbing: [
+        {
+            type: "date",
+            name: "Date",
+            valueProvider: "date"
+        },
+        {
+            type: "textShort",
+            name: "Area",
+            valueProvider: "area"
+        },
+        {
+            name: "Number In Party",
+            type: "textShort",
+            valueProvider: "party_size"
         },
         {
             name: "Weather",
             type: "textShort",
-            id: "weather"
+            valueProvider: "weather"
         },
         {
             name: "Climbs",
-            type: "subrecordsTable",
+            customType: "subrecordsTable",
             subrecordsTable: {
-                buttonText: "Add Climb"
+                buttonText: "Add Climb",
+                name: "Climbs"
             }
         }
     ],
@@ -111,32 +162,32 @@ const _flexibleDisplayColumns = {
         {
             name: "Date",
             type: "date",
-            id: "date"
+            valueProvider: "date"
         },
         {
             name: "Location",
             type: "textShort",
-            id: "location"
+            valueProvider: "location"
         },
         {
             name: "Others Involved",
             type: "textShort",
-            id: "othersInvolved"
+            valueProvider: "othersInvolved"
         },
         {
             name: "Supervisors",
             type: "textShort",
-            id: "supervisors"
+            valueProvider: "supervisors"
         },
         {
             name: "What I Took With Me",
             type: "textShort",
-            id: "items"
+            valueProvider: "items"
         },
         {
             name: "The Experience Described In One Paragraph",
             type: "textLong",
-            id: "experienceDescription"
+            valueProvider: "experienceDescription"
         }
     ]
 };
@@ -146,7 +197,16 @@ const _tableDisplayColumns = {
         ["Date", record => formatDate(record.date)],
         ["Distance", record => (record.distance / 1000) + "km"],
         ["Time", record => formatDuration(record.time)],
-        ["Description", record => record.description],
+        ["Description", record => record.description]
+    ],
+    flatWaterPaddling: [
+        ["Date", record => formatDate(record.date)],
+        ["Training", record => record.training],
+        ["Boat", record => record.boat],
+        ["Time", record => record.time],
+        ["Distance", record => record.distance],
+        ["Place", record => record.place],
+        ["Comments", record => record.comments]
     ],
     midmarMile: [
         ["Date", record => formatDate(record.date)],
@@ -164,6 +224,7 @@ const _tableDisplayColumns = {
         ["Service", record => record.service],
         ["Hours", record => formatDuration(record.time, false)],
         ["Description", record => record.description],
+        ["Signed Off", "signer"]
     ]
 };
 
@@ -183,47 +244,107 @@ function createFlexibleRD(options) {
         removable = true,
         recordType,
         setRecord, // links to subrecords form
+        signable = false,
         singleton,
         targetUser: targetUserId
     } = options;
 
     const items = _flexibleDisplayColumns[recordType];
 
-    function createSection(itemsUsing, value) {
-        for (let item of itemsUsing) {
-            const { id, type } = item;
+    function showNone() {
+        createElement("p", container, "None");
+    }
 
-            // supply values using IDs
-            if (id != null) {
-                delete item.id;
-                item.value = value[id];
-            }
+    function createSection(currentItems, record) {
+        const { id: recordId } = record;
 
-            // supply subrecords table data
-            if (type === "subrecordsTable") {
-                item.subrecordsTable = {
-                    ...item.subrecordsTable,
-                    recordId: value.id,
-                    recordType,
-                    removable,
-                    setRecord
+        for (let i = 0; i < currentItems.length; i++) {
+            const item = currentItems[i];
+            const { customType, valueProvider } = item;
+
+            if (customType === "signer") {
+                currentItems[i] = {
+                    type: "custom",
+                    consumer: div => {
+                        const { signer } = record;
+
+                        function addContent(signedOff) {
+                            removeChildren(div);
+
+                            if (signedOff == null) {
+                                div.classList.remove("boolean-container");
+                                div.classList.add("option-card");
+
+                                createElement("h3", div, "Sign Off Record");
+                                createElement("button", div, "Sign Off").addEventListener("click", () => {
+                                    post(`/sign-${recordType}-record`, { id: recordId });
+                                    addContent(true);
+                                });
+                            } else {
+                                div.classList.add("boolean-container");
+                                div.classList.remove("option-card");
+
+                                createElement("h3", div, "Signed Off");
+                                div.appendChild(createCheckbox(signedOff));
+                            }
+                        }
+
+                        addContent((signable && signer == null) ? null : signer != null);
+                    }
                 };
+            } else if (customType === "subrecordsTable") {
+                const { buttonText, name } = item.subrecordsTable ?? {};
+
+                currentItems[i] = {
+                    type: "custom",
+                    consumer: div => {
+                        div.style.flexBasis = "100%";
+
+                        createElement("h3", div, name);
+                        div.appendChild(createSpacer(20));
+
+                        if (setRecord != null) {
+                            createElement("button", div, buttonText).addEventListener("click", () => {
+                                setRecord(recordId);
+                            });
+                            div.appendChild(createSpacer(20));
+                        }
+
+                        div.appendChild(createTableRD({
+                            recordId,
+                            recordType,
+                            removable
+                        }));
+                    }
+                };
+            } else {
+                // provide value
+                if (typeof valueProvider === "string") {
+                    item.value = record[valueProvider];
+                } else if (typeof valueProvider === "function") {
+                    item.value = valueProvider(record);
+                }
+
+                delete item.valueProvider;
             }
         }
-
         if (removable === true) {
-            itemsUsing.push({
+            currentItems.push({
                 type: "custom",
                 consumer: (div, section) => {
-                    div.classList.add("remove-card");
+                    div.classList.add("option-card");
 
                     createElement("h3", div, "Remove Record");
                     createElement("button", div, "Remove").addEventListener("click", () => {
-                        post(`/remove-${recordType}-record`, { id: value.id });
+                        post(`/remove-${recordType}-record`, { id: record.id });
 
                         if (singleton) {
                             window.location.reload();
                         } else {
+                            if (section.parentElement.children.length === 1) {
+                                showNone();
+                            }
+
                             section.remove();
                         }
                     });
@@ -231,10 +352,11 @@ function createFlexibleRD(options) {
             });
         }
 
-        return createFlexibleDisplay(itemsUsing);
+        return createFlexibleDisplay(currentItems);
     }
 
     const container = document.createElement("div");
+    container.classList.add("flexible-record-display-container");
 
     const loading = createLoading(true);
     container.appendChild(loading);
@@ -249,7 +371,9 @@ function createFlexibleRD(options) {
 
             if (exists) {
                 container.appendChild(createSection(items, value));
-            } else if (inputOptions != null) {
+            } else if (inputOptions == null) {
+                showNone();
+            } else {
                 inputOptions.recordType = recordType;
                 container.appendChild(createRecordInput(inputOptions));
             }
@@ -261,17 +385,20 @@ function createFlexibleRD(options) {
             const { values } = res;
 
             loading.remove();
-            container.classList.add("flexible-record-display-container");
 
-            for (let value of values) {
-                const clonedItems = [];
+            if (values.length === 0) {
+                showNone();
+            } else {
+                for (let value of values) {
+                    const clonedItems = [];
 
-                for (let item of items) {
-                    clonedItems.push({ ...item });
+                    for (let item of items) {
+                        clonedItems.push({ ...item });
+                    }
+
+                    const section = createSection(clonedItems, value);
+                    container.appendChild(section);
                 }
-
-                const section = createSection(clonedItems, value);
-                container.appendChild(section);
             }
         });
     }
@@ -292,8 +419,9 @@ function createFlexibleRD(options) {
         - date
         - number
         - radio
-        - text_long
-        - text_short
+        - textLong
+        - textShort
+        - time
 */
 function createFlexibleDisplay(items) {
     const container = document.createElement("div");
@@ -303,17 +431,17 @@ function createFlexibleDisplay(items) {
         const { name, type, value } = item;
 
         switch (type) {
-            case "boolean":
+            case "boolean": {
                 createElement("div", container, div => {
                     div.classList.add("boolean-container");
 
                     createElement("h3", div, name);
-                    const booleanElement = createCheckbox(value === 1);
-                    div.appendChild(booleanElement);
+                    div.appendChild(createCheckbox(value === true || value === 1));
                 });
 
                 break;
-            case "custom":
+            }
+            case "custom": {
                 const { consumer } = item;
 
                 createElement("div", container, div => {
@@ -321,39 +449,16 @@ function createFlexibleDisplay(items) {
                 });
 
                 break;
-            case "date":
+            }
+            case "date": {
                 createElement("div", container, div => {
                     createElement("h3", div, name);
                     createElement("p", div, formatDate(value));
                 });
 
                 break;
-            case "subrecordsTable":
-                const { subrecordsTable } = item;
-                const { buttonText, recordId, recordType, removable, setRecord } = subrecordsTable;
-
-                createElement("div", container, div => {
-                    div.style.flexBasis = "100%";
-
-                    createElement("h3", div, name);
-                    div.appendChild(createSpacer(20));
-
-                    if (setRecord != null) {
-                        createElement("button", div, buttonText).addEventListener("click", () => {
-                            setRecord(recordId);
-                        });
-                        div.appendChild(createSpacer(20));
-                    }
-
-                    div.appendChild(createTableRD({
-                        recordId,
-                        recordType,
-                        removable
-                    }));
-                });
-
-                break;
-            case "radio":
+            }
+            case "radio": {
                 createElement("div", container, div => {
                     const { options } = item;
 
@@ -374,20 +479,31 @@ function createFlexibleDisplay(items) {
                 });
 
                 break;
-            case "textLong":
+            }
+            case "textLong": {
                 createElement("div", container, div => {
                     createElement("h3", div, name);
                     createElement("p", div, value).classList.add("text-long");
                 });
 
                 break;
-            case "textShort":
+            }
+            case "textShort": {
                 createElement("div", container, div => {
                     createElement("h3", div, name);
                     createElement("p", div, value);
                 });
 
                 break;
+            }
+            case "time": {
+                createElement("div", container, div => {
+                    createElement("h3", div, name);
+                    createElement("p", div, formatTime(value));
+                });
+
+                break;
+            }
             default: throw new Error("Invalid type: " + type);
         }
     }
@@ -401,6 +517,7 @@ function createTableRD(options) {
         recordType,
         removable = true,
         recordId, // for subrecords
+        signable = false,
         targetUser: targetUserId
     } = options;
 
@@ -435,10 +552,9 @@ function createTableRD(options) {
             createElement("th", topRow, column[0]);
         });
 
-        /* Removeable Column */
+        /* Removable Heading */
 
-        if (removable === true) {
-            table.classList.add("removable");
+        if (removable) {
             createElement("th", topRow, "Remove");
         }
 
@@ -446,19 +562,43 @@ function createTableRD(options) {
 
         if (values != null) {
             values.forEach(record => {
+                const { id } = record;
+
                 const tr = createElement("tr", table);
 
-                /* Info Cells */
+                /* Cells */
 
                 columns.forEach(column => {
-                    createElement("td", tr, column[1](record));
+                    const content = column[1];
+
+                    if (content === "signer") {
+                        const { signer } = record;
+                        const signCell = createElement("td", tr, "Sign Off");
+
+                        function setContent(signedOff) {
+                            if (signedOff == null) {
+                                signCell.classList.add("interactive");
+                                signCell.addEventListener("click", () => {
+                                    post(`/sign-${recordType}-record`, { id });
+                                    setContent(true);
+                                });
+                            } else {
+                                signCell.classList.remove("interactive");
+                                signCell.innerHTML = (signedOff ? "Yes" : "No");
+                            }
+                        }
+
+                        setContent((signable && signer == null) ? null : signer != null);
+                    } else {
+                        createElement("td", tr, content(record));
+                    }
                 });
 
                 /* Remove Cell */
 
                 if (removable) {
-                    const { id } = record;
                     const removeCell = createElement("td", tr, "X");
+                    removeCell.classList.add("interactive");
 
                     removeCell.addEventListener("click", () => {
                         tr.remove();

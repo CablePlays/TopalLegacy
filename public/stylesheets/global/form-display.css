@@ -7,7 +7,6 @@
     margin-left: auto;
     margin-right: auto;
     min-width: 320px;
-    overflow: hidden;
     padding: 16px;
     width: 70%;
 }
@@ -38,10 +37,12 @@
 }
 
 .record-input input[type="date"],
+.record-input input[type="number"],
 .record-input input[type="text"],
 .record-input select {
     height: 40px;
     padding: 8px;
+    min-width: 150px;
 }
 
 .record-input textarea {
@@ -57,6 +58,11 @@
     border-left: 2px solid var(--color-background-opposite);
     border-top: 2px solid var(--color-background-opposite);
     color: var(--color-background-text);
+}
+
+.record-input .input-collection {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .record-input .input-container {

@@ -18,31 +18,31 @@ async function setupRecord() {
                 {
                     id: "location",
                     name: "Location",
-                    type: "text_short",
+                    type: "textShort",
                     required: true
                 },
                 {
                     id: "othersInvolved",
                     name: "Others Involved",
-                    type: "text_short",
+                    type: "textShort",
                     required: true
                 },
                 {
                     id: "supervisors",
                     name: "Supervisors",
-                    type: "text_short",
+                    type: "textShort",
                     required: true
                 },
                 {
                     id: "items",
                     name: "What I Took With Me",
-                    type: "text_short",
+                    type: "textShort",
                     required: true
                 },
                 {
                     id: "experienceDescription",
                     name: "The Experience Described In One Paragraph",
-                    type: "text_long",
+                    type: "textLong",
                     required: true
                 }
             ]

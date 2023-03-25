@@ -30,8 +30,8 @@ function setupRecordInput() {
             {
                 id: "description",
                 name: "Description",
-                description: "To make your record more reliable, describe how you felt and what the weather was like.",
-                type: "text_long"
+                description: "To make your activity more legit, describe how you felt and what the weather was like.",
+                type: "textLong"
             }
         ]
     });

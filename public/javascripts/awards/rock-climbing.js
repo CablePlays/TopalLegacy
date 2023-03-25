@@ -1,6 +1,5 @@
 window.addEventListener("load", () => {
     createSignoffDisplay({
-        items: rockClimbingSignoffs,
         placeholder: "signoffs",
         type: "rockClimbing",
         additions: {
@@ -24,7 +23,7 @@ window.addEventListener("load", () => {
             {
                 id: "area",
                 name: "Area",
-                type: "text_short",
+                type: "textShort",
                 required: true
             },
             {
@@ -42,7 +41,7 @@ window.addEventListener("load", () => {
             {
                 id: "weather",
                 name: "Weather",
-                type: "text_short",
+                type: "textShort",
                 required: true
             }
         ]
@@ -59,7 +58,7 @@ window.addEventListener("load", () => {
             {
                 id: "route_name",
                 name: "Route Name",
-                type: "text_short",
+                type: "textShort",
                 required: true
             },
             {
@@ -84,7 +83,7 @@ window.addEventListener("load", () => {
             {
                 id: "grade",
                 name: "Grade",
-                type: "text_short",
+                type: "textShort",
                 required: true
             },
             {

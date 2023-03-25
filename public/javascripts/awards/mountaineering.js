@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
             {
                 id: "area",
                 name: "Area",
-                type: "text_short",
+                type: "textShort",
                 required: true
             },
             {
@@ -103,19 +103,19 @@ window.addEventListener("load", () => {
             {
                 id: "route",
                 name: "Route",
-                type: "text_long",
+                type: "textLong",
                 required: true
             },
             {
                 id: "weather",
                 name: "Weather Conditions",
-                type: "text_long",
+                type: "textLong",
                 required: true
             },
             {
                 id: "situations",
                 name: "Situations Dealt With",
-                type: "text_long",
+                type: "textLong",
                 required: true
             }
         ]

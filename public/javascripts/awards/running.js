@@ -57,8 +57,8 @@ window.addEventListener("load", () => {
             {
                 id: "description",
                 name: "Description",
-                description: "To make your run more reliable, describe how you felt and what the weather was like.",
-                type: "text_long"
+                description: "To make your run more legit, describe how you felt and what the weather was like.",
+                type: "textLong"
             }
         ]
     });

@@ -40,11 +40,7 @@ function getAwardName(id) {
     return null;
 }
 
-function removeChildren(element) {
-    while (element.firstChild) {
-        element.firstChild.remove();
-    }
-}
+/* Formatting */
 
 function formatDate(date) {
     if (typeof date === "string") {
@@ -76,6 +72,28 @@ function formatDuration(seconds, showSeconds = true) {
     return formatted;
 }
 
+function formatTime(time) {
+    let [hour, minute] = time.split(":");
+    let period;
+
+    if (hour < 12) {
+        period = "am";
+
+        if (hour === "0") {
+            hour = 12;
+        }
+    } else {
+        period = "pm";
+
+        if (hour !== "12") {
+            hour -= 12;
+        }
+    }
+
+    let format = `${hour}:${minute}${period}`;
+    return format;
+}
+
 function setDateCurrent(dateInput) {
     let date = new Date();
     let year = date.getFullYear();
@@ -92,6 +110,14 @@ function setDateCurrent(dateInput) {
     }
 
     dateInput.value = year + "-" + month + "-" + day;
+}
+
+/* Element */
+
+function removeChildren(element) {
+    while (element.firstChild) {
+        element.firstChild.remove();
+    }
 }
 
 function createTableHeaders(headers) {

@@ -9,8 +9,9 @@
         - duration
         - range
         - selection
-        - text_long
-        - text_short
+        - textLong
+        - textShort
+        - time
 */
 function createRecordInput(options) {
     const {
@@ -26,18 +27,17 @@ function createRecordInput(options) {
     const container = document.createElement("div");
     container.classList.add("record-input");
 
-    const append = element => container.appendChild(element);
     const inputs = {};
 
     // title
-    const mainTitle = document.createElement("h2");
-    mainTitle.innerHTML = titleText ?? "Create Record";
-    append(mainTitle);
+    createElement("h2", container, titleText ?? "Create Record");
 
-    append(createSpacer(20));
+    container.appendChild(createSpacer(20));
 
     providedInputs?.forEach(input => {
         const { id, name, description, type, required } = input;
+
+        const inputElements = [];
         const descriptionElements = [];
 
         /* Description */
@@ -48,74 +48,87 @@ function createRecordInput(options) {
 
         /* Input */
 
-        let singleRow = false;
-        let inputElement;
-        let inputSupplier;
+        let wrap = true; // separate info from inputs
+        let separateInputs = true; // new line for each input
+        let valueSupplier;
 
         switch (type) {
-            case "boolean":
-                singleRow = true;
-                inputElement = document.createElement("input");
+            case "boolean": {
+                wrap = false;
+                const inputElement = document.createElement("input");
                 inputElement.type = "checkbox";
-                inputSupplier = () => inputElement.checked;
+                inputElements.push(inputElement);
+
+                valueSupplier = () => inputElement.checked;
                 break;
-            case "date":
-                inputElement = document.createElement("input");
+            }
+            case "date": {
+                const inputElement = document.createElement("input");
                 inputElement.type = "date";
                 setDateCurrent(inputElement);
+                inputElements.push(inputElement);
 
-                inputSupplier = () => inputElement.value;
+                valueSupplier = () => inputElement.value;
                 break;
-            case "duration":
-                inputElement = document.createElement("input");
-                inputElement.type = "text";
-                inputElement.placeholder = "Hours Minutes Seconds (e.g. \"1 30 0\")";
+            }
+            case "duration": {
+                separateInputs = false;
 
-                let savedValue;
+                function createInput(placeholder, min, max) {
+                    const element = document.createElement("input");
+                    element.placeholder = placeholder;
+                    element.type = "number";
 
-                inputElement.addEventListener("change", () => {
-                    let value = inputElement.value;
-                    let parts = value.split(" ");
+                    element.addEventListener("input", () => {
+                        let value = element.value;
 
-                    while (true) { // remove empty strings
-                        let i = parts.indexOf("");
-                        if (i == -1) break;
-                        parts.splice(i, 1);
-                    }
+                        if (value !== "") {
+                            value = parseInt(value);
+                            value = Math.max(value, min);
+                            value = Math.min(value, max);
 
-                    let valid = true;
-                    let numbers = [];
+                            element.value = value;
+                        }
+                    })
 
-                    if (parts.length !== 3) { // check length
-                        valid = false;
-                    } else { // check that all are integers
-                        for (let i = 0; i < parts.length; i++) {
-                            let n = parseInt(parts[i]);
+                    inputElements.push(element);
+                    return element;
+                }
 
-                            if (isNaN(n) || n < 0) {
-                                valid = false;
-                                break;
-                            }
+                const hourElement = createInput("hours", 0, 100);
+                const minuteElement = createInput("minutes", 0, 59);
+                const secondElement = createInput("seconds", 0, 59);
 
-                            numbers.push(n);
+                valueSupplier = () => {
+                    let blank = 0;
+                    let total = 0;
+
+                    let cycle = [secondElement, minuteElement, hourElement];
+
+                    for (let i = 0; i < cycle.length; i++) {
+                        const element = cycle[i];
+                        const value = element.value;
+
+                        if (value === "") {
+                            blank++;
+                        } else {
+                            const multiplier = Math.pow(60, i);
+                            total += value * multiplier;
                         }
                     }
-                    if (valid) {
-                        savedValue = numbers[0] * 60 * 60 + numbers[1] * 60 + numbers[2];
-                        inputElement.value = formatDuration(savedValue);
-                    } else {
-                        savedValue = undefined;
-                        inputElement.value = null;
-                    }
-                });
 
-                inputSupplier = () => savedValue;
+                    // check that at least 1 is filled in
+                    return (blank === cycle.length) ? null : total;
+                };
+
                 break;
-            case "range":
+            }
+            case "range": {
                 const { range } = input;
 
-                inputElement = document.createElement("input");
+                const inputElement = document.createElement("input");
                 inputElement.type = "range";
+                inputElements.push(inputElement);
 
                 if (range != null) {
                     const { min, max, step, value, display } = range;
@@ -136,11 +149,14 @@ function createRecordInput(options) {
                     }
                 }
 
-                inputSupplier = () => +inputElement.value;
+                valueSupplier = () => +inputElement.value;
                 break;
-            case "selection":
+            }
+            case "selection": {
                 const { options, value } = input.selection ?? {};
-                inputElement = document.createElement("select");
+
+                const inputElement = document.createElement("select");
+                inputElements.push(inputElement);
 
                 if (value == null) {
                     createElement("option", inputElement, "select...").value = "";
@@ -158,63 +174,145 @@ function createRecordInput(options) {
                     inputElement.value = value;
                 }
 
-                inputSupplier = () => inputElement.value;
+                valueSupplier = () => inputElement.value;
                 break;
-            case "text_long":
-                inputElement = document.createElement("textarea");
-                inputSupplier = () => inputElement.value;
+            }
+            case "textLong": {
+                const inputElement = document.createElement("textarea");
+                inputElements.push(inputElement);
+                valueSupplier = () => inputElement.value;
                 break;
-            case "text_short":
-                inputElement = document.createElement("input");
+            }
+            case "textShort": {
+                const inputElement = document.createElement("input");
                 inputElement.type = "text";
-                inputSupplier = () => inputElement.value;
+                inputElements.push(inputElement);
+                valueSupplier = () => inputElement.value;
                 break;
+            }
+            case "time": {
+                function applyListener(element, minute) {
+                    element.addEventListener("input", () => {
+                        const v = element.value;
+
+                        if (v !== "") {
+                            const min = (minute ? 0 : 1);
+                            const max = (minute ? 60 : 12);
+
+                            if (v < min) {
+                                element.value = min;
+                            } else if (v > max) {
+                                element.value = max;
+                            } else {
+                                const floor = Math.floor(v);
+
+                                if (floor.toString() !== v) {
+                                    element.value = Math.max(floor, 1);
+                                }
+                            }
+                        }
+                    });
+                };
+
+                const hourElement = document.createElement("input");
+                hourElement.type = "number";
+                hourElement.placeholder = "hour";
+                applyListener(hourElement, false);
+                inputElements.push(hourElement);
+
+                const minuteElement = document.createElement("input");
+                minuteElement.type = "number";
+                minuteElement.placeholder = "minute";
+                applyListener(minuteElement, true);
+                inputElements.push(minuteElement);
+
+                const timeType = document.createElement("select");
+                createElement("option", timeType, "am");
+                createElement("option", timeType, "pm");
+                inputElements.push(timeType);
+
+                separateInputs = false;
+                valueSupplier = () => {
+                    let hour = hourElement.value;
+                    if (hour === "") return null;
+
+                    let minute = minuteElement.value;
+                    if (minute === "") return null;
+
+                    hour = +hour;
+
+                    if (timeType.value === "am") {
+                        if (hour === 12) {
+                            hour = 0;
+                        }
+                    } else if (hour !== 12) {
+                        hour += 12;
+                    }
+
+                    return `${hour}:${minute}`;
+                };
+
+                break;
+            }
             default: throw new Error("Invalid type: " + type);
         }
 
-        const textContainer = (singleRow ? document.createElement("div") : container);
+        /* Text */
 
-        /* Name */
-
-        const nameElement = document.createElement("h3");
-        nameElement.innerHTML = name;
-        textContainer.appendChild(nameElement);
-
-        /* Description */
+        const textContainer = document.createElement("div");
+        const nameElement = createElement("h3", textContainer, name);
 
         descriptionElements.forEach(elemet => {
             textContainer.appendChild(elemet);
         });
 
-        /* Input */
+        /* Inputs */
 
-        if (singleRow) {
-            const inputContainer = document.createElement("div");
+        function appendInputs(div) {
+            if (separateInputs) {
+                inputElements.forEach(element => {
+                    div.appendChild(element);
+                });
+            } else {
+                const inputCollection = document.createElement("div");
+                inputCollection.classList.add("input-collection");
+
+                inputElements.forEach(element => {
+                    inputCollection.appendChild(element);
+                });
+
+                div.appendChild(inputCollection);
+            }
+        }
+
+        /* Display */
+
+        if (wrap) {
+            container.appendChild(textContainer);
+            container.appendChild(createSpacer(20));
+            appendInputs(container);
+        } else {
+            const inputContainer = createElement("div", container);
             inputContainer.classList.add("input-container");
 
             inputContainer.appendChild(textContainer);
-            inputContainer.appendChild(inputElement);
-
-            append(inputContainer);
-        } else {
-            append(createSpacer(20));
-            append(inputElement);
+            appendInputs(inputContainer);
         }
 
-        append(createSpacer(20));
+        container.appendChild(createSpacer(20));
 
         /* Save */
 
         inputs[id] = {
             nameElement,
             required,
-            supplier: inputSupplier
+            supplier: valueSupplier
         };
     });
 
     /* Button */
 
-    const button = createElement("button", null, "Create");
+    const button = createElement("button", container, "Create");
     button.classList.add("create-button");
 
     let used = false;
@@ -253,12 +351,8 @@ function createRecordInput(options) {
 
             /* Success Message */
 
-            append(createSpacer(10));
-
-            const successMessageElement = document.createElement("p");
-            successMessageElement.innerHTML = successMessage;
-            successMessageElement.classList.add("success-message");
-            append(successMessageElement);
+            container.appendChild(createSpacer(10));
+            createElement("p", container, successMessage).classList.add("success-message");
 
             /* Request */
 
@@ -281,8 +375,6 @@ function createRecordInput(options) {
             window.location.reload();
         }
     });
-
-    append(button);
 
     /* Placeholder */
 

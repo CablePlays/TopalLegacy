@@ -26,7 +26,7 @@
     width: 200px;
 }
 
-.flexible-record-display .remove-card {
+.flexible-record-display .option-card {
     background-color: var(--color-primary-600);
     color: var(--color-primary-600-text);
     display: flex;
@@ -97,12 +97,14 @@
     text-align: center;
 }
 
-.records-table.removable td:last-child {
+.records-table td.interactive {
+    background-color: var(--color-secondary-300);
+    color: var(--color-secondary-400-text);
     cursor: pointer;
     width: 10px;
 }
 
-.records-table.removable td:last-child:hover {
+.records-table td.interactive:hover {
     background-color: var(--color-secondary-400);
     color: var(--color-secondary-400-text);
 }

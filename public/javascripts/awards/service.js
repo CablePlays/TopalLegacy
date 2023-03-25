@@ -1,5 +1,26 @@
-function setupRecordInput() {
-    const element = createRecordInput({
+async function setupTotal() {
+    const totalHoursLabel = document.getElementById("total-hours-label");
+    totalHoursLabel.innerHTML = LOADING_TEXT;
+
+    let res = await fetch("/get-service-time", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user: getUserId()
+        })
+    });
+
+    const { value } = await res.json();
+
+    totalHoursLabel.innerHTML = `${formatDuration(value, false)} / 25h`;
+    document.getElementById("total-hours-meter").value = value;
+}
+
+window.addEventListener("load", () => {
+    createRecordInput({
+        placeholder: "record-input",
         recordType: "service",
         inputs: [
             {
@@ -12,7 +33,7 @@ function setupRecordInput() {
                 id: "service",
                 name: "Service",
                 description: "What kind of service did you provide?",
-                type: "text_short",
+                type: "textShort",
                 required: true,
                 range: {
                     min: 1000,
@@ -40,36 +61,10 @@ function setupRecordInput() {
                 id: "description",
                 name: "Description",
                 description: "To make your record more reliable, describe what you did and who you worked with.",
-                type: "text_long"
+                type: "textLong"
             }
         ]
     });
-
-    document.getElementById("record-input").replaceWith(element);
-}
-
-async function setupTotal() {
-    const totalHoursLabel = document.getElementById("total-hours-label");
-    totalHoursLabel.innerHTML = LOADING_TEXT;
-
-    let res = await fetch("/get-service-time", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getUserId()
-        })
-    });
-
-    const { value } = await res.json();
-
-    totalHoursLabel.innerHTML = `${formatDuration(value, false)} / 25h`;
-    document.getElementById("total-hours-meter").value = value;
-}
-
-window.addEventListener("load", () => {
-    setupRecordInput();
     setupTotal();
     createTableRD({
         placeholder: "record-display",

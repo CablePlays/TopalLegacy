@@ -167,6 +167,7 @@ function createTableRDSection(title, recordType) {
             placeholder: div,
             recordType,
             removable: false,
+            signable: true,
             targetUser: getProfileUser()
         });
     });
@@ -174,9 +175,12 @@ function createTableRDSection(title, recordType) {
 
 function createSignoffTable(options) {
     const {
-        container, signoffType, items,
+        container,
+        signoffType,
         promptTextSupplier = c => c ? "You're about to grant this user a sign-off." : "You're about to revoke a sign-off from this user."
     } = options;
+
+    const items = getSignoffs(signoffType);
 
     const loadingElement = createLoading(true);
     container.appendChild(loadingElement);
@@ -279,10 +283,36 @@ function createSignoffsSection(title, options) {
 
 function setupSections() {
     createSignoffsSection("Drakensberg Sign-Offs", {
-        items: drakensbergSignoffs,
         signoffType: "drakensberg"
     });
     createTableRDSection("Endurance Records", "endurance");
+    createSection("Kayaking", div => {
+
+        /* Flat Water Paddling Records */
+
+        createElement("h3", div, "Flat Water Paddling Records");
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createTableRD({
+            recordType: "flatWaterPaddling",
+            removable: false,
+            targetUser: getProfileUser()
+        }));
+
+        div.appendChild(createSpacer(20));
+
+        /* River Trip Records */
+
+        createElement("h3", div, "River Trip Records");
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createFlexibleRD({
+            recordType: "riverTrip",
+            removable: false,
+            signable: true,
+            targetUser: getProfileUser()
+        }));
+    });
     createTableRDSection("Midmar Mile Training", "midmarMile");
     createFlexibleRDSection("Mountaineering Records", "mountaineering");
     createSection("Rock Climbing", div => {
@@ -305,7 +335,6 @@ function setupSections() {
 
         createSignoffTable({
             container: div,
-            items: rockClimbingSignoffs,
             signoffType: "rockClimbing"
         });
 
@@ -325,11 +354,9 @@ function setupSections() {
     createTableRDSection("Service Records", "service");
     createFlexibleRDSection("Solitaire Record", "solitaire", true);
     createSignoffsSection("Summit Sign-Offs", {
-        items: summitSignoffs,
         signoffType: "summit"
     });
     createSignoffsSection("Traverse Sign-Offs", {
-        items: traverseSignoffs,
         signoffType: "traverse"
     });
     createSection("Venture Award", div => {

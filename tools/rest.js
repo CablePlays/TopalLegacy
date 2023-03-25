@@ -739,7 +739,9 @@ function solitaireRequests(app) {
     });
 }
 
-async function registerRecordType(app, name, table, subrecordsTable) {
+async function registerRecordType(app, name, table, options) {
+    const { signable, subrecordsTable } = options ?? {};
+
     async function getColumns(tableName) {
         let allColumns = await sqlDatabase.get(`SELECT GROUP_CONCAT(name, ',') FROM PRAGMA_TABLE_INFO('${tableName}')`);
         allColumns = allColumns["GROUP_CONCAT(name, ',')"];
@@ -769,25 +771,22 @@ async function registerRecordType(app, name, table, subrecordsTable) {
             const userId = cookies.getUserId(req);
 
             const columns = await getColumns(table);
-            let valid = true;
             let columnsString = "";
             let valuesString = "";
 
             for (let i = 0; i < columns.length; i++) {
+                const column = columns[i];
+                const val = value[column];
+
+                if (val == null) {
+                    continue;
+                }
                 if (i > 0) {
                     columnsString += ", ";
                     valuesString += ", ";
                 }
 
-                const column = columns[i];
-
                 columnsString += column;
-                const val = value[column];
-
-                if (val == null) {
-                    valid = false;
-                    break;
-                }
 
                 if (typeof val === "string") {
                     valuesString += `"${val}"`;
@@ -796,9 +795,7 @@ async function registerRecordType(app, name, table, subrecordsTable) {
                 }
             }
 
-            if (valid) {
-                await sqlDatabase.run(`INSERT INTO ${table} (user, ${columnsString}) VALUES ("${userId}", ${valuesString})`);
-            }
+            await sqlDatabase.run(`INSERT INTO ${table} (user, ${columnsString}) VALUES ("${userId}", ${valuesString})`);
         }
 
         res.end();
@@ -827,6 +824,25 @@ async function registerRecordType(app, name, table, subrecordsTable) {
 
         res.end();
     });
+
+    /* Sign */
+
+    if (signable) {
+        app.post(`/sign-${name}-record`, async (req, res) => { // permission: manageAwards
+            if (await general.sessionTokenValid(req)) {
+                const { id } = req.body;
+                const userId = cookies.getUserId(req);
+
+                const permissions = jsonDatabase.getPermissions(userId);
+
+                if (permissions.manageAwards) {
+                    await sqlDatabase.run(`UPDATE ${table} SET signer = "${userId}" WHERE id = "${id}" AND signer IS NULL`);
+                }
+            }
+
+            res.end();
+        });
+    }
 
     if (subrecordsTable != null) {
 
@@ -939,12 +955,22 @@ function acceptApp(app) {
     solitaireRequests(app);
 
     registerRecordType(app, "endurance", "endurance_records");
+    registerRecordType(app, "flatWaterPaddling", "flat_water_paddling_records", {
+        signable: true
+    });
     registerRecordType(app, "midmarMile", "midmar_mile_records");
     registerRecordType(app, "mountaineering", "mountaineering_records");
-    registerRecordType(app, "rockClimbing", "rock_climbing_records", "rock_climbing_subrecords");
+    registerRecordType(app, "riverTrip", "river_trip_records", {
+        signable: true
+    });
+    registerRecordType(app, "rockClimbing", "rock_climbing_records", {
+        subrecordsTable: "rock_climbing_subrecords"
+    });
     registerRecordType(app, "rockClimbingSub", "rock_climbing_subrecords");
     registerRecordType(app, "running", "running_records");
-    registerRecordType(app, "service", "service_records");
+    registerRecordType(app, "service", "service_records", {
+        signable: true
+    });
 }
 
 module.exports = acceptApp;

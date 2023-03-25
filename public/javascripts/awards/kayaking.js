@@ -17,6 +17,7 @@ window.addEventListener("load", () => {
             {
                 id: "training",
                 name: "Training",
+                description: "The type of training that you did.",
                 type: "textShort",
                 required: true
             },

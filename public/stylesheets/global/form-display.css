@@ -39,6 +39,7 @@
 .record-input input[type="date"],
 .record-input input[type="number"],
 .record-input input[type="text"],
+.record-input input[type="url"],
 .record-input select {
     height: 40px;
     padding: 8px;

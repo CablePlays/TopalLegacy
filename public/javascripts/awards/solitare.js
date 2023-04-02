@@ -7,7 +7,6 @@ async function setupRecord() {
         inputOptions: {
             title: "Add Solitaire Record",
             successMessage: "Your solitaire record has been created!",
-            endpoint: "/set-solitaire-record",
             inputs: [
                 {
                     id: "date",

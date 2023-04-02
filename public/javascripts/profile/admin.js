@@ -356,8 +356,43 @@ function setupSections() {
     createSignoffsSection("Summit Sign-Offs", {
         signoffType: "summit"
     });
-    createSignoffsSection("Traverse Sign-Offs", {
-        signoffType: "traverse"
+    createSection("Traverse", div => {
+
+        /* Signoffs */
+        
+        createElement("h3", div, "Sign-Offs");
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "traverse"
+        });
+
+        /* Accident Summaries */
+        
+        div.appendChild(createSpacer(20));
+        createElement("h3", div, "Accident Summaries");
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createFlexibleRD({
+            recordType: "traverseSummaries",
+            removable: false,
+            singleton: true,
+            targetUser: getProfileUser()
+        }));
+
+        /* Hike Plan */
+        
+        div.appendChild(createSpacer(20));
+        createElement("h3", div, "Hike Plan");
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createFlexibleRD({
+            recordType: "traverseHikePlan",
+            removable: false,
+            singleton: true,
+            targetUser: getProfileUser()
+        }));
     });
     createSection("Venture Award", div => {
         createElement("h3", div, "Proposal Approved");

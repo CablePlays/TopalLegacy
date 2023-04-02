@@ -139,12 +139,10 @@ function acceptApp(app) {
     // general
     app.use('/', router("general/home"));
     app.use('/login', router("general/login", { loggedIn: false })); // require not logged in handled in router
-    app.use('/mountaineering', router("general/mountaineering", { loggedIn: true }));
     app.use('/search-users', router("general/search-users"));
     app.use('/settings', router("general/settings", { loggedIn: true }));
 
     // awards
-    app.use('/awards/drakensberg', router("awards/drakensberg", { loggedIn: true }));
     app.use('/awards/endurance', router("awards/endurance", { loggedIn: true }));
     app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
     app.use('/awards/midmar-mile', router("awards/midmar-mile", { loggedIn: true }));
@@ -153,9 +151,12 @@ function acceptApp(app) {
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
     app.use('/awards/service', router("awards/service", { loggedIn: true }));
     app.use('/awards/solitaire', router("awards/solitaire", { loggedIn: true }));
-    app.use('/awards/summit', router("awards/summit", { loggedIn: true }));
-    app.use('/awards/traverse', router("awards/traverse", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
+
+    app.use('/awards/mountaineering', router("awards/mountaineering/mountaineering", { loggedIn: true }));
+    app.use('/awards/mountaineering/drakensberg', router("awards/mountaineering/drakensberg", { loggedIn: true }));
+    app.use('/awards/mountaineering/summit', router("awards/mountaineering/summit", { loggedIn: true }));
+    app.use('/awards/mountaineering/traverse', router("awards/mountaineering/traverse", { loggedIn: true }));
 
     // profile
     app.use('/profile', redirectRouter("profile/awards"));

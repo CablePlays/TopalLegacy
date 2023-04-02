@@ -12,6 +12,7 @@
         - textLong
         - textShort
         - time
+        - url
 */
 function createRecordInput(options) {
     const {
@@ -252,6 +253,25 @@ function createRecordInput(options) {
                     return `${hour}:${minute}`;
                 };
 
+                break;
+            }
+            case "url": {
+                let url = null;
+
+                const inputElement = document.createElement("input");
+                inputElement.type = "url";
+                inputElements.push(inputElement);
+
+                inputElement.addEventListener("change", () => {
+                    if (inputElement.checkValidity()) {
+                        url = inputElement.value;
+                    } else {
+                        inputElement.value = null;
+                        url = null;
+                    }
+                });
+
+                valueSupplier = () => url;
                 break;
             }
             default: throw new Error("Invalid type: " + type);

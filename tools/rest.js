@@ -739,7 +739,7 @@ function solitaireRequests(app) {
     });
 }
 
-async function registerRecordType(app, name, table, options) {
+function registerRecordType(app, name, table, options) {
     const { signable, subrecordsTable } = options ?? {};
 
     async function getColumns(tableName) {
@@ -945,14 +945,58 @@ async function registerRecordType(app, name, table, options) {
     }
 }
 
+function registerSingletonRecordType(app, name, path, keys) {
+    app.post(`/get-${name}-record`, async (req, res) => { // permission: none/manageAwards
+        const json = {};
+
+        await selfOrManageAwards(req, async targetUserId => {
+            const db = jsonDatabase.getUser(targetUserId);
+            const value = db.get(path);
+
+            json.exists = (value != null);
+            json.value = value ?? {};
+        });
+
+        res.json(json);
+    });
+
+    app.post(`/add-${name}-record`, async (req, res) => { // restrictions: self
+        const json = {};
+
+        if (await general.sessionTokenValid(req)) {
+            const { value } = req.body;
+
+            if (value != null) {
+                const userId = cookies.getUserId(req);
+                const setting = {};
+
+                for (let key of keys) {
+                    setting[key] = value[key];
+                }
+
+                jsonDatabase.getUser(userId).set(path, setting);
+            }
+        }
+
+        res.json(json);
+    });
+
+    app.post(`/remove-${name}-record`, async (req, res) => { // restrictions: self
+        if (await general.sessionTokenValid(req)) {
+            const userId = cookies.getUserId(req);
+            jsonDatabase.getUser(userId).delete(path);
+        }
+
+        res.end();
+    });
+}
+
 function acceptApp(app) {
     awardRequests(app);
     milestoneRequests(app);
     permissionRequests(app);
     signoffRequests(app);
     miscRequests(app);
-
-    solitaireRequests(app);
 
     registerRecordType(app, "endurance", "endurance_records");
     registerRecordType(app, "flatWaterPaddling", "flat_water_paddling_records", {
@@ -971,6 +1015,12 @@ function acceptApp(app) {
     registerRecordType(app, "service", "service_records", {
         signable: true
     });
+
+    registerSingletonRecordType(app, "solitaire", "solitaire", [
+        "date", "location", "othersInvolved", "supervisors", "items", "experienceDescription"
+    ]);
+    registerSingletonRecordType(app, "traverseHikePlan", "traverse.hikePlan", ["link"]);
+    registerSingletonRecordType(app, "traverseSummaries", "traverse.summaries", ["link"]);
 }
 
 module.exports = acceptApp;

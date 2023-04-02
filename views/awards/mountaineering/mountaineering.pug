@@ -1,8 +1,8 @@
-extends ../layout
+extends ../../layout
 
 block content
   link(rel="stylesheet" href="/stylesheets/general/mountaineering.css")
-  script(src="/javascripts/awards/mountaineering.js")
+  script(src="/javascripts/awards/mountaineering/mountaineering.js")
 
   h1 Mountaineering
   p There are three hiking awards that you can achieve.
@@ -10,9 +10,9 @@ block content
   .spacer.v40
 
   .link-container.partial
-    a(href="awards/drakensberg") Drakensberg Award &#8594
-    a(href="awards/summit") Summit Award &#8594
-    a(href="awards/traverse") Traverse Award &#8594
+    a(href="/awards/mountaineering/drakensberg") Drakensberg Award &#8594
+    a(href="/awards/mountaineering/summit") Summit Award &#8594
+    a(href="/awards/mountaineering/traverse") Traverse Award &#8594
 
   .spacer.v40
 

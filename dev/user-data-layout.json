@@ -31,5 +31,9 @@
         "supervisors": "",
         "items": "",
         "experienceDescription": ""
+    },
+    "traverse": {
+        "hikePlan": "URL",
+        "summaries": "URL"
     }
 }

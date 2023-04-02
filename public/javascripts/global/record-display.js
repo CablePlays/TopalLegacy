@@ -189,6 +189,20 @@ const _flexibleDisplayColumns = {
             type: "textLong",
             valueProvider: "experienceDescription"
         }
+    ],
+    traverseHikePlan: [
+        {
+            name: "Link",
+            type: "url",
+            valueProvider: "link"
+        }
+    ],
+    traverseSummaries: [
+        {
+            name: "Link",
+            type: "url",
+            valueProvider: "link"
+        }
     ]
 };
 
@@ -422,6 +436,7 @@ function createFlexibleRD(options) {
         - textLong
         - textShort
         - time
+        - url
 */
 function createFlexibleDisplay(items) {
     const container = document.createElement("div");
@@ -482,8 +497,9 @@ function createFlexibleDisplay(items) {
             }
             case "textLong": {
                 createElement("div", container, div => {
+                    div.classList.add("text-long-container");
                     createElement("h3", div, name);
-                    createElement("p", div, value).classList.add("text-long");
+                    createElement("p", div, value);
                 });
 
                 break;
@@ -500,6 +516,16 @@ function createFlexibleDisplay(items) {
                 createElement("div", container, div => {
                     createElement("h3", div, name);
                     createElement("p", div, formatTime(value));
+                });
+
+                break;
+            } case "url": {
+                createElement("div", container, div => {
+                    createElement("h3", div, name);
+                    const a = createElement("a", div, value);
+                    a.classList.add("link");
+                    a.href = value;
+                    a.target = "_blank";
                 });
 
                 break;

@@ -1,11 +1,3 @@
-> Awards
-
-...
-
-> Current Awards
-
-Traverse
-
 > Completed Awards
 
 Drakensberg
@@ -18,6 +10,7 @@ Running
 Service
 Solitare
 Summit
+Traverse
 Venture
 
 > Todo

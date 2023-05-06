@@ -68,6 +68,7 @@ function isAward(award) {
         "kayaking",
         "midmarMile", "midmarMileInstructor", "midmarMileLeader",
         "mountainBiking",
+        "mountaineeringInstructor", "mountaineeringLeader",
         "polarBear", "polarBearInstructor", "polarBearLeader",
         "rockClimbing",
         "running",
@@ -97,6 +98,15 @@ function isSignoff(type, id) {
                 "organisingEvents",
                 "readBook",
                 "whoseWho"
+            ].includes(id);
+        case "mountaineeringInstructor":
+            return [
+                "firstAid",
+                "handling",
+                "history",
+                "logs",
+                "rescueProcedues",
+                "ropeWork"
             ].includes(id);
         case "rockClimbing": {
             const valid = [

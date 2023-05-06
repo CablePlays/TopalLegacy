@@ -47,7 +47,7 @@ window.addEventListener("load", () => {
                 name: "Altitude Gained",
                 type: "range",
                 range: {
-                    min: 1000,
+                    min: 500,
                     max: 10000,
                     step: 100,
                     value: 3000,

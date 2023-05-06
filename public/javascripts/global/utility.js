@@ -14,6 +14,7 @@ const AWARDS = [
     ["kayaking", "Kayaking"],
     ["midmarMile", "Midmar Mile"], ["midmarMileInstructor", "Midmar Mile Instructor"], ["midmarMileLeader", "Midmar Mile Leader"],
     ["mountainBiking", "Mountain Biking"],
+    ["mountaineeringInstructor", "Mountainering Instructor"], ["mountaineeringLeader", "Mountainering Leader"],
     ["polarBear", "Polar Bear"], ["polarBearInstructor", "Polar Bear Instructor"], ["polarBearLeader", "Polar Bear Leader"],
     ["rockClimbing", "Rock Climbing"],
     ["running", "Running"],
@@ -21,7 +22,7 @@ const AWARDS = [
     ["solitaire", "Solitaire"], ["solitaireInstructor", "Solitaire Instructor"], ["solitaireLeader", "Solitaire Leader"],
     ["summit", "Summit"],
     ["traverse", "Traverse"],
-    ["venture", "Venture"],
+    ["venture", "Venture"]
 ];
 
 const PERMISSIONS = [

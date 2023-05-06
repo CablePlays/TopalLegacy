@@ -27,6 +27,14 @@ const _signoffs = {
         ["theoryTest", "Passed theory test"],
         ["riverSafetyTest", "Basic river safety test"]
     ],
+    mountaineeringInstructor: [
+        ["firstAid", "Valid basic First-Aid and CPR (level one)"],
+        ["handling", "Proven practical ability to lead a berg trip with understanding of planning, route finding, advanced map reading as well as ability to handle people"],
+        ["rescueProcedues", "Knowledge of rescue procedures (refer to Dragons Wrath or internet)"],
+        ["history", "History of the Drakensberg (Barrier of Spears or other book) - able to give a two minute report"],
+        ["ropeWork", "Holds a rock climbing award and is competent; able to demonstrate and explain rope work"],
+        ["logs", "Has kept an accurate log of hikes and has shown ability in planning hikes as an assistant leader"]
+    ],
     rockClimbing: [
         [
             "Knots",

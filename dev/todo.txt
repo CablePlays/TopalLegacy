@@ -10,8 +10,6 @@ Set up award status
 
 > Awards Todo
 
-Mountaineering instructor
-Mountaineering leader
 Rock climbing instructor
 Rock climbing leader
 Kayaking instructor

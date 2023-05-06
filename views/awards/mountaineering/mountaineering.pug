@@ -1,18 +1,18 @@
 extends ../../layout
 
 block content
-  link(rel="stylesheet" href="/stylesheets/general/mountaineering.css")
   script(src="/javascripts/awards/mountaineering/mountaineering.js")
 
   h1 Mountaineering
-  p There are three hiking awards that you can achieve.
+  p.award-description.
+    There are five hiking awards that you can achieve.
+    Please note that this page does not represent an award,
+    but rather serves as a link to the five mountaineering awards and allows you to record all your hikes in one place.
+    The mountaineering award series has three first-level awards and two higher level awards.
 
-  .spacer.v40
+  .spacer.v20
 
-  .link-container.partial
-    a(href="/awards/mountaineering/drakensberg") Drakensberg Award &#8594
-    a(href="/awards/mountaineering/summit") Summit Award &#8594
-    a(href="/awards/mountaineering/traverse") Traverse Award &#8594
+  .sequel-awards(data-types="drakensberg summit traverse 1 2")
 
   .spacer.v40
 
@@ -21,5 +21,6 @@ block content
   .spacer.v40
 
   h2 Mountaineering Records
+  p Record your hikes for all five mountaineering awards here.
   .spacer.v20
   #record-display

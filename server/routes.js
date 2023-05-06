@@ -163,9 +163,11 @@ function acceptApp(app) {
 
     // mountaineering
     app.use('/awards/mountaineering', router("awards/mountaineering/mountaineering", { loggedIn: true }));
-    app.use('/awards/mountaineering/drakensberg', router("awards/mountaineering/drakensberg", { loggedIn: true }));
-    app.use('/awards/mountaineering/summit', router("awards/mountaineering/summit", { loggedIn: true }));
-    app.use('/awards/mountaineering/traverse', router("awards/mountaineering/traverse", { loggedIn: true }));
+    app.use('/awards/mountaineering-instructor', router("awards/mountaineering/mountaineering-instructor", { loggedIn: true }));
+    app.use('/awards/mountaineering-leader', router("awards/mountaineering/mountaineering-leader", { loggedIn: true }));
+    app.use('/awards/drakensberg', router("awards/mountaineering/drakensberg", { loggedIn: true }));
+    app.use('/awards/summit', router("awards/mountaineering/summit", { loggedIn: true }));
+    app.use('/awards/traverse', router("awards/mountaineering/traverse", { loggedIn: true }));
 
     // polar bear
     app.use('/awards/polar-bear', router("awards/polar_bear/polar-bear", { loggedIn: true }));

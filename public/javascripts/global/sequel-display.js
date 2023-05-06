@@ -11,7 +11,11 @@ window.addEventListener("load", () => {
     let path = parts[0] + "//";
 
     for (let i = 2; i < parts.length - 1; i++) {
-        path += parts[i] + "/";
+        if (i > 2) {
+            path += "/";
+        }
+
+        path += parts[i];
     }
 
     // get award path (excludes sequel appendage)
@@ -24,14 +28,12 @@ window.addEventListener("load", () => {
         }
     }
 
-    path += awardPath;
-
     for (let element of [...document.getElementsByClassName("sequel-awards")]) { // copy due to updating on replace
         // types
         const typesAttribute = element.getAttribute("data-types");
         const types = typesAttribute.split(" ");
 
-        // contaainer
+        // container
         const container = document.createElement("div");
         container.classList.add("sequel-container");
 
@@ -42,24 +44,24 @@ window.addEventListener("load", () => {
             switch (parseInt(type)) {
                 case 0:
                     name = "Basic Award";
-                    href = path;
+                    href = path + "/" + awardPath;
                     break;
                 case 1:
                     name = "Instructor Award";
-                    href = path + "-instructor";
+                    href = path + "/" + awardPath + "-instructor";
                     break;
                 case 2:
                     name = "Leader Award";
-                    href = path + "-leader";
+                    href = path + "/" + awardPath + "-leader";
                     break;
                 default:
-                    console.warn("Invalid type: " + type);
-                    continue;
+                    name = type.charAt(0).toUpperCase() + type.substring(1);
+                    href = path + "/" + type;
             }
 
             const instructorLink = createElement("a", container, name);
-            instructorLink.href = href;
             instructorLink.classList.add("sequel-link");
+            instructorLink.href = href;
         }
 
         element.replaceWith(container);

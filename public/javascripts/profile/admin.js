@@ -282,8 +282,14 @@ function createSignoffsSection(title, options) {
 }
 
 function setupSections() {
-    createSignoffsSection("Drakensberg Sign-Offs", {
-        signoffType: "drakensberg"
+    createSection("Drakensberg", div => {
+        createElement("h3", div, "Sign-Offs");
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "drakensberg"
+        });
     });
     createSection("Endurance", div => {
         createElement("h3", div, "Records");
@@ -333,6 +339,15 @@ function setupSections() {
     });
     createTableRDSection("Midmar Mile Training", "midmarMile");
     createFlexibleRDSection("Mountaineering Records", "mountaineering");
+    createSection("Mountaineering Instructor", div => {
+        createElement("h3", div, "Sign-Offs");
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "mountaineeringInstructor"
+        });
+    });
     createSection("Rock Climbing", div => {
 
         /* Belayer Signoff */

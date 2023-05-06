@@ -18,7 +18,6 @@ Venture leader
 
 > Todo
 
-Update admin profile page to only include award names as foldable categories
 Revamp milestone system
 
 > Ideas

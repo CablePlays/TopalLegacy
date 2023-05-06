@@ -146,11 +146,15 @@ function acceptApp(app) {
 
     /* Awards */
 
-    app.use('/awards/endurance', router("awards/endurance", { loggedIn: true }));
     app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
     app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
+
+    // endurance
+    app.use('/awards/endurance', router("awards/endurance/endurance", { loggedIn: true }));
+    app.use('/awards/endurance-instructor', router("awards/endurance/endurance-instructor", { loggedIn: true }));
+    app.use('/awards/endurance-leader', router("awards/endurance/endurance-leader", { loggedIn: true }));
 
     // midmar mile
     app.use('/awards/midmar-mile', router("awards/midmar_mile/midmar-mile", { loggedIn: true }));

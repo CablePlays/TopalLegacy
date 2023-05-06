@@ -1,6 +1,7 @@
 function setupRecordInput() {
     const element = createRecordInput({
         recordType: "endurance",
+        placeholder: "record-input",
         inputs: [
             {
                 id: "date",
@@ -35,8 +36,6 @@ function setupRecordInput() {
             }
         ]
     });
-
-    document.getElementById("record-input").replaceWith(element);
 }
 
 window.addEventListener("load", () => {

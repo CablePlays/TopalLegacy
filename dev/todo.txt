@@ -14,14 +14,13 @@ Mountaineering instructor
 Mountaineering leader
 Rock climbing instructor
 Rock climbing leader
-Endurance instructor
-Enurance leader
 Kayaking instructor
 Kayaking leader
 Venture leader
 
 > Todo
 
+Update admin profile page to only include award names as foldable categories
 Revamp milestone system
 
 > Ideas

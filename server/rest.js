@@ -64,7 +64,7 @@ async function provideUserInfoToStatuses(statuses) {
 function isAward(award) {
     return [
         "drakensberg",
-        "endurance",
+        "endurance", "enduranceInstructor", "enduranceLeader",
         "kayaking",
         "midmarMile", "midmarMileInstructor", "midmarMileLeader",
         "mountainBiking",
@@ -77,6 +77,60 @@ function isAward(award) {
         "traverse",
         "venture"
     ].includes(award);
+}
+
+function isSignoff(type, id) {
+    switch (type) {
+        case "drakensberg":
+            return [
+                "cooker",
+                "backPack",
+                "ecologicalAwareness",
+                "pitchTent"
+            ].includes(id);
+        case "enduranceInstructor":
+            return [
+                "bothAwardsTwice",
+                "firstAid",
+                "instruct",
+                "mentalAttitude",
+                "organisingEvents",
+                "readBook",
+                "whoseWho"
+            ].includes(id);
+        case "rockClimbing": {
+            const valid = [
+                ["knots", 4],
+                ["harness", 7],
+                ["belaying", 11],
+                ["wallLeadClimb", 3],
+                ["abseiling", 3],
+                ["finalTests", 3]
+            ];
+
+            for (let a of valid) {
+                for (let i = 1; i <= a[1]; i++) {
+                    if (id === a[0] + i) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        } case "summit":
+            return [
+                "mapReading",
+                "preparedness",
+                "routeFinding"
+            ].includes(id);
+        case "traverse":
+            return [
+                "hikePlan",
+                "summary"
+            ].includes(id);
+    }
+
+    return false;
 }
 
 function awardRequests(app) {
@@ -379,47 +433,6 @@ function signoffRequests(app) {
 
     /* Set Signoff */
 
-    function isValidSignoff(type, id) {
-        if (type === "drakensberg") {
-            return [
-                "cooker",
-                "backPack",
-                "ecologicalAwareness",
-                "pitchTent"
-            ].includes(id);
-        } else if (type === "rockClimbing") {
-            const valid = [
-                ["knots", 4],
-                ["harness", 7],
-                ["belaying", 11],
-                ["wallLeadClimb", 3],
-                ["abseiling", 3],
-                ["finalTests", 3]
-            ];
-
-            for (let a of valid) {
-                for (let i = 1; i <= a[1]; i++) {
-                    if (id === a[0] + i) {
-                        return true;
-                    }
-                }
-            }
-        } else if (type === "summit") {
-            return [
-                "mapReading",
-                "preparedness",
-                "routeFinding"
-            ].includes(id);
-        } else if (type === "traverse") {
-            return [
-                "hikePlan",
-                "summary"
-            ].includes(id);
-        }
-
-        return false;
-    }
-
     app.post("/set-signoff", async (req, res) => { // permission: manageAwards
         if (await general.sessionTokenValid(req)) {
             const userId = cookies.getUserId(req);
@@ -428,7 +441,7 @@ function signoffRequests(app) {
             if (userPermissions.manageAwards) {
                 const { complete, id, type, user: targetUserId } = req.body;
 
-                if (isValidSignoff(type, id) && await sqlDatabase.isUser(targetUserId)) {
+                if (isSignoff(type, id) && await sqlDatabase.isUser(targetUserId)) {
                     const db = jsonDatabase.getUser(targetUserId);
                     const path = SIGNOFFS_PATH + "." + type + "." + id;
 

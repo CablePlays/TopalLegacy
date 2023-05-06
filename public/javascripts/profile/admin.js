@@ -285,7 +285,25 @@ function setupSections() {
     createSignoffsSection("Drakensberg Sign-Offs", {
         signoffType: "drakensberg"
     });
-    createTableRDSection("Endurance Records", "endurance");
+    createSection("Endurance", div => {
+        createElement("h3", div, "Records");
+        div.appendChild(createSpacer(20));
+        div.appendChild(createTableRD({
+            recordType: "endurance",
+            removable: false,
+            signable: true,
+            targetUser: getProfileUser()
+        }));
+    });
+    createSection("Endurance Instructor", div => {
+        createElement("h3", div, "Sign-Offs");
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "enduranceInstructor"
+        });
+    });
     createSection("Kayaking", div => {
 
         /* Flat Water Paddling Records */
@@ -361,7 +379,7 @@ function setupSections() {
     createSection("Traverse", div => {
 
         /* Signoffs */
-        
+
         createElement("h3", div, "Sign-Offs");
         div.appendChild(createSpacer(20));
 
@@ -371,7 +389,7 @@ function setupSections() {
         });
 
         /* Accident Summaries */
-        
+
         div.appendChild(createSpacer(20));
         createElement("h3", div, "Accident Summaries");
         div.appendChild(createSpacer(20));
@@ -384,7 +402,7 @@ function setupSections() {
         }));
 
         /* Hike Plan */
-        
+
         div.appendChild(createSpacer(20));
         createElement("h3", div, "Hike Plan");
         div.appendChild(createSpacer(20));

@@ -10,7 +10,7 @@ const IMAGE_LOADING = "/images/loading.gif";
 
 const AWARDS = [
     ["drakensberg", "Drakensberg"],
-    ["endurance", "Endurance"],
+    ["endurance", "Endurance"], ["enduranceInstructor", "Endurance Instructor"], ["enduranceLeader", "Endurance Leader"],
     ["kayaking", "Kayaking"],
     ["midmarMile", "Midmar Mile"], ["midmarMileInstructor", "Midmar Mile Instructor"], ["midmarMileLeader", "Midmar Mile Leader"],
     ["mountainBiking", "Mountain Biking"],

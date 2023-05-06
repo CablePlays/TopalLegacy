@@ -24,16 +24,18 @@
             "knots1": "STATUS"
         }
     },
-    "solitaire": {
-        "date": "DATE",
-        "location": "",
-        "othersInvolved": "",
-        "supervisors": "",
-        "items": "",
-        "experienceDescription": ""
-    },
-    "traverse": {
-        "hikePlan": "URL",
-        "summaries": "URL"
+    "singletonRecords": {
+        "solitaire": {
+            "date": "DATE",
+            "location": "",
+            "othersInvolved": "",
+            "supervisors": "",
+            "items": "",
+            "experience": ""
+        },
+        "traverse": {
+            "hikePlan": "URL",
+            "summaries": "URL"
+        }
     }
 }

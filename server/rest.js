@@ -897,6 +897,9 @@ function registerRecordType(app, name, table, options) {
 }
 
 function registerSingletonRecordType(app, name, path, keys) {
+    const PATH = "singleton-records";
+    path = PATH + "." + path;
+
     app.post(`/get-${name}-record`, async (req, res) => { // permission: none/manageAwards
         const json = {};
 
@@ -968,7 +971,7 @@ function acceptApp(app) {
     });
 
     registerSingletonRecordType(app, "solitaire", "solitaire", [
-        "date", "location", "othersInvolved", "supervisors", "items", "experienceDescription"
+        "date", "location", "othersInvolved", "supervisors", "items", "experience"
     ]);
     registerSingletonRecordType(app, "traverseHikePlan", "traverse.hikePlan", ["link"]);
     registerSingletonRecordType(app, "traverseSummaries", "traverse.summaries", ["link"]);

@@ -39,7 +39,7 @@ async function setupRecord() {
                     required: true
                 },
                 {
-                    id: "experienceDescription",
+                    id: "experience",
                     name: "The Experience Described In One Paragraph",
                     type: "textLong",
                     required: true

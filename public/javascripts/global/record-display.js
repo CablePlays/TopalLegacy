@@ -187,7 +187,7 @@ const _flexibleDisplayColumns = {
         {
             name: "The Experience Described In One Paragraph",
             type: "textLong",
-            valueProvider: "experienceDescription"
+            valueProvider: "experience"
         }
     ],
     traverseHikePlan: [

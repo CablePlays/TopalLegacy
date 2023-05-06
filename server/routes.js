@@ -131,34 +131,43 @@ function redirectRouter(path) {
 }
 
 function acceptApp(app) {
-    // admin
+    /* Admin */
+
     app.use('/admin', router("admin/admin", { permission: "any" }));
     app.use('/permissions', router("admin/permissions", { permission: "managePermissions" }));
     app.use('/signoff-requests', router("admin/signoff-requests", { permission: "manageAwards" }));
 
-    // general
+    /* General */
+
     app.use('/', router("general/home"));
-    app.use('/login', router("general/login", { loggedIn: false })); // require not logged in handled in router
+    app.use('/login', router("general/login", { loggedIn: false }));
     app.use('/search-users', router("general/search-users"));
     app.use('/settings', router("general/settings", { loggedIn: true }));
 
-    // awards
+    /* Awards */
+
     app.use('/awards/endurance', router("awards/endurance", { loggedIn: true }));
     app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
     app.use('/awards/midmar-mile', router("awards/midmar-mile", { loggedIn: true }));
-    app.use('/awards/polar-bear', router("awards/polar-bear", { loggedIn: true }));
     app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
     app.use('/awards/service', router("awards/service", { loggedIn: true }));
     app.use('/awards/solitaire', router("awards/solitaire", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
 
+    // mountaineering
     app.use('/awards/mountaineering', router("awards/mountaineering/mountaineering", { loggedIn: true }));
     app.use('/awards/mountaineering/drakensberg', router("awards/mountaineering/drakensberg", { loggedIn: true }));
     app.use('/awards/mountaineering/summit', router("awards/mountaineering/summit", { loggedIn: true }));
     app.use('/awards/mountaineering/traverse', router("awards/mountaineering/traverse", { loggedIn: true }));
 
-    // profile
+    // polar bear
+    app.use('/awards/polar-bear', router("awards/polar_bear/polar-bear", { loggedIn: true }));
+    app.use('/awards/polar-bear-instructor', router("awards/polar_bear/polar-bear-instructor", { loggedIn: true }));
+    app.use('/awards/polar-bear-leader', router("awards/polar_bear/polar-bear-leader", { loggedIn: true }));
+
+    /* Profile */
+
     app.use('/profile', redirectRouter("profile/awards"));
     app.use('/profile/admin', router("profile/admin", { permission: "manageAwards", validateUser: true }));
     app.use('/profile/awards', router("profile/awards", { validateUser: true }));

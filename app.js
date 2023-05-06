@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
-const rest = require("./tools/rest");
-const routes = require("./tools/routes");
+const rest = require("./server/rest");
+const routes = require("./server/routes");
 
 const PORT = 80;
 const app = express();

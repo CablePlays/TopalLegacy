@@ -1,0 +1,26 @@
+a.instructor-link,
+a.leader-link {
+    background-color: var(--color-button);
+    border-radius: 2px;
+    color: var(--color-button-text);
+    max-width: 100%;
+    padding: 16px;
+    text-decoration: none;
+    width: 500px;
+}
+
+a.instructor-link:hover,
+a.leader-link:hover {
+    background-color: var(--color-button-hover);
+}
+
+a.instructor-link:active,
+a.leader-link:active {
+    background-color: var(--color-button-active);
+}
+
+.sequel-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}

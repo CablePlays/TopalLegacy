@@ -61,14 +61,14 @@ async function provideUserInfoToStatuses(statuses) {
     });
 }
 
-function isValidAward(award) {
+function isAward(award) {
     return [
         "drakensberg",
         "endurance",
         "kayaking",
         "midmarMile",
         "mountainBiking",
-        "polarBear",
+        "polarBear", "polarBearInstructor", "polarBearLeader",
         "rockClimbing",
         "running",
         "service",
@@ -113,7 +113,7 @@ function awardRequests(app) {
             if (userPermissions.manageAwards) {
                 const { complete, id, user: targetUserId } = req.body;
 
-                if (id != null && userId != null && isValidAward(id) && await sqlDatabase.isUser(targetUserId)) {
+                if (id != null && userId != null && isAward(id) && await sqlDatabase.isUser(targetUserId)) {
                     const db = jsonDatabase.getUser(targetUserId);
                     const path = "awards." + id;
 
@@ -283,7 +283,7 @@ function signoffRequests(app) {
             const userId = cookies.getUserId(req);
             const { award } = req.body;
 
-            if (isValidAward(award)) {
+            if (isAward(award)) {
                 const complete = jsonDatabase.getUser(userId).get("awards." + award + ".complete") === true;
 
                 // check not completed & user does not have request for the award
@@ -687,55 +687,6 @@ function miscRequests(app) {
         res.json({
             status: "success"
         });
-    });
-}
-
-function solitaireRequests(app) {
-    const PATH = "solitaire";
-    const KEYS = ["date", "location", "othersInvolved", "supervisors", "items", "experienceDescription"];
-
-    app.post("/get-solitaire-record", async (req, res) => { // permission: none/manageAwards
-        const json = {};
-
-        await selfOrManageAwards(req, async targetUserId => {
-            const db = jsonDatabase.getUser(targetUserId);
-            const value = db.get(PATH);
-
-            json.exists = (value != null);
-            json.value = value ?? {};
-        });
-
-        res.json(json);
-    });
-
-    app.post("/add-solitaire-record", async (req, res) => { // restrictions: self
-        const json = {};
-
-        if (await general.sessionTokenValid(req)) {
-            const { value } = req.body;
-
-            if (value != null) {
-                const userId = cookies.getUserId(req);
-                const setting = {};
-
-                for (let key of KEYS) {
-                    setting[key] = value[key];
-                }
-
-                jsonDatabase.getUser(userId).set(PATH, setting);
-            }
-        }
-
-        res.json(json);
-    });
-
-    app.post("/remove-solitaire-record", async (req, res) => { // restrictions: self
-        if (await general.sessionTokenValid(req)) {
-            const userId = cookies.getUserId(req);
-            jsonDatabase.getUser(userId).delete(PATH);
-        }
-
-        res.end();
     });
 }
 

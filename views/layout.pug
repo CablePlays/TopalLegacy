@@ -2,6 +2,8 @@ doctype html
 html
   head
     title Topal
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
     link(rel="stylesheet" href="/stylesheets/global/award-design.css")
@@ -12,6 +14,7 @@ html
     link(rel="stylesheet" href="/stylesheets/global/hamburger-icon.css")
     link(rel="stylesheet" href="/stylesheets/global/images.css")
     link(rel="stylesheet" href="/stylesheets/global/record-display.css")
+    link(rel="stylesheet" href="/stylesheets/global/sequel-display.css")
     link(rel="stylesheet" href="/stylesheets/global/signoff-display.css")
     link(rel="stylesheet" href="/stylesheets/global/slideshow.css")
     link(rel="stylesheet" href="/stylesheets/global/status-display.css")
@@ -21,9 +24,10 @@ html
     script(src="/javascripts/global/confirmation.js")
     script(src="/javascripts/global/cookies.js")
     script(src="/javascripts/global/form-display.js")
-    script(src="/javascripts//global/layout.js")
+    script(src="/javascripts/global/layout.js")
     script(src="/javascripts/global/record-display.js")
     script(src="/javascripts/global/rest.js")
+    script(src="/javascripts/global/sequel-display.js")
     script(src="/javascripts/global/signoff-display.js")
     script(src="/javascripts/global/slideshow.js")
     script(src="/javascripts/global/status-display.js")
@@ -72,7 +76,7 @@ html
 
     .container
       block content
-      
+
     #admin-icon(style=`display: ${displays.adminPage.true.block}`)
       span This page requires special privileges to view.
       img(src="/images/admin-icon.png")
@@ -80,7 +84,7 @@ html
     footer
       p &copy 2023 
         a(href="/") TOPAL
-    
+
     #confirmation(style="display: none")
       .dialog
         h2 Are You Sure?

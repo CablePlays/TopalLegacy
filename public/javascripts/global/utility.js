@@ -14,7 +14,7 @@ const AWARDS = [
     ["kayaking", "Kayaking"],
     ["midmarMile", "Midmar Mile"],
     ["mountainBiking", "Mountain Biking"],
-    ["polarBear", "Polar Bear"],
+    ["polarBear", "Polar Bear"], ["polarBearInstructor", "Polar Bear Instructor"], ["polarBearLeader", "Polar Bear Leader"],
     ["rockClimbing", "Rock Climbing"],
     ["running", "Running"],
     ["service", "Service"],

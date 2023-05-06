@@ -14,27 +14,33 @@
     --color-white: #fff;
 
     /* Background */
+
     --color-background: #000;
     --color-background-text: #000;
     --color-background-opposite: #000;
+    
     --color-background-accent: rgb(40, 40, 60);
     --color-background-accent-text: var(--color-white);
 
     /* Button */
+
     --color-button: #000;
     --color-button-active: #000;
     --color-button-hover: #000;
     --color-button-text: #000;
+
     --color-button-light: rgb(40, 40, 60);
     --color-button-active-light: rgb(40, 40, 60);
     --color-button-hover-light: rgb(10, 10, 30);
     --color-button-text-light: rgb(255, 255, 255);
+
     --color-button-dark: rgb(245, 245, 245);
     --color-button-active-dark: rgb(245, 245, 245);
     --color-button-hover-dark: rgb(215, 215, 215);
     --color-button-text-dark: rgb(0, 0, 0);
 
     /* Primary */
+
     --color-primary-200: #bbc0e1;
     --color-primary-200-text: var(--color-black);
     --color-primary-300: #9aa0c6;
@@ -49,6 +55,7 @@
     --color-primary-700-text: var(--color-white);
 
     /* Secondary */
+    
     --color-secondary-200: #ffe1b4;
     --color-secondary-200-text: var(--color-black);
     --color-secondary-300: #fdc87f;
@@ -61,32 +68,6 @@
     --color-secondary-600-text: var(--color-white);
     --color-secondary-700: #e04b06;
     --color-secondary-700-text: var(--color-white);
-
-    /* --color-primary-200: #c3e9d6;
-    --color-primary-200-text: var(--color-black);
-    --color-primary-300: #9adcbb;
-    --color-primary-300-text: var(--color-black);
-    --color-primary-400: #48c38c;
-    --color-primary-400-text: var(--color-black);
-    --color-primary-500: #04a96d;
-    --color-primary-500-text: var(--color-white);
-    --color-primary-600: #008553;
-    --color-primary-600-text: var(--color-white);
-    --color-primary-700: #00653d;
-    --color-primary-700-text: var(--color-white);
-
-    --color-secondary-200: #e9d3af;
-    --color-secondary-200-text: var(--color-black);
-    --color-secondary-300: #f2ca8a;
-    --color-secondary-300-text: var(--color-black);
-    --color-secondary-400: #edb55e;
-    --color-secondary-400-text: var(--color-background-text);
-    --color-secondary-500: #e69832;
-    --color-secondary-500-text: var(--color-white);
-    --color-secondary-600: #d47226;
-    --color-secondary-600-text: var(--color-white);
-    --color-secondary-700: #c75d23;
-    --color-secondary-700-text: var(--color-white); */
 }
 
 a.link {

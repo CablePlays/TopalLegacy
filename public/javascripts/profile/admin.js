@@ -353,6 +353,8 @@ function setupSections() {
     createTableRDSection("Running Records", "running");
     createTableRDSection("Service Records", "service");
     createFlexibleRDSection("Solitaire Record", "solitaire", true);
+    createFlexibleRDSection("Solitaire Instructor Record", "solitaireInstructor", true);
+    createFlexibleRDSection("Solitaire Leader Record", "solitaireLeader", true);
     createSignoffsSection("Summit Sign-Offs", {
         signoffType: "summit"
     });

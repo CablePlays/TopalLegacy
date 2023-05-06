@@ -18,7 +18,7 @@ const AWARDS = [
     ["rockClimbing", "Rock Climbing"],
     ["running", "Running"],
     ["service", "Service"],
-    ["solitaire", "Solitaire"],
+    ["solitaire", "Solitaire"], ["solitaireInstructor", "Solitaire Instructor"], ["solitaireLeader", "Solitaire Leader"],
     ["summit", "Summit"],
     ["traverse", "Traverse"],
     ["venture", "Venture"],

@@ -190,6 +190,50 @@ const _flexibleDisplayColumns = {
             valueProvider: "experience"
         }
     ],
+    solitaireInstructor: [
+        {
+            name: "Date",
+            type: "date",
+            valueProvider: "date"
+        },
+        {
+            name: "Location",
+            type: "textShort",
+            valueProvider: "location"
+        },
+        {
+            name: "Group Supervised",
+            type: "textLong",
+            valueProvider: "groupSupervised"
+        },
+        {
+            name: "Comments & Problems Overcome",
+            type: "textLong",
+            valueProvider: "comments"
+        }
+    ],
+    solitaireLeader: [
+        {
+            name: "Date",
+            type: "date",
+            valueProvider: "date"
+        },
+        {
+            name: "Location",
+            type: "textShort",
+            valueProvider: "location"
+        },
+        {
+            name: "Group Supervised",
+            type: "textLong",
+            valueProvider: "groupSupervised"
+        },
+        {
+            name: "Comments & Problems Overcome",
+            type: "textLong",
+            valueProvider: "comments"
+        }
+    ],
     traverseHikePlan: [
         {
             name: "Link",

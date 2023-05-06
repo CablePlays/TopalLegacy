@@ -72,7 +72,7 @@ function isAward(award) {
         "rockClimbing",
         "running",
         "service",
-        "solitaire",
+        "solitaire", "solitaireInstructor", "solitaireLeader",
         "summit",
         "traverse",
         "venture"
@@ -972,6 +972,12 @@ function acceptApp(app) {
 
     registerSingletonRecordType(app, "solitaire", "solitaire", [
         "date", "location", "othersInvolved", "supervisors", "items", "experience"
+    ]);
+    registerSingletonRecordType(app, "solitaireInstructor", "solitaireInstructor", [
+        "date", "location", "groupSupervised", "comments"
+    ]);
+    registerSingletonRecordType(app, "solitaireLeader", "solitaireLeader", [
+        "date", "location", "groupSupervised", "comments"
     ]);
     registerSingletonRecordType(app, "traverseHikePlan", "traverse.hikePlan", ["link"]);
     registerSingletonRecordType(app, "traverseSummaries", "traverse.summaries", ["link"]);

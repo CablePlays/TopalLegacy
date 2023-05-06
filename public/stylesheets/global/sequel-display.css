@@ -1,5 +1,4 @@
-a.instructor-link,
-a.leader-link {
+a.sequel-link {
     background-color: var(--color-button);
     border-radius: 2px;
     color: var(--color-button-text);
@@ -9,13 +8,11 @@ a.leader-link {
     width: 500px;
 }
 
-a.instructor-link:hover,
-a.leader-link:hover {
+a.sequel-link:hover {
     background-color: var(--color-button-hover);
 }
 
-a.instructor-link:active,
-a.leader-link:active {
+a.sequel-link:active {
     background-color: var(--color-button-active);
 }
 

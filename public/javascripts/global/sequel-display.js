@@ -15,43 +15,51 @@ window.addEventListener("load", () => {
     }
 
     // get award path (excludes sequel appendage)
-    let awardPath;
-    let types = []; // basic, instructor, leader
+    let awardPath = last;
 
-    if (last.endsWith("instructor")) {
-        awardPath = last.substring(0, last.length - "-instructor".length);
-        types.push(0);
-        types.push(2);
-    } else if (last.endsWith("leader")) {
-        awardPath = last.substring(0, last.length - "-leader".length);
-        types.push(0);
-        types.push(1);
-    } else {
-        awardPath = last;
-        types.push(1);
-        types.push(2);
+    for (let a of ["instructor", "leader"]) {
+        if (last.endsWith(a)) {
+            awardPath = last.substring(0, last.length - a.length - 1);
+            break;
+        }
     }
 
     path += awardPath;
 
     for (let element of [...document.getElementsByClassName("sequel-awards")]) { // copy due to updating on replace
+        // types
+        const typesAttribute = element.getAttribute("data-types");
+        const types = typesAttribute.split(" ");
+
+        // contaainer
         const container = document.createElement("div");
         container.classList.add("sequel-container");
 
-        if (types.includes(0)) {
-            const instructorLink = createElement("a", container, "Basic Award");
-            instructorLink.href = path;
-            instructorLink.classList.add("instructor-link");
-        }
-        if (types.includes(1)) {
-            const instructorLink = createElement("a", container, "Instructor Award");
-            instructorLink.href = path + "-instructor";
-            instructorLink.classList.add("instructor-link");
-        }
-        if (types.includes(2)) {
-            const leaderLink = createElement("a", container, "Leader Award");
-            leaderLink.href = path + "-leader";
-            leaderLink.classList.add("leader-link");
+        for (let type of types) {
+            let name;
+            let href;
+
+            switch (parseInt(type)) {
+                case 0:
+                    name = "Basic Award";
+                    href = path;
+                    break;
+                case 1:
+                    name = "Instructor Award";
+                    href = path + "-instructor";
+                    break;
+                case 2:
+                    name = "Leader Award";
+                    href = path + "-leader";
+                    break;
+                default:
+                    console.warn("Invalid type: " + type);
+                    continue;
+            }
+
+            const instructorLink = createElement("a", container, name);
+            instructorLink.href = href;
+            instructorLink.classList.add("sequel-link");
         }
 
         element.replaceWith(container);

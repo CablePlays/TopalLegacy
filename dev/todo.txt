@@ -1,17 +1,20 @@
-> Completed Awards
+> Awards Todo
 
-Drakensberg
-Endurance
-Kayaking
-Midmar Mile
-Polar Bear
-Rock Climbing
-Running
-Service
-Solitare
-Summit
-Traverse
-Venture
+Mountaineering instructor
+Mountaineering leader
+Rock climbing instructor
+Rock climbing leader
+Solitaire instructor
+Solitaire leader
+Endurance instructor
+Enurance leader
+Kayaking instructor
+Kayaking leader
+Service instructor
+Service leader
+Midmar Mile instructor
+Midmar Mile leader
+Venture leader
 
 > Todo
 

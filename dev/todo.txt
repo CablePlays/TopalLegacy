@@ -13,8 +13,6 @@ Mountaineering instructor
 Mountaineering leader
 Rock climbing instructor
 Rock climbing leader
-Solitaire instructor
-Solitaire leader
 Endurance instructor
 Enurance leader
 Kayaking instructor

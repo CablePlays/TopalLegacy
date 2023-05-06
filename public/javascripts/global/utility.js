@@ -17,7 +17,7 @@ const AWARDS = [
     ["polarBear", "Polar Bear"], ["polarBearInstructor", "Polar Bear Instructor"], ["polarBearLeader", "Polar Bear Leader"],
     ["rockClimbing", "Rock Climbing"],
     ["running", "Running"],
-    ["service", "Service"],
+    ["service", "Service"], ["serviceInstructor", "Service Instructor"], ["serviceLeader", "Service Leader"],
     ["solitaire", "Solitaire"], ["solitaireInstructor", "Solitaire Instructor"], ["solitaireLeader", "Solitaire Leader"],
     ["summit", "Summit"],
     ["traverse", "Traverse"],

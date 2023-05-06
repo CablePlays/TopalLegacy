@@ -71,7 +71,7 @@ function isAward(award) {
         "polarBear", "polarBearInstructor", "polarBearLeader",
         "rockClimbing",
         "running",
-        "service",
+        "service", "serviceInstructor", "serviceLeader",
         "solitaire", "solitaireInstructor", "solitaireLeader",
         "summit",
         "traverse",

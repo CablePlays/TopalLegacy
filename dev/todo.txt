@@ -18,8 +18,6 @@ Endurance instructor
 Enurance leader
 Kayaking instructor
 Kayaking leader
-Service instructor
-Service leader
 Venture leader
 
 > Todo

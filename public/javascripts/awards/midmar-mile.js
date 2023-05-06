@@ -1,6 +1,6 @@
 function setupRecordInput() {
     const element = createRecordInput({
-        endpoint: "/add-midmarMile-record",
+        recordType: "midmarMile",
         inputs: [
             {
                 id: "date",

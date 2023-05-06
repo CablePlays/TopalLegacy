@@ -150,7 +150,6 @@ function acceptApp(app) {
     app.use('/awards/kayaking', router("awards/kayaking", { loggedIn: true }));
     app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
-    app.use('/awards/service', router("awards/service", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
 
     // midmar mile
@@ -168,6 +167,11 @@ function acceptApp(app) {
     app.use('/awards/polar-bear', router("awards/polar_bear/polar-bear", { loggedIn: true }));
     app.use('/awards/polar-bear-instructor', router("awards/polar_bear/polar-bear-instructor", { loggedIn: true }));
     app.use('/awards/polar-bear-leader', router("awards/polar_bear/polar-bear-leader", { loggedIn: true }));
+
+    // service
+    app.use('/awards/service', router("awards/service/service", { loggedIn: true }));
+    app.use('/awards/service-instructor', router("awards/service/service-instructor", { loggedIn: true }));
+    app.use('/awards/service-leader', router("awards/service/service-leader", { loggedIn: true }));
 
     // solitaire
     app.use('/awards/solitaire', router("awards/solitaire/solitaire", { loggedIn: true }));

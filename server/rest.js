@@ -66,7 +66,7 @@ function isAward(award) {
         "drakensberg",
         "endurance",
         "kayaking",
-        "midmarMile",
+        "midmarMile", "midmarMileInstructor", "midmarMileLeader",
         "mountainBiking",
         "polarBear", "polarBearInstructor", "polarBearLeader",
         "rockClimbing",

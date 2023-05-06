@@ -4,6 +4,7 @@ Create record type in server rest
 Create form display
 Create record display
 Show in admin profile page
+
 Add award type on server and client side
 Set up award status
 
@@ -19,8 +20,6 @@ Kayaking instructor
 Kayaking leader
 Service instructor
 Service leader
-Midmar Mile instructor
-Midmar Mile leader
 Venture leader
 
 > Todo

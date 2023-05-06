@@ -12,7 +12,7 @@ const AWARDS = [
     ["drakensberg", "Drakensberg"],
     ["endurance", "Endurance"],
     ["kayaking", "Kayaking"],
-    ["midmarMile", "Midmar Mile"],
+    ["midmarMile", "Midmar Mile"], ["midmarMileInstructor", "Midmar Mile Instructor"], ["midmarMileLeader", "Midmar Mile Leader"],
     ["mountainBiking", "Mountain Biking"],
     ["polarBear", "Polar Bear"], ["polarBearInstructor", "Polar Bear Instructor"], ["polarBearLeader", "Polar Bear Leader"],
     ["rockClimbing", "Rock Climbing"],

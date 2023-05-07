@@ -1,0 +1,7 @@
+.container .info-container {
+    background-color: var(--color-primary-600);
+    color: var(--color-primary-600-text);
+    border-radius: 2px;
+    padding: 16px;
+    width: 100%;
+}

@@ -16,7 +16,7 @@ const AWARDS = [
     ["mountainBiking", "Mountain Biking"],
     ["mountaineeringInstructor", "Mountainering Instructor"], ["mountaineeringLeader", "Mountainering Leader"],
     ["polarBear", "Polar Bear"], ["polarBearInstructor", "Polar Bear Instructor"], ["polarBearLeader", "Polar Bear Leader"],
-    ["rockClimbing", "Rock Climbing"],
+    ["rockClimbing", "Rock Climbing"], ["rockClimbingInstructor", "Rock Climbing Instructor"], ["rockClimbingLeader", "Rock Climbing Leader"],
     ["running", "Running"],
     ["service", "Service"], ["serviceInstructor", "Service Instructor"], ["serviceLeader", "Service Leader"],
     ["solitaire", "Solitaire"], ["solitaireInstructor", "Solitaire Instructor"], ["solitaireLeader", "Solitaire Leader"],
@@ -89,6 +89,9 @@ function formatTime(time) {
         if (hour !== "12") {
             hour -= 12;
         }
+    }
+    if (minute.length === 1) {
+        minute = "0" + minute;
     }
 
     let format = `${hour}:${minute}${period}`;

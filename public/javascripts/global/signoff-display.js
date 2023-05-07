@@ -109,6 +109,33 @@ const _signoffs = {
             ]
         ]
     ],
+    rockClimbingInstructor: [
+        ["bookReviews", "Two book reviews (technical climbing)"],
+        ["knots", "Demonstrate the use and ability of tying the following knots: MR8, clove hitch, Italian hitch, butterfly knot"],
+        ["equipment", "Maintenance and care of equipment"],
+        ["belays", "Set up at least three different belays at different locations, with anchors"],
+        ["devices", "Demonstrate the correct and safe use of the following devices: chocks, nuts, wedges, friends and any other protection device(s)"],
+        ["firstAid", "Valid basic First Aid and CPR (level 1)"],
+        ["rescueTechniques", `Rescue Techniques: Solve problems by performing a lower;
+       and demonstrate the ability to get into and out of a system (using direct and indirect belay systems)`],
+        ["logs", "Maintenance of a clear log of climbs and instruction time"],
+        ["attitude", "Correct attitude — responsibility, ability, helpfulness"],
+        ["climbingGrade", "Practical climbing grade 16+ with sport climbing (minimum of 10 different climbs at two different locations)"],
+        ["leadClimbsSport", "Protected lead climbs on rock placing protection (Sport) (at least 10 different climbs)"],
+        ["leadClimbsTrad", "Protected lead climbs on rock placing protection (Trad) (at least 3 different climbs)"],
+        ["traverse", "Low traverse on outside wall in less than 45 seconds"],
+        ["protection", `Practical protection of climbs and setting up of multiple belays
+       (e.g. set up and use top-top rope systems and bottom-top rope systems with anchors)`],
+        ["ascendRope", "Demonstrate the ability to ascend a rope by using prusik"],
+    ],
+    rockClimbingLeader: [
+        ["experience", "Considerable experience in instructing and lead climbing, and an attitude of service towards rock climbing and Outdoor Pursuits in general"],
+        ["logs", "At least 25 hours of supervised instruction and a minumum of 30 climbs logged"],
+        ["descriptions", "Demonstrate the ability to read and interpret route book descriptions"],
+        ["hoist", "Demonstrate an assisted and unassisted hoist"],
+        ["tangles", "Demonstrate the ability to handle jams, tangles and pendulums"],
+        ["abseiling", "Demonstrate ability to set up a releasable abseil and supervise a group abseiling"]
+    ],
     summit: [
         ["preparedness", "Passed hiking preparedness test"],
         ["mapReading", "Passed map reading test"],

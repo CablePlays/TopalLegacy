@@ -146,7 +146,6 @@ function acceptApp(app) {
 
     /* Awards */
 
-    app.use('/awards/rock-climbing', router("awards/rock-climbing", { loggedIn: true }));
     app.use('/awards/running', router("awards/running", { loggedIn: true }));
     app.use('/awards/venture', router("awards/venture", { loggedIn: true }));
 
@@ -177,6 +176,11 @@ function acceptApp(app) {
     app.use('/awards/polar-bear', router("awards/polar_bear/polar-bear", { loggedIn: true }));
     app.use('/awards/polar-bear-instructor', router("awards/polar_bear/polar-bear-instructor", { loggedIn: true }));
     app.use('/awards/polar-bear-leader', router("awards/polar_bear/polar-bear-leader", { loggedIn: true }));
+
+    // rock climbing
+    app.use('/awards/rock-climbing', router("awards/rock_climbing/rock-climbing", { loggedIn: true }));
+    app.use('/awards/rock-climbing-instructor', router("awards/rock_climbing/rock-climbing-instructor", { loggedIn: true }));
+    app.use('/awards/rock-climbing-leader', router("awards/rock_climbing/rock-climbing-leader", { loggedIn: true }));
 
     // service
     app.use('/awards/service', router("awards/service/service", { loggedIn: true }));

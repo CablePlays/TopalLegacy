@@ -1,17 +1,5 @@
-> For Each Award
-
-Create record type in server rest
-Create form display
-Create record display
-Show in admin profile page
-
-Add award type on server and client side
-Set up award status
-
 > Awards Todo
 
-Rock climbing instructor
-Rock climbing leader
 Venture leader
 
 > Todo

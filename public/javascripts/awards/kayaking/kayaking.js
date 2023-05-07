@@ -86,7 +86,7 @@ window.addEventListener("load", () => {
                 type: "range",
                 range: {
                     min: 3600,
-                    max: 180000,
+                    max: 259200, // 3 days
                     step: 900,
                     value: 10800,
                     display: value => formatDuration(value, false)

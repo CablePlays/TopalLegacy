@@ -200,6 +200,7 @@ useDatabase(db => {
 
     db.all("CREATE TABLE IF NOT EXISTS rock_climbing_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, area TEXT, party_size INTEGER, weather TEXT)");
     db.all("CREATE TABLE IF NOT EXISTS rock_climbing_subrecords (id INTEGER PRIMARY KEY AUTOINCREMENT, record_id INTEGER NOT NULL, route_name TEXT, method TEXT, grade TEXT, pitches INTEGER)");
+    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_instruction_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, duration INTEGER NOT NULL, climbers INTEGER NOT NULL, location TEXT NOT NULL, signer INTEGER)");
 });
 
 module.exports = {

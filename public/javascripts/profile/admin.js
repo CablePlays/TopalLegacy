@@ -411,6 +411,59 @@ function setupSections() {
         }));
     });
 
+    createSection("Rock Climbing Instructor", div => {
+
+        /* Book Reviews */
+
+        createElement("h3", div, "Book Reviews");
+
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createFlexibleRD({
+            recordType: "rockClimbingBookReviews",
+            removable: false,
+            singleton: true,
+            targetUser: getProfileUser()
+        }));
+
+        /* Signoffs */
+
+        div.appendChild(createSpacer(20));
+
+        createElement("h3", div, "Sign-Offs");
+
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "rockClimbingInstructor"
+        });
+    });
+
+    createSection("Rock Climbing Leader", div => {
+        createElement("h3", div, "Sign-Offs");
+
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "rockClimbingLeader"
+        });
+    });
+
+    createSection("Rock Climbing Instructor & Leader", div => {
+        createElement("h3", div, "Instruction Records");
+
+        div.appendChild(createSpacer(20));
+
+        div.appendChild(createTableRD({
+            recordType: "rockClimbingInstruction",
+            removable: false,
+            signable: true,
+            targetUser: getProfileUser()
+        }));
+    });
+
     createSection("Running", div => {
         createElement("h3", div, "Records");
 
@@ -492,20 +545,7 @@ function setupSections() {
 
     createSection("Traverse", div => {
 
-        /* Signoffs */
-
-        createElement("h3", div, "Sign-Offs");
-
-        div.appendChild(createSpacer(20));
-
-        createSignoffTable({
-            container: div,
-            signoffType: "traverse"
-        });
-
         /* Accident Summaries */
-
-        div.appendChild(createSpacer(20));
 
         createElement("h3", div, "Accident Summaries");
 
@@ -532,6 +572,19 @@ function setupSections() {
             singleton: true,
             targetUser: getProfileUser()
         }));
+
+        /* Signoffs */
+
+        div.appendChild(createSpacer(20));
+
+        createElement("h3", div, "Sign-Offs");
+
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "traverse"
+        });
     });
 
     createSection("Venture Award", div => {

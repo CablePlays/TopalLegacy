@@ -69,7 +69,7 @@ function isAward(award) {
         "mountainBiking",
         "mountaineeringInstructor", "mountaineeringLeader",
         "polarBear", "polarBearInstructor", "polarBearLeader",
-        "rockClimbing",
+        "rockClimbing", "rockClimbingInstructor", "rockClimbingLeader",
         "running",
         "service", "serviceInstructor", "serviceLeader",
         "solitaire", "solitaireInstructor", "solitaireLeader",
@@ -147,7 +147,35 @@ function isSignoff(type, id) {
             }
 
             return false;
-        } case "summit":
+        }
+        case "rockClimbingInstructor":
+            return [
+                "ascendRope",
+                "attitude",
+                "belays",
+                "bookReviews",
+                "climbingGrade",
+                "devices",
+                "equipment",
+                "firstAid",
+                "knots",
+                "leadClimbsSport",
+                "leadClimbsTrad",
+                "logs",
+                "protection",
+                "rescueTechniques",
+                "traverse"
+            ].includes(id);
+        case "rockClimbingLeader":
+            return [
+                "abseiling",
+                "descriptions",
+                "experience",
+                "hoist",
+                "logs",
+                "tangles"
+            ].includes(id);
+        case "summit":
             return [
                 "mapReading",
                 "preparedness",
@@ -996,9 +1024,7 @@ function acceptApp(app) {
     miscRequests(app);
 
     registerRecordType(app, "endurance", "endurance_records");
-    registerRecordType(app, "flatWaterPaddling", "flat_water_paddling_records", {
-        signable: true
-    });
+    registerRecordType(app, "flatWaterPaddling", "flat_water_paddling_records");
     registerRecordType(app, "midmarMile", "midmar_mile_records");
     registerRecordType(app, "mountaineering", "mountaineering_records");
     registerRecordType(app, "riverTrip", "river_trip_records", {
@@ -1008,11 +1034,15 @@ function acceptApp(app) {
         subrecordsTable: "rock_climbing_subrecords"
     });
     registerRecordType(app, "rockClimbingSub", "rock_climbing_subrecords");
+    registerRecordType(app, "rockClimbingInstruction", "rock_climbing_instruction_records", {
+        signable: true
+    });
     registerRecordType(app, "running", "running_records");
     registerRecordType(app, "service", "service_records", {
         signable: true
     });
 
+    registerSingletonRecordType(app, "rockClimbingBookReviews", "rockClimbingBookReviews", ["link"]);
     registerSingletonRecordType(app, "solitaire", "solitaire", [
         "date", "location", "othersInvolved", "supervisors", "items", "experience"
     ]);

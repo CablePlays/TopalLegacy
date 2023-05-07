@@ -286,7 +286,20 @@ function setupSections() {
 
     createSection("Kayaking", div => {
 
+        /* Signoffs */
+
+        createElement("h3", div, "Sign-Offs");
+
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "kayaking"
+        });
+
         /* Flat Water Paddling Records */
+
+        div.appendChild(createSpacer(20));
 
         createElement("h3", div, "Flat Water Paddling Records");
 
@@ -312,6 +325,17 @@ function setupSections() {
             signable: true,
             targetUser: getProfileUser()
         }));
+    });
+
+    createSection("Kayaking Instructor", div => {
+        createElement("h3", div, "Sign-Offs");
+
+        div.appendChild(createSpacer(20));
+
+        createSignoffTable({
+            container: div,
+            signoffType: "kayakingInstructor"
+        });
     });
 
     createSection("Midmar Mile", div => {

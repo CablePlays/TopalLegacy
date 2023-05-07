@@ -10,9 +10,9 @@ const CLIENT_ID = "65424431927-8mpphvtc9k2sct45lg02pfaidhpmhjsf.apps.googleuserc
 const client = new OAuth2Client(CLIENT_ID);
 
 /*
-    Runs an async function on an array of items and waits for all of them to be completed.
+    Runs an async function on a list of yields from an array of promises and waits for completion.
 */
-async function doAllPromises(array, func) {
+async function runOnYields(array, func) {
     const promises = [];
 
     for (let o of array) {
@@ -55,8 +55,7 @@ async function provideUserInfoToStatus(status) {
 }
 
 async function provideUserInfoToStatuses(statuses) {
-    await doAllPromises(Object.getOwnPropertyNames(statuses), async property => {
-        const status = statuses[property];
+    await runOnYields(Object.getOwnPropertyNames(statuses), async property => {
         await provideUserInfoToStatus(statuses[property]);
     });
 }
@@ -65,7 +64,7 @@ function isAward(award) {
     return [
         "drakensberg",
         "endurance", "enduranceInstructor", "enduranceLeader",
-        "kayaking",
+        "kayaking", "kayakingInstructor", "kayakingLeader",
         "midmarMile", "midmarMileInstructor", "midmarMileLeader",
         "mountainBiking",
         "mountaineeringInstructor", "mountaineeringLeader",
@@ -98,6 +97,27 @@ function isSignoff(type, id) {
                 "organisingEvents",
                 "readBook",
                 "whoseWho"
+            ].includes(id);
+        case "kayaking":
+            return [
+                "circuits",
+                "mooiRiver",
+                "noviceKayakingTest",
+                "riverSafetyTest",
+                "safetyChecks",
+                "theoryTest",
+                "timeTrial"
+            ].includes(id);
+        case "kayakingInstructor":
+            return [
+                "attitude",
+                "firstAid",
+                "instruct",
+                "knowledge",
+                "monitor",
+                "mooiRiver",
+                "rescue",
+                "skill"
             ].includes(id);
         case "mountaineeringInstructor":
             return [
@@ -376,7 +396,7 @@ function signoffRequests(app) {
             if (userPermissions.manageAwards) {
                 const values = [];
 
-                await doAllPromises(await sqlDatabase.getSignoffRequests(), async value => {
+                await runOnYields(await sqlDatabase.getSignoffRequests(), async value => {
                     value.user = await sqlDatabase.getUserInfo(value.user);
                     values.push(value);
                 });

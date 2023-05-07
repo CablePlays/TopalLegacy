@@ -23,9 +23,20 @@ const _signoffs = {
         ["circuits", "Figure of 8 slalom circuits"],
         ["noviceKayakingTest", "Novice kayaking test"],
         ["safetyChecks", "Safety and equipment checks"],
-        ["mooiRiverStretch", "One stretch of the Mooi River"],
+        ["mooiRiver", "One stretch of the Mooi River"],
         ["theoryTest", "Passed theory test"],
         ["riverSafetyTest", "Basic river safety test"]
+    ],
+    kayakingInstructor: [
+        ["mooiRiver", "Complete a minimum of six stretches of the Mooi River above 3km (medium to high water conditions)"],
+        ["instruct", "Show practical ability to instruct under supervision"],
+        ["attitude", "Have shown correct attitude"],
+        ["skill", "Develop a high degree of skill"],
+        ["knowledge", `Read at least one book on kayaking/canoeing and be able to show
+        a breadth of knowledge to the MIC in conversation as well as in your instruction of others`],
+        ["monitor", "Spend time acting as a duty equipment monitor in and around the boat shed"],
+        ["rescue", "Demonstrate practical ability to rescue someone in the river - X-rescue, H-rescue & self-rescue"],
+        ["firstAid", "Valid basic first aid and CPR training (level one)"]
     ],
     mountaineeringInstructor: [
         ["firstAid", "Valid basic First-Aid and CPR (level one)"],

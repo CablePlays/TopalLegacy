@@ -66,7 +66,6 @@ function isAward(award) {
         "endurance", "enduranceInstructor", "enduranceLeader",
         "kayaking", "kayakingInstructor", "kayakingLeader",
         "midmarMile", "midmarMileInstructor", "midmarMileLeader",
-        "mountainBiking",
         "mountaineeringInstructor", "mountaineeringLeader",
         "polarBear", "polarBearInstructor", "polarBearLeader",
         "rockClimbing", "rockClimbingInstructor", "rockClimbingLeader",
@@ -637,7 +636,7 @@ function miscRequests(app) {
 
     app.post("/search-users", async (req, res) => {
         let { query } = req.body;
-        query = query.replaceAll(" ", "");
+        query = query.trim();
 
         const users = await sqlDatabase.all(
             `SELECT * FROM users WHERE email LIKE "%${query}%" OR name LIKE "%${query}%" OR given_name LIKE "%${query}%"`);

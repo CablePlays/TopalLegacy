@@ -55,7 +55,7 @@ window.addEventListener("load", () => {
                 }
             },
             {
-                id: "party_number",
+                id: "party_size",
                 name: "Number In Party",
                 type: "range",
                 range: {

@@ -32,7 +32,7 @@ const _flexibleDisplayColumns = {
         {
             name: "Number In Party",
             type: "textShort",
-            valueProvider: "party_number"
+            valueProvider: "party_size"
         },
         {
             name: "Shelter",
@@ -272,18 +272,18 @@ const _tableDisplayColumns = {
         ["Distance", record => record.distance],
         ["Place", record => record.place],
         ["Comments", record => record.comments]
-    ], 
+    ],
+    midmarMile: [
+        ["Date", record => formatDate(record.date)],
+        ["Distance", record => record.distance + "m"],
+        ["Time", record => formatDuration(record.time)]
+    ],
     rockClimbingInstruction: [
         ["Date", record => formatDate(record.date)],
         ["Duration", record => formatDuration(record.duration, false)],
         ["Number Of Climbers", record => record.climbers],
         ["Location", record => record.location],
         ["Signed Off", "signer"]
-    ],
-    midmarMile: [
-        ["Date", record => formatDate(record.date)],
-        ["Distance", record => record.distance + "m"],
-        ["Time", record => formatDuration(record.time)]
     ],
     running: [
         ["Date", record => formatDate(record.date)],

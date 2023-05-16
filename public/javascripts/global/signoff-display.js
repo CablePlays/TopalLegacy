@@ -13,7 +13,7 @@ const _signoffs = {
         ["bothAwardsTwice", "Achieved both awards twice in two years"],
         ["readBook", "Read a book on training and is knowledgeable in training methods for one category of races"],
         ["instruct", "Practical ability to instruct a novice in basic training in running, MTB or AR - and has spent time doing so"],
-        ["whoseWho", "Familiarity with 'Whose' Who' in current endurance sport (from reading of running magazines, internet, TV)"],
+        ["who", "Familiarity with <i>Who's Who</i> in current endurance sport (from reading of running magazines, internet, TV)"],
         ["firstAid", "First-aid training - or satisfies MIC of his or her familiarity with endurance problems and their treatment"],
         ["mentalAttitude", "Exhibits a healthy mental attitude towards the sport and towards others"],
         ["organisingEvents", "Performs voluntary service (either at Treverton or elsewhere) in administration and organizational roles - a minimum organizing three events"]

@@ -33,6 +33,10 @@ function createRecordInput(options) {
     // title
     createElement("h2", container, titleText ?? "Create Record");
 
+    // info
+    createElement("p", container,
+     "Remember to check and verify your information before submitting. Editing will require a resubmission.").classList.add("partial");
+
     container.appendChild(createSpacer(20));
 
     providedInputs?.forEach(input => {
@@ -332,7 +336,7 @@ function createRecordInput(options) {
 
     /* Button */
 
-    const button = createElement("button", container, "Create");
+    const button = createElement("button", container, "Check & Create");
     button.classList.add("create-button");
 
     let used = false;

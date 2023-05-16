@@ -9,7 +9,7 @@ function handleButton(element, runnable) {
 function setupButtons() {
     handleButton("logout", () => {
         logOut();
-        window.location.reload();
+        window.location.href = "login";
     });
     handleButton("logout-all", () => {
         promptConfirmation("You're about to log out of all devices you are signed into.", async () => {

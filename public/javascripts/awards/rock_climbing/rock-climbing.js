@@ -12,7 +12,7 @@ window.addEventListener("load", () => {
     createRecordInput({
         placeholder: "record-form",
         recordType: "rockClimbing",
-        title: "Add Day",
+        title: "Add Day (Enter Climbs Later)",
         inputs: [
             {
                 id: "date",
@@ -92,8 +92,8 @@ window.addEventListener("load", () => {
                 type: "range",
                 range: {
                     min: 0,
-                    max: 50,
-                    value: 0,
+                    max: 20,
+                    value: 1,
                     display: value => value
                 }
             }

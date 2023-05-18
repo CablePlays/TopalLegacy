@@ -4,12 +4,16 @@ const general = require('./general');
 const jsonDatabase = require('./json-database');
 const sqlDatabase = require('./sql-database');
 
+function getParams(req) {
+    return new URLSearchParams(req.originalUrl.split("?")[1]);
+}
+
 async function render(req, res, path, adminPage = false) {
     const loggedIn = cookies.isLoggedIn(req);
     const userId = cookies.getUserId(req);
     let permissions = {};
 
-    if (loggedIn && await general.sessionTokenValid(req)) {
+    if (loggedIn && await general.isPasswordValid(req)) {
         const userId = cookies.getUserId(req);
         permissions = jsonDatabase.getPermissions(userId);
     }
@@ -53,7 +57,7 @@ function router(path, options) {
 
     router.get('/', async (req, res) => {
         const requestedPath = req.baseUrl;
-        const params = new URLSearchParams(req.originalUrl.split("?")[1]);
+        const params = getParams(req);
 
         const isLoggedIn = cookies.isLoggedIn(req);
         let userPermissions = {};
@@ -63,7 +67,7 @@ function router(path, options) {
             /* Verify Session Token */
 
             if (isLoggedIn) {
-                if (!await general.sessionTokenValid(req)) { // invalid session token
+                if (!await general.isPasswordValid(req)) { // invalid session token
                     cookies.logOut(res);
                     if (requestedPath === "/") return true;  // requested destination desired; render
                     res.redirect("/"); // requested destination unwanted; redirect
@@ -86,7 +90,7 @@ function router(path, options) {
 
             if (loggedIn === true) { // ensure logged in
                 if (!isLoggedIn) {
-                    res.redirect("/login?return_path=" + requestedPath);
+                    res.redirect("/signup");
                     return false;
                 }
             } else if (loggedIn === false && isLoggedIn) { // ensure not logged in
@@ -120,7 +124,7 @@ function router(path, options) {
 function redirectRouter(path) {
     const router = express.Router();
 
-    router.get('/', async (req, res) => {
+    router.get('/', (req, res) => {
         const url = req.originalUrl;
         const params = url.split("?")[1];
 
@@ -130,17 +134,52 @@ function redirectRouter(path) {
     return router;
 }
 
+function signupCreateAccountRouter() {
+    const router = express.Router();
+
+    router.get('/', async (req, res) => {
+        const params = getParams(req);
+        const token = params.get("token");
+
+        if (token == null) {
+            res.redirect("/");
+        } else {
+            const record = await sqlDatabase.get(`SELECT * FROM unverified_users WHERE token = "${token}"`);
+
+            if (record == null) {
+                render(req, res, "entry/invalid-token");
+            } else {
+                render(req, res, "entry/create-account");
+            }
+        }
+    });
+
+    return router;
+}
+
 function acceptApp(app) {
+
     /* Admin */
 
     app.use('/admin', router("admin/admin", { permission: "any" }));
     app.use('/permissions', router("admin/permissions", { permission: "managePermissions" }));
     app.use('/signoff-requests', router("admin/signoff-requests", { permission: "manageAwards" }));
 
+    /* Entry */
+
+    app.use('/forgot-password', router("entry/forgot-password", { loggedIn: false }));
+    app.use('/login', router("entry/login", { loggedIn: false }));
+    app.use('/reset-password', router("entry/reset-password", { loggedIn: true }));
+
+    // signup
+    app.use('/create-account', signupCreateAccountRouter());
+    app.use('/signup', router("entry/signup", { loggedIn: false }));
+    app.use('/signup/success', router("entry/account-created"));
+    app.use('/signup/verify', router("entry/verify", { loggedIn: false }));
+
     /* General */
 
     app.use('/', router("general/home"));
-    app.use('/login', router("general/login", { loggedIn: false }));
     app.use('/search-users', router("general/search-users"));
     app.use('/settings', router("general/settings", { loggedIn: true }));
 

@@ -117,6 +117,16 @@ function setDateCurrent(dateInput) {
 
 /* Element */
 
+function insertAfter(newElement, targetElement) {
+    const parent = targetElement.parentNode;
+
+    if (parent.lastChild === targetElement) {
+        parent.appendChild(newElement);
+    } else {
+        parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+}
+
 function removeChildren(element) {
     while (element.firstChild) {
         element.firstChild.remove();

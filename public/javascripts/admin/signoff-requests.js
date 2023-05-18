@@ -25,13 +25,10 @@ async function loadRequests() {
         const div = document.createElement("div");
         div.classList.add("item");
 
-        const nameElement = document.createElement("h2");
-        nameElement.innerHTML = `Request from ${user.name}`;
-        div.appendChild(nameElement);
-
-        const awardElement = document.createElement("h3");
-        awardElement.innerHTML = getAwardName(award) + " Award";
-        div.appendChild(awardElement);
+        const infoContainer = createElement("div", div);
+        createElement("p", infoContainer, "Request from");
+        createElement("h2", infoContainer, user.fullName);
+        createElement("h3", infoContainer, getAwardName(award) + " Award");
 
         const buttonDiv = document.createElement("div");
         buttonDiv.classList.add("button-container");
@@ -52,7 +49,7 @@ async function loadRequests() {
         grantElement.innerHTML = "Grant";
         grantElement.classList.add("transparent-button");
         grantElement.addEventListener("click", () => {
-            promptConfirmation(`You're about to grant ${user.name} the ${getAwardName(award)} Award.`, () => {
+            promptConfirmation(`You're about to grant ${user.fullName} the ${getAwardName(award)} Award.`, () => {
                 post("/set-award", {
                     id: award,
                     complete: true,

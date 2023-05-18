@@ -1,9 +1,12 @@
 const createError = require('http-errors');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const rest = require("./server/rest");
 const routes = require("./server/routes");
 
 const PORT = 80;
+const ARTIFICIAL_LATENCY = 500;
+
 const app = express();
 
 // view engine setup
@@ -12,13 +15,14 @@ app.set('view engine', 'pug');
 
 app.use(express.static('public'));
 app.use(express.json()); // for reading json post requests
+app.use(cookieParser()); // for cookie objects/tools
 
 // routes
 routes.acceptApp(app);
 
 // simulate lag
 app.use((req, res, next) => {
-    setTimeout(next, 500);
+    setTimeout(next, ARTIFICIAL_LATENCY);
 });
 
 // rest

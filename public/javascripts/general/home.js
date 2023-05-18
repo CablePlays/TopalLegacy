@@ -1,10 +1,6 @@
 async function setupSlideshow() {
     const cardsPromise = new Promise(async r => {
-        const res = await fetch("/get-recent-awards", {
-            method: "POST"
-        });
-
-        const { values } = await res.json();
+        const { values } = await post("/get-recent-awards");
         const cards = [];
 
         if (values.length === 0) {
@@ -20,7 +16,7 @@ async function setupSlideshow() {
                 const card = document.createElement("div");
                 card.classList.add("card");
                 card.classList.add("card-basic");
-                card.innerHTML = `${user.givenName} recently achieved the ${getAwardName(award)} award!`;
+                card.innerHTML = `${user.fullName} recently achieved the ${getAwardName(award)} award!`;
 
                 const profileElement = document.createElement("a");
                 profileElement.classList.add("transparent-button");

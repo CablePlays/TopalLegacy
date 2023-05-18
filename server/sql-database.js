@@ -95,6 +95,10 @@ async function replace(table, conditionColumn, conditionValue, values) {
         valuesString += value;
     }
 
+    if (typeof conditionValue === "string") {
+        conditionValue = `"${conditionValue}";`
+    }
+
     await Promise.all([
         run(`UPDATE ${table} SET ${setting} WHERE ${conditionColumn} = ${conditionValue}`),
         run(`INSERT OR IGNORE INTO ${table} (${conditionColumn}, ${columnsString}) VALUES (${conditionValue}, ${valuesString})`)
@@ -116,38 +120,38 @@ async function getUserId(userEmail) {
     return record?.id;
 }
 
-async function getSessionToken(userId) {
-    const record = await get(`SELECT session_token FROM users WHERE id = "${userId}"`);
-    return record?.session_token;
+async function getPassword(userId) {
+    const record = await get(`SELECT * FROM users WHERE id = "${userId}"`);
+    return record?.password;
 }
 
 /*
-    Returns ID & session token from email.
+    Returns ID & password from email.
     Creates the user if does not exist.
 */
-async function getUserDetails(userEmail) {
-    await run(`INSERT OR IGNORE INTO users (email) VALUES ("${userEmail}")`);
-    const record = await get(`SELECT * FROM users WHERE email = "${userEmail}"`);
+// async function getUserDetails(email) {
+//     await run(`INSERT OR IGNORE INTO users (email) VALUES ("${email}")`);
+//     const record = await get(`SELECT * FROM users WHERE email = "${email}"`);
 
-    if (record == null) {
-        throw new Error("Missing user record");
-    }
+//     if (record == null) {
+//         throw new Error("Missing user record");
+//     }
 
-    return {
-        id: record.id,
-        sessionToken: record.session_token
-    };
-}
+//     return {
+//         id: record.id,
+//         password: record.password
+//     };
+// }
 
 async function getUserInfo(userId) {
-    const { email, name, given_name, family_name } = await get(`SELECT * FROM users WHERE id = "${userId}"`) ?? {};
+    const { email, name, surname } = await get(`SELECT * FROM users WHERE id = "${userId}"`) ?? {};
 
     return {
         id: userId,
         email,
         name,
-        givenName: given_name,
-        familyName: family_name,
+        surname,
+        fullName: name + " " + surname
     };
 }
 
@@ -184,7 +188,8 @@ useDatabase(db => {
 
     /* General */
 
-    db.all("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, session_token TEXT, name TEXT, given_name TEXT, family_name TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS unverified_users (email TEXT UNIQUE NOT NULL, token TEXT UNIQUE NOT NULL)");
+    db.all("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL, name TEXT NOT NULL, surname TEXT NOT NULL)");
     db.all("CREATE TABLE IF NOT EXISTS signoff_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, award TEXT NOT NULL)");
 
     /* Records */
@@ -204,8 +209,6 @@ useDatabase(db => {
 });
 
 module.exports = {
-    useDatabase,
-
     all,
     get,
     run,
@@ -213,8 +216,7 @@ module.exports = {
 
     isUser,
     getUserId,
-    getSessionToken,
-    getUserDetails,
+    getPassword,
     getUserInfo,
 
     getSignoffRequest,

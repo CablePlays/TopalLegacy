@@ -1,8 +1,5 @@
-/*
-    Using Cookies:
-        session_token: user's "password" for current session
-        user_email: user's email
-*/
+const USER_COOKIE = "user_id";
+const PASSWORD_COOKIE = "password";
 
 function getCookie(name) {
     let cookies = decodeURIComponent(document.cookie || "").split(";");
@@ -24,18 +21,18 @@ function removeCookie(name) {
 }
 
 function getUserId() {
-    return getCookie("user_id");
+    return getCookie(USER_COOKIE);
 }
 
-function getSessionToken() {
-    return getCookie("session_token");
+function getPassword() {
+    return getCookie(PASSWORD);
 }
 
 function isLoggedIn() {
-    return (getUserId() != null) && (getSessionToken() != null);
+    return (getUserId() != null) && (getPassword() != null);
 }
 
 function logOut() {
-    removeCookie("session_token");
-    removeCookie("user_email");
+    removeCookie(USER_COOKIE);
+    removeCookie(PASSWORD_COOKIE);
 }

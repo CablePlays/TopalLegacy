@@ -3,10 +3,10 @@
         "running": {
             "complete": false,
             "date": "DATE",
-            "signer": "ID",
+            "signer": "USER_INFO",
             "decline": {
                 "date": "DATE",
-                "user": "ID",
+                "user": "USER_INFO",
                 "message": "Message content."
             }
         }

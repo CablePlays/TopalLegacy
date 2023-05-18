@@ -1,13 +1,38 @@
-const { OAuth2Client } = require('google-auth-library');
 const { v4: uuidv4 } = require('uuid');
 const cookies = require('./cookies');
 const jsonDatabase = require('./json-database');
 const sqlDatabase = require('./sql-database');
 const general = require('./general');
+const nodemailer = require('nodemailer');
 
-const MAX_AWARD_RECENTS = 10;
-const CLIENT_ID = "65424431927-8mpphvtc9k2sct45lg02pfaidhpmhjsf.apps.googleusercontent.com";
-const client = new OAuth2Client(CLIENT_ID);
+const MAX_RECENT_AWARDS = 10;
+
+async function sendEmail(recipient, subject, content) {
+    console.log("Sending email to " + recipient + ": " + content);
+    const from = "cableplays1912@gmail.com";
+
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        auth: {
+            user: from,
+            pass: "lvbiogzkrjbabbnb"
+        }
+    });
+
+    try {
+        const info = await transporter.sendMail({
+            from: from,
+            to: recipient,
+            subject,
+            html: content
+        });
+
+        console.log("Message sent: " + info.messageId);
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 /*
     Runs an async function on a list of yields from an array of promises and waits for completion.
@@ -23,7 +48,7 @@ async function runOnYields(array, func) {
 }
 
 async function selfOrManageAwards(req, func) {
-    if (await general.sessionTokenValid(req)) {
+    if (await general.isPasswordValid(req)) {
         const userId = cookies.getUserId(req);
         let { user: targetUserId } = req.body;
 
@@ -217,7 +242,7 @@ function awardRequests(app) {
     /* Set */
 
     app.post("/set-award", async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -237,7 +262,7 @@ function awardRequests(app) {
 
                         const date = new Date();
 
-                        if (recentAwards.length >= MAX_AWARD_RECENTS) {
+                        if (recentAwards.length >= MAX_RECENT_AWARDS) {
                             recentAwards.pop(); // remove from end
                         }
 
@@ -313,7 +338,7 @@ function permissionRequests(app) {
     /* Set */
 
     app.post("/set-permission", async (req, res) => { // permission: managePermissions
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -353,7 +378,7 @@ function permissionRequests(app) {
     app.post("/get-permission-users", async (req, res) => { // permission: managePermissions
         const values = [];
 
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -390,7 +415,7 @@ function signoffRequests(app) {
     /* Request Award */
 
     app.post("/request-award", async (req, res) => {
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const { award } = req.body;
 
@@ -416,7 +441,7 @@ function signoffRequests(app) {
     app.post("/get-award-requests", async (req, res) => { // permission: manageAwards
         const json = {};
 
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -438,7 +463,7 @@ function signoffRequests(app) {
     /* Decline Award Requests */
 
     app.post("/decline-award-request", async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -491,7 +516,7 @@ function signoffRequests(app) {
     /* Set Signoff */
 
     app.post("/set-signoff", async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -549,7 +574,7 @@ function signoffRequests(app) {
     }
 
     app.post("/set-approval", async (req, res) => { // permission: manageAwards
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const userPermissions = jsonDatabase.getPermissions(userId);
 
@@ -577,6 +602,217 @@ function signoffRequests(app) {
     });
 }
 
+function entryRequests(app) {
+
+    /* Signup */
+
+    app.post("/signup", async (req, res) => {
+        const email = req.body.email?.trim();
+
+        if (email == null) {
+            res.json({
+                status: "error",
+                error: "missingEmail"
+            });
+
+            return;
+        }
+
+        /* Check Email */
+
+        if (email == null || !email.endsWith("@treverton.co.za")) {
+            res.json({
+                status: "error",
+                error: "invalidEmail"
+            });
+
+            return;
+        }
+        if (await sqlDatabase.get(`SELECT * FROM users WHERE email = "${email}"`) != null) {
+            res.json({
+                status: "error",
+                error: "emailTaken"
+            });
+
+            return;
+        }
+
+        /* Verification */
+
+        const token = uuidv4();
+
+        // add to database
+        await sqlDatabase.run(`DELETE FROM unverified_users WHERE email = "${email}"`); // in case a previous signup was attempted
+        await sqlDatabase.run(`INSERT INTO unverified_users VALUES ("${email}", "${token}")`);
+
+        try {
+            await sendEmail(email, "Topal - Create Account",
+                `<h2>Topal</h2>
+                <h2>Create Account</h2>
+                <p> If you are trying to create a Topal account then please continue with
+                <a href="topal.click/create-account?token=${token}">this</a> link.
+                If you are not trying to create a Topal account then please ignore this email.`
+            );
+
+            res.json({
+                status: "success"
+            });
+        } catch (error) {
+            res.json({
+                status: "error",
+                error: "sendingEmail"
+            });
+        }
+    });
+
+    /* Create Account */
+
+    app.post("/create-account", async (req, res) => {
+        let { name, surname, password, token } = req.body;
+
+        if (name == null || surname == null || password == null || token == null) {
+            res.json({
+                status: "error",
+                error: "missingParameters"
+            });
+
+            return;
+        }
+
+        name = name.trim();
+        surname = surname.trim();
+
+        const unverifiedUserRecord = await sqlDatabase.get(`SELECT * FROM unverified_users WHERE token = "${token}"`);
+
+        if (unverifiedUserRecord == null) {
+            res.json({
+                status: "error",
+                error: "invalidToken"
+            });
+
+            return;
+        }
+
+        const email = unverifiedUserRecord.email;
+
+        await sqlDatabase.run(`INSERT INTO users (email, password, name, surname) VALUES ("${email}", "${password}", "${name}", "${surname}")`);
+
+        const userRecord = await sqlDatabase.get(`SELECT * FROM users WHERE email = "${email}"`);
+
+        if (userRecord == null) {
+            console.warn("Missing user record which was just created");
+
+            res.json({
+                status: "error"
+            });
+
+            return;
+        }
+
+        sqlDatabase.run(`DELETE FROM unverified_users WHERE token = "${token}"`); // no need to await
+
+        res.cookie(cookies.USER_COOKIE, userRecord.id);
+        res.cookie(cookies.PASSWORD_COOKIE, password);
+
+        res.json({
+            status: "success"
+        });
+    });
+
+    /* Login */
+
+    app.post("/login", async (req, res) => {
+        const { email, password } = req.body;
+        const record = await sqlDatabase.get(`SELECT * FROM users WHERE email = "${email}" AND password = "${password}"`);
+
+        if (record == null) {
+            res.json({
+                status: "error",
+                error: "invalidDetails"
+            });
+
+            return;
+        }
+
+        res.cookie(cookies.USER_COOKIE, record.id);
+        res.cookie(cookies.PASSWORD_COOKIE, password);
+
+        res.json({
+            status: "success"
+        });
+    });
+
+    /* Forgot Password */
+
+    app.post("/forgot-password", async (req, res) => {
+        const { email } = req.body;
+
+        if (email == null) {
+            res.json({
+                status: "error",
+                error: "missingEmail"
+            });
+
+            return;
+        }
+
+        const record = await sqlDatabase.get(`SELECT * FROM users WHERE email = "${email}"`);
+
+        if (record == null) {
+            res.json({
+                status: "error",
+                error: "invalidEmail"
+            });
+
+            return;
+        }
+
+        const password = record.password;
+        sendEmail(email, "Topal - Forgot Password",
+            `<h2>Forgot Password</h2>
+            <p>If you did not request an email for a forgotten password then please ignore this email.
+            If you did forgot your password, here it is:</p>
+            <h3>${password}</h3>`
+        );
+
+        res.json({
+            status: "success"
+        });
+    });
+
+    /* Reset Password */
+
+    app.post("/reset-password", async (req, res) => {
+        if (!await general.isPasswordValid(req)) {
+            res.json({
+                status: "error",
+                error: "noPermission"
+            });
+
+            return;
+        }
+
+        const { password } = req.body;
+
+        if (password == null) {
+            res.json({
+                status: "error",
+                error: "missingPassword"
+            });
+
+            return;
+        }
+
+        const userId = cookies.getUserId(req);
+
+        sqlDatabase.run(`UPDATE users SET password = "${password}" WHERE id = "${userId}"`);
+        res.cookie(cookies.PASSWORD_COOKIE, password);
+        res.json({
+            status: "success"
+        });
+    });
+}
+
 function miscRequests(app) {
 
     /* Status Data */
@@ -585,7 +821,7 @@ function miscRequests(app) {
     app.post("/get-status-data", async (req, res) => { // restrictions: self
         const json = {};
 
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             const { id } = req.body;
 
@@ -621,35 +857,24 @@ function miscRequests(app) {
         });
     });
 
-    /* Invalidate Session Token */
-
-    app.post("/invalidate-session-token", async (req, res) => { // restrictions: self
-        if (await general.sessionTokenValid(req)) {
-            const userId = cookies.getUserId(req);
-            await sqlDatabase.replace("users", "id", userId, { session_token: null });
-        }
-
-        res.end();
-    });
-
     /* Search Users */
 
     app.post("/search-users", async (req, res) => {
-        let { query } = req.body;
-        query = query.trim();
+        const { query } = req.body;
 
         const users = await sqlDatabase.all(
-            `SELECT * FROM users WHERE email LIKE "%${query}%" OR name LIKE "%${query}%" OR given_name LIKE "%${query}%"`);
+            `SELECT * FROM users WHERE email LIKE "%${query}%" OR name LIKE "%${query}%" OR surname LIKE "%${query}%"`);
         const values = [];
 
         for (let user of users) {
-            const { id, name } = user;
-            values.push({ id, name });
+            const { id } = user;
+            const userInfo = await sqlDatabase.getUserInfo(id);
+            values.push(userInfo);
         }
 
         res.json({
             values
-        })
+        });
     });
 
     /* Get Distance Run */
@@ -701,63 +926,6 @@ function miscRequests(app) {
             values
         });
     });
-
-    /* Login */
-
-    app.post("/login", async (req, res) => {
-        const { credential } = req.body;
-        let decoded;
-
-        try {
-            decoded = await client.verifyIdToken({
-                idToken: credential,
-                audience: CLIENT_ID
-            });
-        } catch (error) {
-            console.warn("Invalid JWT: " + error.message);
-
-            res.json({
-                status: "error",
-                error: "invalid_jwt"
-            });
-
-            return;
-        }
-
-        const { email, family_name, given_name, hd, name } = decoded.getPayload();
-
-        if (hd !== "treverton.co.za") { // check domain
-            res.json({
-                status: "error",
-                error: "invalid_email"
-            });
-
-            return;
-        }
-
-        let { id, sessionToken } = await sqlDatabase.getUserDetails(email);
-
-        const replace = {
-            name,
-            given_name,
-            family_name
-        };
-
-        if (sessionToken == null) { // create session token
-            sessionToken = uuidv4();
-            replace.session_token = sessionToken;
-        }
-
-        await sqlDatabase.replace("users", "id", id, replace);
-
-        res.setHeader("Set-Cookie", [
-            `session_token=${sessionToken}`,
-            `user_id=${id}`
-        ]);
-        res.json({
-            status: "success"
-        });
-    });
 }
 
 function registerRecordType(app, name, table, options) {
@@ -787,7 +955,7 @@ function registerRecordType(app, name, table, options) {
     /* Add */
 
     app.post(`/add-${name}-record`, async (req, res) => { // restrictions: self
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const { value = {} } = req.body;
             const userId = cookies.getUserId(req);
 
@@ -825,7 +993,7 @@ function registerRecordType(app, name, table, options) {
     /* Remove */
 
     app.post(`/remove-${name}-record`, async (req, res) => { // restrictions: self
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const { id } = req.body;
             const userId = cookies.getUserId(req);
 
@@ -850,7 +1018,7 @@ function registerRecordType(app, name, table, options) {
 
     if (signable) {
         app.post(`/sign-${name}-record`, async (req, res) => { // permission: manageAwards
-            if (await general.sessionTokenValid(req)) {
+            if (await general.isPasswordValid(req)) {
                 const { id } = req.body;
                 const userId = cookies.getUserId(req);
 
@@ -872,7 +1040,7 @@ function registerRecordType(app, name, table, options) {
         app.post(`/get-${name}-subrecords`, async (req, res) => { // permission: none/manageAwards
             let values = {};
 
-            if (await general.sessionTokenValid(req)) {
+            if (await general.isPasswordValid(req)) {
                 const { recordId } = req.body;
                 const userId = cookies.getUserId(req);
                 const permissions = jsonDatabase.getPermissions(userId);
@@ -898,7 +1066,7 @@ function registerRecordType(app, name, table, options) {
         /* Add */
 
         app.post(`/add-${name}-subrecord`, async (req, res) => { // restrictions: self
-            if (await general.sessionTokenValid(req)) {
+            if (await general.isPasswordValid(req)) {
                 const { recordId, value = {} } = req.body;
                 const userId = cookies.getUserId(req);
 
@@ -945,7 +1113,7 @@ function registerRecordType(app, name, table, options) {
         /* Remove */
 
         app.post(`/remove-${name}-subrecord`, async (req, res) => { // restrictions: self
-            if (await general.sessionTokenValid(req)) {
+            if (await general.isPasswordValid(req)) {
                 const { id } = req.body;
                 const userId = cookies.getUserId(req);
 
@@ -987,7 +1155,7 @@ function registerSingletonRecordType(app, name, path, keys) {
     app.post(`/add-${name}-record`, async (req, res) => { // restrictions: self
         const json = {};
 
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const { value } = req.body;
 
             if (value != null) {
@@ -1006,7 +1174,7 @@ function registerSingletonRecordType(app, name, path, keys) {
     });
 
     app.post(`/remove-${name}-record`, async (req, res) => { // restrictions: self
-        if (await general.sessionTokenValid(req)) {
+        if (await general.isPasswordValid(req)) {
             const userId = cookies.getUserId(req);
             jsonDatabase.getUser(userId).delete(path);
         }
@@ -1020,6 +1188,7 @@ function acceptApp(app) {
     milestoneRequests(app);
     permissionRequests(app);
     signoffRequests(app);
+    entryRequests(app);
     miscRequests(app);
 
     registerRecordType(app, "endurance", "endurance_records");

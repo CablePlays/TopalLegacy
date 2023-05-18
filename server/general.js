@@ -5,18 +5,18 @@ function hasAnyPermission(permissions) {
     return permissions.manageAwards || permissions.managePermissions;
 }
 
-async function sessionTokenValid(req) { // requires logged in
+async function isPasswordValid(req) { // requires logged in
     const userId = cookies.getUserId(req);
     if (userId == null) return false;
 
-    const clientSessionToken = cookies.getSessionToken(req);
-    if (clientSessionToken == null) return false;
+    const clientPassword = cookies.getPassword(req);
+    if (clientPassword == null) return false;
 
-    const sessionToken = await sqlDatabase.getSessionToken(userId);
-    return (clientSessionToken === sessionToken);
+    const password = await sqlDatabase.getPassword(userId);
+    return (clientPassword === password);
 }
 
 module.exports = {
     hasAnyPermission,
-    sessionTokenValid
+    isPasswordValid
 }

@@ -1,3 +1,11 @@
+/*
+    Using Cookies:
+        user_id: user's email
+        password: user's "password" for current session
+*/
+
+/* Internal */
+
 function getCookie(name, cookies) {
     cookies = decodeURIComponent(cookies || "").split(";");
     let cname = name + "=";
@@ -13,36 +21,34 @@ function getCookie(name, cookies) {
     return null;
 }
 
-function removeCookies(res, cookies) {
-    const strings = [];
+/* External */
 
-    for (let cookie of cookies) {
-        strings.push(`${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`);
-    }
-
-    res.setHeader("Set-Cookie", strings);
-}
-
-function logOut(res) {
-    removeCookies(res, ["session_token", "user_id"]);
-}
+const USER_COOKIE = "user_id";
+const PASSWORD_COOKIE = "password";
 
 function getUserId(req) {
-    return getCookie("user_id", req.headers.cookie);
+    return getCookie(USER_COOKIE, req.headers.cookie);
 }
 
-function getSessionToken(req) {
-    return getCookie("session_token", req.headers.cookie);
+function getPassword(req) {
+    return getCookie(PASSWORD_COOKIE, req.headers.cookie);
 }
 
 function isLoggedIn(req) {
-    return (getUserId(req) != null) && (getSessionToken(req) != null);
+    return (getUserId(req) != null) && (getPassword(req) != null);
+}
+
+function logOut(res) {
+    res.clearCookie(USER_COOKIE);
+    res.clearCookie(PASSWORD_COOKIE);
 }
 
 module.exports = {
-    removeCookies,
+    USER_COOKIE,
+    PASSWORD_COOKIE,
+    
     logOut,
     getUserId,
-    getSessionToken,
+    getPassword,
     isLoggedIn
 }

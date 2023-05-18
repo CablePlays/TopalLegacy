@@ -35,31 +35,21 @@ function setupSearch() {
         removeChildren(table);
         amountInfo.innerHTML = "";
 
-        const query = searchBar.value;
+        const query = searchBar.value.trim();
 
         // loading
         const loadingElement = createLoading();
         amountInfo.parentElement.insertBefore(loadingElement, amountInfo);
 
-        let res = await fetch("/search-users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                query
-            })
-        });
-
-        const { values } = await res.json();
+        const { values } = await post("/search-users", { query });
         const total = values.length;
 
         loadingElement.remove();
         amountInfo.innerHTML = `${total === 0 ? "No" : total} user${total === 1 ? "" : "s"} found`;
 
         values.forEach(value => {
-            const { id, name } = value;
-            const row = createItem(id, name);
+            const { id, name, surname } = value;
+            const row = createItem(id, name + " " + surname);
             table.appendChild(row);
         });
     });

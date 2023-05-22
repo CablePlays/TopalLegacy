@@ -22,7 +22,7 @@ async function setupSlideshow() {
                 const card = document.createElement("div");
                 card.classList.add("card");
                 card.classList.add("card-basic");
-                card.innerHTML = `${user.fullName} recently achieved the ${getAwardName(award)} award!`;
+                card.innerHTML = `${user.fullName} recently achieved the ${getAwardName(award)} Award`;
 
                 const profileElement = document.createElement("a");
                 profileElement.classList.add("transparent-button");

@@ -4,10 +4,6 @@ const general = require('./general');
 const jsonDatabase = require('./json-database');
 const sqlDatabase = require('./sql-database');
 
-function getParams(req) {
-    return new URLSearchParams(req.originalUrl.split("?")[1]);
-}
-
 async function render(req, res, path, adminPage = false) {
     const loggedIn = cookies.isLoggedIn(req);
     const userId = cookies.getUserId(req);
@@ -57,8 +53,6 @@ function router(path, options) {
 
     router.get('/', async (req, res) => {
         const requestedPath = req.baseUrl;
-        const params = getParams(req);
-
         const isLoggedIn = cookies.isLoggedIn(req);
         let userPermissions = {};
 
@@ -102,9 +96,9 @@ function router(path, options) {
             // checks that the user in the user parameter is valid
 
             if (validateUser === true) {
-                const paramUser = params.get("user");
+                const targetUserId = req.query.user;
 
-                if (paramUser == null || paramUser === "" || !await sqlDatabase.isUser(paramUser)) {
+                if (targetUserId == null || targetUserId === "" || !await sqlDatabase.isUser(targetUserId)) {
                     render(req, res, "errors/invalid-user");
                     return false;
                 }
@@ -138,8 +132,7 @@ function signupCreateAccountRouter() {
     const router = express.Router();
 
     router.get('/', async (req, res) => {
-        const params = getParams(req);
-        const token = params.get("token");
+        const token = req.query.token;
 
         if (token == null) {
             res.redirect("/");

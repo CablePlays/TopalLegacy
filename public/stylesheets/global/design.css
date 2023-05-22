@@ -153,6 +153,11 @@ table.alternating tr:nth-child(even) {
     width: 100%;
 }
 
+.narrow {
+    max-width: 300px;
+    width: 100%;
+}
+
 .spacer.v10 {
     height: 10px;
 }

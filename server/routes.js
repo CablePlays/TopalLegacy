@@ -82,7 +82,7 @@ function router(path, options) {
 
             if (permission != null && (!isLoggedIn || (permission === "any")
                 ? !general.hasAnyPermission(userPermissions) : !userPermissions[permission])) {
-                render(req, res, "errors/not-found");
+                render(req, res, "errors/not-found"); // make it look like page does not exist
                 return false;
             }
 

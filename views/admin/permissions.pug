@@ -5,48 +5,58 @@ block content
   script(src="/javascripts/admin/permissions.js")
 
   h1 Permissions Manager
-  h3: i (See bottom of page for information about permissions)
+  p.partial.
+    Information about each permission can be found at the bottom of this page.
+    It is also useful to know that all pages which require a permission will contain a key icon in the bottom right corner.
+    Users without permissions will not be able to view such pages.
 
   .spacer.v20
 
-  .section
-    h2 User Permissions
-    h3.info-header (You cannot change your own permission)
+  h2 User Permissions
+  p.partial.
+    This is where you can grant and revoke permissions from users.
+    Only users with at least one permission will appear in this list.
+    Please note that you cannot change your own permissions.
 
-    .add-user
-      h3 Add User
+  .add-user
+    h3 Add User
 
-      .add-user-input-container
-        input#add-user-input(type="text")
-        h3 @treverton.co.za
+    .add-user-input-container
+      input#add-user-input(type="text")
+      h3 @treverton.co.za
 
-      button#add-user-button Add
-      h4#add-user-status
-
-    .spacer.v20
-    #permissions-container
+    button#add-user-button Add
+    h4#add-user-status
 
   .spacer.v20
 
-  .permissions-info.section
+  #permissions-container
+
+  .spacer.v20
+
+  .permissions-info
     h2 About Permissions
-    p.
+    p.partial.
       Use permissions to grant users special privileges throughout the website.
-      This is useful for setting up a team of staff who are able to manage pupils' awards.
+      This is used to set up a group of users who are able to manage pupils' awards.
     .spacer.v20
 
     h3 Available Permissions:
     ul
       li
-        h4 Awards
-        p.
+        h4 View Logs
+        p.partial.
+          This permission currently has no affect. It will be implemented in the future.
+      li
+        h4 Manage Awards
+        p.partial.
           Allows the user to sign off on other users' awards.
           Users with this permission are not able to manage other users' permissions.
       li
-        h4 Permissions
-        p.
+        h4 Manage Permissions
+        p.partial.
           Allows the user to manage other users' permissions.
-          Users with this permission are also able to sign off on other users' awards.
+          Users with this permission are automatically granted all other permissions.
           This permission is required to view this page.
 
     template#user-template

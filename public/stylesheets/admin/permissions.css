@@ -30,23 +30,12 @@ body {
     width: 175px;
 }
 
-.info-header {
-    font-style: italic;
-}
-
 .permissions-info ul {
     margin-left: 20px;
 }
 
 .permissions-info ul li {
     margin-top: 10px;
-}
-
-.section {
-    border: 3px solid rgb(0, 0, 0);
-    overflow: hidden;
-    padding: 20px;
-    width: 100%;
 }
 
 .user {

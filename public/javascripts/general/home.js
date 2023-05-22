@@ -9,6 +9,12 @@ async function setupSlideshow() {
             card.classList.add("card-basic");
             card.innerHTML = "No Recent Awards";
             cards.push(card);
+
+            const card2 = document.createElement("div");
+            card2.classList.add("card");
+            card2.classList.add("card-basic");
+            card2.innerHTML = "Recent awards will be shown here.";
+            cards.push(card2);
         } else {
             values.forEach(value => {
                 const { award, user } = value;
@@ -26,13 +32,6 @@ async function setupSlideshow() {
 
                 cards.push(card);
             });
-        }
-        if (values.length <= 2) {
-            const card = document.createElement("div");
-            card.classList.add("card");
-            card.classList.add("card-highlight");
-            card.innerHTML = "Earn an award and get displayed here!";
-            cards.push(card);
         }
 
         r(cards);

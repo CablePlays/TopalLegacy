@@ -29,6 +29,17 @@
     color: var(--color-primary-500-text);
 }
 
+.container .info {
+    background-color: var(--color-background-accent);
+    border-radius: 2px;
+    color: var(--color-background-accent-text);
+    padding: 8px;
+}
+
+.container .info .red {
+    color: rgb(150, 8, 13);
+}
+
 .container .recent-awards-slideshow {
     border: 2px solid var(--color-black);
     height: 300px;
@@ -36,22 +47,4 @@
     margin-right: auto;
     max-width: 1200px;
     width: 100%;
-}
-
-.test {
-    background-color: rgb(255, 255, 255, 0.1);
-    border-radius: 2px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    height: 300px;
-    gap: 10px;
-    /* padding: 16px; */
-}
-
-.test .c {
-    background-color: var(--color-primary-500);
-    border-radius: 4px;
-    flex: 1;
-    /* flex-basis: 49%; */
 }

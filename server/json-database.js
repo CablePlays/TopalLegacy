@@ -24,18 +24,26 @@ function getUser(userId) {
     return new fsdb(path, COMPACT);
 }
 
-function forEachUser(consumer) {
+function getUsers(consumer) {
     const children = fs.readdirSync(USER_DIRECTORY);
+    const users = [];
 
     for (let child of children) {
         const userId = getUserIdFromFileName(child);
-        const db = new fsdb(USER_DIRECTORY + "/" + child, COMPACT);
-        consumer(userId, db);
+        users.push(userId);
     }
+
+    return users;
 }
 
 function getPermissions(userId) {
-    return getUser(userId).get("permissions") ?? {};
+    const permissions = getUser(userId).get("permissions") ?? {};
+
+    if (permissions.managePermissions === true) {
+        permissions.manageAwards = true;
+    }
+
+    return permissions;
 }
 
 function setPermissions(userId, value) {
@@ -45,7 +53,7 @@ function setPermissions(userId, value) {
 module.exports = {
     getRecents,
     getUser,
-    forEachUser,
+    getUsers,
     getPermissions,
     setPermissions
 }

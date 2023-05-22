@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 const MAX_RECENT_AWARDS = 10;
 
 async function sendEmail(recipient, subject, content) {
-    console.log("Sending email to " + recipient + ": " + content);
+    console.log("Sending email to " + recipient + ": " + subject);
     const from = "cableplays1912@gmail.com";
 
     const transporter = nodemailer.createTransport({
@@ -349,7 +349,7 @@ function permissionRequests(app) {
                 if (targetUserId == null) {
                     res.json({
                         status: "error",
-                        error: "invalid_user"
+                        error: "invalidUser"
                     });
                 } else if (isValidPermission(permission)) {
                     jsonDatabase.getUser(targetUserId).set("permissions." + permission, has === true);
@@ -359,7 +359,7 @@ function permissionRequests(app) {
                 } else {
                     res.json({
                         status: "error",
-                        error: "invalid_permission"
+                        error: "invalidPermission"
                     });
                 }
 
@@ -384,21 +384,22 @@ function permissionRequests(app) {
 
             if (userPermissions.managePermissions) {
                 const promises = [];
+                const users = jsonDatabase.getUsers();
 
-                jsonDatabase.forEachUser((id, db) => {
-                    const permissions = db.get("permissions") ?? {};
+                for (let userId of users) {
+                    const permissions = jsonDatabase.getPermissions(userId);
 
-                    if (permissions.manageAwards === true || permissions.managePermissions === true) {
+                    if (general.hasAnyPermission(permissions)) {
                         promises.push(new Promise(async r => {
                             values.push({
-                                user: await sqlDatabase.getUserInfo(id),
+                                user: await sqlDatabase.getUserInfo(userId),
                                 permissions
                             });
 
                             r();
                         }));
                     }
-                });
+                }
 
                 await Promise.all(promises);
             }
@@ -768,12 +769,13 @@ function entryRequests(app) {
         }
 
         const password = record.password;
+
         sendEmail(email, "Topal - Forgot Password",
             `<h2>Forgot Password</h2>
             <p>If you did not request an email for a forgotten password then please ignore this email.
             If you did forgot your password, here it is:</p>
             <h3>${password}</h3>`
-        );
+        ).then(null, error => console.warn(error));
 
         res.json({
             status: "success"

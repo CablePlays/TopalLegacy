@@ -31,7 +31,7 @@ async function handleClick() {
 
     message("Creating account, please wait.");
 
-    const { status } = await post("create-account", {
+    const { status } = await post("/create-account", {
         name,
         surname,
         password,
@@ -41,7 +41,7 @@ async function handleClick() {
     if (status === "error") {
         message("An error occured.");
     } else {
-        window.location.href = "/signup/success";
+        window.location.href = "/account/signup/success";
     }
 }
 

@@ -8,28 +8,29 @@ block content
   .spacer.v20
 
   .settings-container
-    .top
-      h2 Dark Theme
-      button#toggle-dark-button
-    p Turn dark theme on and off.
+    div
+      .top
+        h2 Dark Theme
+        button#toggle-dark-button
+      p Turn dark theme on and off.
 
-    .spacer.v20
-    .line
-    .spacer.v20
+      .spacer.v20
+      .line
 
-    .top
-      h2 Reset Password
-      button#reset-password-button Reset
-    p Change your password to something else.
+    div(style=`display: ${displays.loggedIn.true.block}`)
+      .top
+        h2 Reset Password
+        button#reset-password-button Reset
+      p Change your password to something else.
 
-    .spacer.v20
-    .line
-    .spacer.v20
+      .spacer.v20
+      .line
 
-    .top
-      h2 Log Out
-      button#logout-button Log Out
-    p Click to log out of this device.
+    div(style=`display: ${displays.loggedIn.true.block}`)
+      .top
+        h2 Log Out
+        button#logout-button Log Out
+      p Click to log out of this device.
 
-    .spacer.v20
-    .line
+      .spacer.v20
+      .line

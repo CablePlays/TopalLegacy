@@ -1,6 +1,6 @@
 function getProfileUser() {
-    const parameters = new URLSearchParams(window.location.search);
-    return parameters.get("user");
+    const pathParts = window.location.pathname.split("/");
+    return parseInt(pathParts[2]);
 }
 
 async function displayUserName() {
@@ -17,28 +17,27 @@ function setupTabs() {
     let pathNodes = window.location.pathname.split("/");
     let selectedTab = pathNodes[pathNodes.length - 1];
 
+    const targetUserId = getProfileUser();
+
     /* Click */
 
     for (let tab of container.children) {
         tab.addEventListener("click", () => {
-            const search = window.location.search; // parameters
-            window.location.href = "/profile/" + tab.getAttribute("data-tab") + search;
+            window.location.href = "/profile/" + targetUserId + "/" + tab.getAttribute("data-tab");
         })
     }
 
     /* Selected */
 
-    if (selectedTab != null) {
-        for (let tab of container.children) {
-            if (tab.getAttribute("data-tab") === selectedTab) {
-                tab.classList.add("selected");
-                break;
-            }
+    for (let tab of container.children) {
+        if (tab.getAttribute("data-tab") === selectedTab) {
+            tab.classList.add("selected");
+            break;
         }
     }
 }
 
-window.addEventListener("load", async () => {
+window.addEventListener("load", () => {
     displayUserName();
     setupTabs();
 });

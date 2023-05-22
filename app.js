@@ -2,10 +2,10 @@ const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const rest = require("./server/rest");
-const routes = require("./server/routes");
+const indexRouter = require("./routes/index-router");
 
 const PORT = 80;
-const ARTIFICIAL_LATENCY = 500;
+const ARTIFICIAL_LATENCY = 0;
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(express.json()); // for reading json post requests
 app.use(cookieParser()); // for cookie objects/tools
 
 // routes
-routes.acceptApp(app);
+app.use("/", indexRouter);
 
 // simulate lag
 app.use((req, res, next) => {
@@ -43,15 +43,15 @@ app.use((err, req, res, next) => {
     res.locals.status = status;
 
     if (status === 404) {
-        routes.render(req, res, "errors/not-found");
+        res.advancedRender("errors/not-found");
     } else {
-        routes.render(req, res, "errors/other");
+        res.advancedRender("errors/other");
     }
 });
 
 app.listen(PORT);
-app.on('error', onError);
-app.on('listening', onListening);
+// app.on('error', onError);
+// app.on('listening', onListening);
 
 /**
  * Event listener for HTTP server "error" event.

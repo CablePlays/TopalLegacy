@@ -28,7 +28,7 @@ async function sendEmail(recipient, subject, content) {
             html: content
         });
 
-        console.log("Message sent: " + info.messageId);
+        console.log("Email sent: " + info.messageId);
     } catch (error) {
         console.log(error);
     }
@@ -651,7 +651,7 @@ function entryRequests(app) {
                 `<h2>Topal</h2>
                 <h2>Create Account</h2>
                 <p> If you are trying to create a Topal account then please continue with
-                <a href="topal.click/create-account?token=${token}">this</a> link.
+                <a href="topal.click/account/create-account?token=${token}">this</a> link.
                 If you are not trying to create a Topal account then please ignore this email.`
             );
 
@@ -773,7 +773,7 @@ function entryRequests(app) {
         sendEmail(email, "Topal - Forgot Password",
             `<h2>Forgot Password</h2>
             <p>If you did not request an email for a forgotten password then please ignore this email.
-            If you did forgot your password, here it is:</p>
+            If you have forgotten your password then here it is:</p>
             <h3>${password}</h3>`
         ).then(null, error => console.warn(error));
 

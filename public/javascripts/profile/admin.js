@@ -18,7 +18,7 @@ function createManagementRow(options) {
 
     createElement("td", tr, complete ? "Yes" : "No");
     createElement("td", tr, reloadToView ? reloadText : (date == null) ? MISSING_TEXT : formatDate(date));
-    createElement("td", tr, reloadToView ? reloadText : signer?.name ?? MISSING_TEXT);
+    createElement("td", tr, reloadToView ? reloadText : signer?.fullName ?? MISSING_TEXT);
     createElement("td", tr, complete ? "Revoke" : "Grant").addEventListener("click", () => {
         const newComplete = !complete;
 

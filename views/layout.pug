@@ -58,20 +58,21 @@ html
 
         .line
 
-        a(href="/search-users") Search
+        a(href="/search") Search
 
         .line
 
         a(href=`/profile?user=${userId}` style=`display: ${displays.loggedIn.true.flex}`) Profile
         .line(style=`display: ${displays.loggedIn.true.flex}`)
 
-        a(href="/settings" style=`display: ${displays.loggedIn.true.flex}`) Settings
-        .line(style=`display: ${displays.loggedIn.true.flex}`)
+        a(href="/settings") Settings
+        
+        .line
 
-        a(href="/login" style=`display: ${displays.loggedIn.false.flex}`) Login
+        a(href="/account/login" style=`display: ${displays.loggedIn.false.flex}`) Login
         .line(style=`display: ${displays.loggedIn.false.flex}`)
 
-        a(href="/signup" style=`display: ${displays.loggedIn.false.flex}`) Signup
+        a(href="/account/signup" style=`display: ${displays.loggedIn.false.flex}`) Signup
         .line(style=`display: ${displays.loggedIn.false.flex}`)
 
         a(href="/admin" style=`display: ${displays.permission.any.flex}`) Admin

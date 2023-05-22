@@ -9,7 +9,7 @@ async function handleButton() {
 
     message("Please wait.");
 
-    const { status, error } = await post("login", { email, password });
+    const { status, error } = await post("/login", { email, password });
 
     if (status === "error") {
         if (error === "invalidDetails") {

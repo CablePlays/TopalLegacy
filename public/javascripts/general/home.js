@@ -27,7 +27,7 @@ async function setupSlideshow() {
                 const profileElement = document.createElement("a");
                 profileElement.classList.add("transparent-button");
                 profileElement.innerHTML = "View Profile"
-                profileElement.href = `/profile?user=${user.id}`;
+                profileElement.href = "profile/" + user.id;
                 card.appendChild(profileElement);
 
                 cards.push(card);

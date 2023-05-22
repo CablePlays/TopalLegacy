@@ -21,7 +21,7 @@ async function handleButton() {
     if (status === "error") {
         message("An error occured.");
     } else {
-        message("Your password has been reset.");
+        message("Your password has been changed.");
     }
 }
 

@@ -3,7 +3,7 @@ function createProfileButton(userId) {
     profileButton.innerHTML = "Profile";
 
     profileButton.addEventListener("click", () => {
-        window.location.href = "/profile?user=" + userId;
+        window.location.href = "/profile/" + userId;
     });
 
     return profileButton;

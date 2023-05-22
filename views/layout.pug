@@ -62,7 +62,7 @@ html
 
         .line
 
-        a(href=`/profile?user=${userId}` style=`display: ${displays.loggedIn.true.flex}`) Profile
+        a(href=`/profile/${userId}` style=`display: ${displays.loggedIn.true.flex}`) Profile
         .line(style=`display: ${displays.loggedIn.true.flex}`)
 
         a(href="/settings") Settings
@@ -86,8 +86,8 @@ html
       img(src="/images/admin-icon.png")
 
     footer
-      p &copy 2023 
-        a(href="/") TOPAL
+      p &copy 2023 <a href="/">TOPAL</a>
+      a.corner(href="https://www.treverton.co.za" target="_blank") TREVERTON
 
     #confirmation(style="display: none")
       .dialog

@@ -64,8 +64,7 @@ function setupAwards() {
     const awards = getAwards(profileUser);
 
     AWARDS.forEach(award => {
-        const id = award[0];
-        const display = award[1];
+        const [id, display] = award;
 
         const card = document.createElement("div");
         card.classList.add("card");

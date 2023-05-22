@@ -17,7 +17,7 @@ async function loadRequests() {
     const loading = createLoading(true);
     container.replaceWith(loading);
 
-    const signoffRequests = (await post("/get-award-requests")).values;
+    const { values: signoffRequests } = await post("/get-award-requests");
 
     for (let request of signoffRequests) {
         const { award, id: requestId, user } = request;
@@ -36,7 +36,7 @@ async function loadRequests() {
         const profileElement = document.createElement("a");
         profileElement.innerHTML = "Review";
         profileElement.target = "_blank";
-        profileElement.href = `/profile/admin?user=${user.id}`;
+        profileElement.href = `/profile/${user.id}/admin`;
         profileElement.classList.add("transparent-button");
         buttonDiv.appendChild(profileElement);
 

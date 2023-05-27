@@ -1,3 +1,23 @@
+function approvalExtra(title, approval) {
+    return card => {
+        card.appendChild(createSpacer(20));
+
+        const label = document.createElement("h3");
+        label.innerHTML = title;
+        card.appendChild(label);
+
+        card.appendChild(createSpacer(20));
+
+        const image = createCheckbox(new Promise(async r => {
+            const { approvals } = await getRequest(`/users/${getProfileUser()}/approvals`);
+            r(approvals[approval]?.complete === true);
+        }));
+
+        image.classList.add("checkbox");
+        card.appendChild(image);
+    }
+}
+
 function meterExtra(max, display, supplier) {
     return async card => {
         const label = document.createElement("h3");
@@ -20,23 +40,8 @@ function setupAwards() {
     const awardsContainer = document.getElementById("awards-container");
 
     const extras = {
-        rock_climbing: {
-            after: card => {
-                card.appendChild(createSpacer(20));
-
-                const label = document.createElement("h3");
-                label.innerHTML = "Belayer Signoff";
-                card.appendChild(label);
-
-                card.appendChild(createSpacer(20));
-
-                const image = createCheckbox(new Promise(async r => {
-                    const { approvals } = await getRequest(`/users/${profileUser}/approvals`);
-                    r(approvals.rockClimbingBelayer?.complete === true);
-                }));
-                image.classList.add("checkbox");
-                card.appendChild(image);
-            }
+        rockClimbing: {
+            after: approvalExtra("Belayer Sign-Off", "rockClimbingBelayer")
         },
         running: {
             before: meterExtra(100000, value => `${value / 1000}km / 100km`, async () =>
@@ -45,6 +50,9 @@ function setupAwards() {
         service: {
             before: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, async () =>
                 (await getRequest(`/users/${profileUser}/logs/service-hours`)).time)
+        },
+        venture: {
+            after: approvalExtra("Proposal Approved", "ventureProposal")
         }
     };
 

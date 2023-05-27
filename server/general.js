@@ -89,7 +89,7 @@ function isAward(award) {
         'solitaire', 'solitaireInstructor', 'solitaireLeader',
         'summit',
         'traverse',
-        'venture'
+        'venture', "ventureLeader"
     ].includes(award);
 }
 

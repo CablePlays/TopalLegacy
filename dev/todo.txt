@@ -1,10 +1,5 @@
-> Awards Todo
-
-Venture leader
-
 > Todo
 
-Comments to Midmar Mile training logs
 Logs page (award+signoffs grant/revoke & permissions change)
 Make recents cap out due to date as well as number & make recents store in SQL table
 

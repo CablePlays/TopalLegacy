@@ -21,7 +21,7 @@ const AWARDS = [
     ["solitaire", "Solitaire"], ["solitaireInstructor", "Solitaire Instructor"], ["solitaireLeader", "Solitaire Leader"],
     ["summit", "Summit"],
     ["traverse", "Traverse"],
-    ["venture", "Venture"]
+    ["venture", "Venture"], ["ventureLeader", "Venture Leader"]
 ];
 
 const PERMISSIONS = [

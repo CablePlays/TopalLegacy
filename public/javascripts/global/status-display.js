@@ -53,7 +53,7 @@ function createAwardStatus(options) {
         top.children[1].children[1].innerHTML = (complete ? formatDate(date) : "-");
 
         // signer
-        top.children[2].children[1].innerHTML = (complete ? signer.name : "-");
+        top.children[2].children[1].innerHTML = (complete ? signer.fullName : "-");
 
         /* Bottom */
 
@@ -68,7 +68,7 @@ function createAwardStatus(options) {
                 const { date: declineDate, message: declineMessage, user: declineUser } = decline;
 
                 declineElement.appendChild(createSpacer(20));
-                createElement("h3", declineElement, "Request declined by " + declineUser.name);
+                createElement("h3", declineElement, "Request declined by " + declineUser.fullName);
                 createElement("p", declineElement, formatDate(declineDate));
 
                 if (declineMessage != null) {

@@ -30,7 +30,6 @@ function createPermissionMiddleware(permission) {
             }
         }
 
-        console.log("c");
         res.advancedRender("errors/not-found"); // make it look like page does not exist
     };
 }

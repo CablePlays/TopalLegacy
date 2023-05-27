@@ -29,9 +29,7 @@ idRouter.get("/milestones", (req, res) => {
     res.advancedRender("profile/milestones");
 });
 
-idRouter.use("/", middleware.createPermissionMiddleware("manageAwards"));
-
-idRouter.get("/admin", (req, res) => {
+idRouter.get("/admin", middleware.createPermissionMiddleware("manageAwards"), (req, res) => {
     res.advancedRender("profile/admin", true);
 });
 

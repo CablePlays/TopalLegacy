@@ -24,7 +24,7 @@
             "knots1": "STATUS"
         }
     },
-    "singletonRecords": {
+    "singletonLogs": {
         "solitaire": {
             "date": "DATE",
             "location": "",

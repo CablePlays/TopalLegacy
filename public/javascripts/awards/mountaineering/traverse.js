@@ -3,9 +3,9 @@ window.addEventListener("load", () => {
         placeholder: "signoffs",
         type: "traverse"
     });
-    createFlexibleRD({
+    createFlexibleLD({
         placeholder: "hike-plan-placeholder",
-        recordType: "traverseHikePlan",
+        logType: "traverseHikePlan",
         removable: true,
         singleton: true,
         inputOptions: {
@@ -21,9 +21,9 @@ window.addEventListener("load", () => {
             ]
         }
     });
-    createFlexibleRD({
+    createFlexibleLD({
         placeholder: "summaries-placeholder",
-        recordType: "traverseSummaries",
+        logType: "traverseSummaries",
         removable: true,
         singleton: true,
         inputOptions: {

@@ -9,10 +9,10 @@ window.addEventListener("load", () => {
             }
         }
     });
-    createRecordInput({
-        placeholder: "record-form",
-        recordType: "rockClimbing",
-        title: "Add Day (Enter Climbs Later)",
+    createLogInput({
+        placeholder: "log-form",
+        logType: "rockClimbing",
+        title: "Add Day (Enter Climbs After)",
         inputs: [
             {
                 id: "date",
@@ -46,13 +46,13 @@ window.addEventListener("load", () => {
             }
         ]
     });
-    const { setRecord } = createRecordInput({
-        placeholder: "subrecord-form",
-        recordType: "rockClimbing",
-        subrecords: true,
+    const { setLog } = createLogInput({
+        placeholder: "sublog-form",
+        logType: "rockClimbing",
+        sublogs: true,
         title: "Add Climb",
-        onFirstRecordSet: () => {
-            document.getElementById("subrecord-form-container").style.display = "block";
+        onFirstLogSet: () => {
+            document.getElementById("sublog-form-container").style.display = "block";
         },
         inputs: [
             {
@@ -99,9 +99,9 @@ window.addEventListener("load", () => {
             }
         ]
     });
-    createFlexibleRD({
-        placeholder: "records",
-        recordType: "rockClimbing",
-        setRecord
+    createFlexibleLD({
+        placeholder: "logs",
+        logType: "rockClimbing",
+        setLog
     });
 });

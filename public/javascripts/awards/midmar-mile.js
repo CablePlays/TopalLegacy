@@ -1,6 +1,7 @@
-function setupRecordInput() {
-    const element = createRecordInput({
-        recordType: "midmarMile",
+window.addEventListener("load", () => {
+    createLogInput({
+        logType: "midmarMile",
+        placeholder: "log-input",
         inputs: [
             {
                 id: "date",
@@ -29,14 +30,8 @@ function setupRecordInput() {
             }
         ]
     });
-
-    document.getElementById("record-input").replaceWith(element);
-}
-
-window.addEventListener("load", () => {
-    setupRecordInput();
-    createTableRD({
-        placeholder: "record-display",
-        recordType: "midmarMile"
+    createTableLD({
+        placeholder: "log-display",
+        logType: "midmarMile"
     });
 });

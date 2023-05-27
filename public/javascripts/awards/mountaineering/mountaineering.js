@@ -1,11 +1,11 @@
 window.addEventListener("load", () => {
-    createFlexibleRD({
-        placeholder: "record-display",
-        recordType: "mountaineering"
+    createFlexibleLD({
+        placeholder: "log-display",
+        logType: "mountaineering"
     });
-    createRecordInput({
-        placeholder: "record-input",
-        recordType: "mountaineering",
+    createLogInput({
+        placeholder: "log-input",
+        logType: "mountaineering",
         inputs: [
             {
                 id: "start_date",

@@ -27,7 +27,8 @@ const USER_COOKIE = "user_id";
 const PASSWORD_COOKIE = "password";
 
 function getUserId(req) {
-    return getCookie(USER_COOKIE, req.headers.cookie);
+    const userId = getCookie(USER_COOKIE, req.headers.cookie);
+    return (userId == null) ? null : parseInt(userId);
 }
 
 function getPassword(req) {
@@ -46,7 +47,7 @@ function logOut(res) {
 module.exports = {
     USER_COOKIE,
     PASSWORD_COOKIE,
-    
+
     logOut,
     getUserId,
     getPassword,

@@ -1,4 +1,4 @@
-.record-input {
+.log-input {
     background-color: var(--color-primary-400);
     border-radius: 4px;
     color: var(--color-primary-400-text);
@@ -11,7 +11,7 @@
     width: 70%;
 }
 
-.record-input button {
+.log-input button {
     background-color: rgb(240, 240, 240);
     border: none;
     border-radius: 25px;
@@ -23,37 +23,37 @@
     width: 200px;
 }
 
-.record-input button:hover {
+.log-input button:hover {
     background-color: rgb(220, 220, 220);
 }
 
-.record-input button:active {
+.log-input button:active {
     background-color: rgb(250, 250, 250);
 }
 
-.record-input input[type="checkbox"] {
+.log-input input[type="checkbox"] {
     min-height: 30px;
     min-width: 30px;
 }
 
-.record-input input[type="date"],
-.record-input input[type="number"],
-.record-input input[type="text"],
-.record-input input[type="url"],
-.record-input select {
+.log-input input[type="date"],
+.log-input input[type="number"],
+.log-input input[type="text"],
+.log-input input[type="url"],
+.log-input select {
     height: 40px;
     padding: 8px;
     min-width: 150px;
 }
 
-.record-input textarea {
+.log-input textarea {
     height: 80px;
     padding: 16px;
 }
 
-.record-input input,
-.record-input select,
-.record-input textarea {
+.log-input input,
+.log-input select,
+.log-input textarea {
     background-color: var(--color-background);
     border: none;
     border-left: 2px solid var(--color-background-opposite);
@@ -61,12 +61,18 @@
     color: var(--color-background-text);
 }
 
-.record-input .input-collection {
+.log-input .info-message {
+    color: rgb(255, 255, 255);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.log-input .input-collection {
     display: flex;
     flex-wrap: wrap;
 }
 
-.record-input .input-container {
+.log-input .input-container {
     align-items: end;
     column-gap: 20px;
     display: flex;
@@ -74,13 +80,7 @@
     row-gap: 10px;
 }
 
-.record-input .success-message {
-    color: rgb(255, 255, 255);
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.record-input .required::after {
+.log-input .required::after {
     color: rgb(150, 8, 13);
     content: " *"
 }

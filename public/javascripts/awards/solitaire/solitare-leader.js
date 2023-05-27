@@ -1,12 +1,12 @@
-async function setupRecord() {
-    createFlexibleRD({
-        placeholder: "record-placeholder",
-        recordType: "solitaireLeader",
+window.addEventListener("load", () => {
+    createFlexibleLD({
+        placeholder: "log-placeholder",
+        logType: "solitaireLeader",
         removable: true,
         singleton: true,
         inputOptions: {
-            title: "Leader Record",
-            successMessage: "Your record has been created!",
+            title: "Leader Log",
+            successMessage: "Your log has been created!",
             inputs: [
                 {
                     id: "date",
@@ -36,8 +36,4 @@ async function setupRecord() {
             ]
         }
     });
-}
-
-window.addEventListener("load", () => {
-    setupRecord();
 });

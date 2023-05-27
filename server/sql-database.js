@@ -9,13 +9,17 @@ if (!fs.existsSync("database")) {
 
 function useDatabase(consumer) {
     const db = new sqlite3.Database("./database/database.db", sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, error => {
-        if (error) console.warn(error.message);
+        if (error) {
+            console.error(error);
+        }
     });
 
     consumer(db);
 
     db.close(error => {
-        if (error) console.warn(error.message);
+        if (error) {
+            console.error(error);
+        }
     });
 }
 
@@ -25,7 +29,7 @@ function all(sql) {
             db.serialize(() => {
                 db.all(sql, [], (error, rows) => {
                     if (error) {
-                        console.error(error.message);
+                        console.error(error);
                     } else {
                         resolve(rows);
                     }
@@ -41,7 +45,7 @@ function get(sql) {
             db.serialize(() => {
                 db.get(sql, [], (error, row) => {
                     if (error) {
-                        console.error(error.message);
+                        console.error(error);
                     } else {
                         resolve(row);
                     }
@@ -57,7 +61,7 @@ function run(sql) {
             db.serialize(() => {
                 db.run(sql, [], error => {
                     if (error) {
-                        console.error(error.message);
+                        console.error(error);
                     } else {
                         resolve();
                     }
@@ -105,6 +109,14 @@ async function replace(table, conditionColumn, conditionValue, values) {
     ]);
 }
 
+/* Helper */
+
+async function getTableColumns(table) {
+    let allColumns = await get(`SELECT GROUP_CONCAT(name, ",") FROM PRAGMA_TABLE_INFO("${table}")`);
+    allColumns = allColumns[`GROUP_CONCAT(name, ",")`];
+    return allColumns.split(",");
+}
+
 /* Users */
 
 /*
@@ -125,23 +137,16 @@ async function getPassword(userId) {
     return record?.password;
 }
 
-/*
-    Returns ID & password from email.
-    Creates the user if does not exist.
-*/
-// async function getUserDetails(email) {
-//     await run(`INSERT OR IGNORE INTO users (email) VALUES ("${email}")`);
-//     const record = await get(`SELECT * FROM users WHERE email = "${email}"`);
+async function getUsers() {
+    const users = await all(`SELECT * FROM users`);
+    const ids = [];
 
-//     if (record == null) {
-//         throw new Error("Missing user record");
-//     }
+    for (let user of users) {
+        ids.push(user.id);
+    }
 
-//     return {
-//         id: record.id,
-//         password: record.password
-//     };
-// }
+    return ids;
+}
 
 async function getUserInfo(userId) {
     const { email, name, surname } = await get(`SELECT * FROM users WHERE id = "${userId}"`) ?? {};
@@ -166,20 +171,20 @@ async function doesSignoffRequestExist(userId, award) {
     return (val != null);
 }
 
-function getSignoffRequests() {
-    return all(`SELECT * FROM signoff_requests`);
+async function getSignoffRequests() {
+    return await all(`SELECT * FROM signoff_requests`);
 }
 
-function insertSignoffRequest(userId, award) {
-    return run(`INSERT INTO signoff_requests (user, award) VALUES (${userId}, "${award}")`);
+async function insertSignoffRequest(userId, award) {
+    return await run(`INSERT INTO signoff_requests (user, award) VALUES (${userId}, "${award}")`);
 }
 
-function deleteSignoffRequest(id) {
-    return run(`DELETE FROM signoff_requests WHERE id = ${id}`);
+async function deleteSignoffRequest(id) {
+    return await run(`DELETE FROM signoff_requests WHERE id = ${id}`);
 }
 
-function deleteMatchingSignoffRequest(userId, award) {
-    return run(`DELETE FROM signoff_requests WHERE user = ${userId} AND award = "${award}"`);
+async function deleteMatchingSignoffRequest(userId, award) {
+    return await run(`DELETE FROM signoff_requests WHERE user = ${userId} AND award = "${award}"`);
 }
 
 /* Create Tables */
@@ -192,20 +197,20 @@ useDatabase(db => {
     db.all("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL, name TEXT NOT NULL, surname TEXT NOT NULL)");
     db.all("CREATE TABLE IF NOT EXISTS signoff_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, award TEXT NOT NULL)");
 
-    /* Records */
+    /* Logs */
 
-    db.all("CREATE TABLE IF NOT EXISTS endurance_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS midmar_mile_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL)");
-    db.all("CREATE TABLE IF NOT EXISTS mountaineering_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, start_date TEXT NOT NULL, area TEXT NOT NULL, days INTEGER NOT NULL, distance INTEGER NOT NULL, altitude_gained INTEGER NOT NULL, party_size INTEGER NOT NULL, shelter TEXT NOT NULL, trail INTEGER NOT NULL, leader INTEGER NOT NULL, majority_above_2000m INTEGER NOT NULL, route TEXT, weather TEXT, situations TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS running_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS service_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, service TEXT NOT NULL, time INTEGER NOT NULL, description TEXT, signer INTEGER)");
+    db.all("CREATE TABLE IF NOT EXISTS endurance_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS midmar_mile_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL)");
+    db.all("CREATE TABLE IF NOT EXISTS mountaineering_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, start_date TEXT NOT NULL, area TEXT NOT NULL, days INTEGER NOT NULL, distance INTEGER NOT NULL, altitude_gained INTEGER NOT NULL, party_size INTEGER NOT NULL, shelter TEXT NOT NULL, trail INTEGER NOT NULL, leader INTEGER NOT NULL, majority_above_2000m INTEGER NOT NULL, route TEXT, weather TEXT, situations TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS running_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, distance INTEGER NOT NULL, time INTEGER NOT NULL, description TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS service_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, service TEXT NOT NULL, time INTEGER NOT NULL, description TEXT, signer INTEGER)");
 
-    db.all("CREATE TABLE IF NOT EXISTS flat_water_paddling_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT, training TEXT, boat TEXT, time INTEGER, distance TEXT, place TEXT, comments TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS river_trip_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT, put_in TEXT, take_out TEXT, time INTEGER, distance INTEGER, party_size INTEGER, river TEXT, water_level TEXT, boat TEXT, signer INTEGER)");
+    db.all("CREATE TABLE IF NOT EXISTS flat_water_paddling_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT, training TEXT, boat TEXT, time INTEGER, distance TEXT, place TEXT, comments TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS river_trip_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT, put_in TEXT, take_out TEXT, time INTEGER, distance INTEGER, party_size INTEGER, river TEXT, water_level TEXT, boat TEXT, signer INTEGER)");
 
-    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, area TEXT, party_size INTEGER, weather TEXT)");
-    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_subrecords (id INTEGER PRIMARY KEY AUTOINCREMENT, record_id INTEGER NOT NULL, route_name TEXT, method TEXT, grade TEXT, pitches INTEGER)");
-    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_instruction_records (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, duration INTEGER NOT NULL, climbers INTEGER NOT NULL, location TEXT NOT NULL, signer INTEGER)");
+    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, area TEXT, party_size INTEGER, weather TEXT)");
+    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_sublogs (id INTEGER PRIMARY KEY AUTOINCREMENT, log_id INTEGER NOT NULL, route_name TEXT, method TEXT, grade TEXT, pitches INTEGER)");
+    db.all("CREATE TABLE IF NOT EXISTS rock_climbing_instruction_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, date TEXT NOT NULL, duration INTEGER NOT NULL, climbers INTEGER NOT NULL, location TEXT NOT NULL, signer INTEGER)");
 });
 
 module.exports = {
@@ -214,9 +219,12 @@ module.exports = {
     run,
     replace,
 
+    getTableColumns,
+
     isUser,
     getUserId,
     getPassword,
+    getUsers,
     getUserInfo,
 
     getSignoffRequest,

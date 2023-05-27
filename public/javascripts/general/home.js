@@ -1,9 +1,9 @@
 async function setupSlideshow() {
     const cardsPromise = new Promise(async r => {
-        const { values } = await post("/get-recent-awards");
+        const { recents } = await getRequest("/awards/recents");
         const cards = [];
 
-        if (values.length === 0) {
+        if (recents.length === 0) {
             const card = document.createElement("div");
             card.classList.add("card");
             card.classList.add("card-basic");
@@ -16,7 +16,7 @@ async function setupSlideshow() {
             card2.innerHTML = "Recent awards will be shown here.";
             cards.push(card2);
         } else {
-            values.forEach(value => {
+            recents.forEach(value => {
                 const { award, user } = value;
 
                 const card = document.createElement("div");

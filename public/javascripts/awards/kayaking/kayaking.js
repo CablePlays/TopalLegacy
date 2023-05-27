@@ -3,10 +3,10 @@ window.addEventListener("load", () => {
         placeholder: "signoffs",
         type: "kayaking"
     });
-    createRecordInput({
+    createLogInput({
         placeholder: "flat-water-paddling-form",
-        recordType: "flatWaterPaddling",
-        title: "Create Flat Water Paddling Record",
+        logType: "flatWaterPaddling",
+        title: "Create Flat Water Paddling Log",
         inputs: [
             {
                 id: "date",
@@ -53,14 +53,14 @@ window.addEventListener("load", () => {
             }
         ]
     });
-    createTableRD({
-        placeholder: "flat-water-paddling-records",
-        recordType: "flatWaterPaddling"
+    createTableLD({
+        placeholder: "flat-water-paddling-logs",
+        logType: "flatWaterPaddling"
     });
-    createRecordInput({
+    createLogInput({
         placeholder: "river-trip-form",
-        recordType: "riverTrip",
-        title: "Create River Trip Record",
+        logType: "riverTrip",
+        title: "Create River Trip Log",
         inputs: [
             {
                 id: "date",
@@ -135,8 +135,8 @@ window.addEventListener("load", () => {
             }
         ]
     });
-    createFlexibleRD({
-        placeholder: "river-trip-records",
-        recordType: "riverTrip"
+    createFlexibleLD({
+        placeholder: "river-trip-logs",
+        logType: "riverTrip"
     });
 });

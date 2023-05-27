@@ -19,16 +19,14 @@ async function handleButton() {
     message("Please wait.");
     requesting = true;
 
-    const { status, error } = await post("/forgot-password", { email });
+    const { error, ok } = await postRequest("/session/forgot-password", { email });
 
-    if (status === "error") {
-        if (error === "invalidEmail") {
-            message("There is no account associated with that email.");
-        } else {
-            message("An error occured.");
-        }
-    } else {
+    if (ok) {
         message("An email has been sent to your inbox. Find your password there.");
+    } else if (error === "invalid_email") {
+        message("There is no account associated with that email.");
+    } else {
+        message("An error occured.");
     }
 
     requesting = false;

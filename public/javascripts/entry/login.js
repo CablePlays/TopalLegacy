@@ -9,17 +9,15 @@ async function handleButton() {
 
     message("Please wait.");
 
-    const { status, error } = await post("/login", { email, password });
+    const { error, ok } = await putRequest("/session/account", { email, password });
 
-    if (status === "error") {
-        if (error === "invalidDetails") {
-            message("Invalid email or password.");
-        } else {
-            message("An error occured.");
-        }
-    } else {
+    if (ok) {
         message("Logged in.");
         window.location.href = "/";
+    } else if (error === "invalid_details") {
+        message("Invalid email or password.");
+    } else {
+        message("An error occured.");
     }
 }
 

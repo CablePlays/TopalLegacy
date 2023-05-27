@@ -1,5 +1,5 @@
 /*
-    Handles displaying records using either a table or a list for singletons.
+    Handles displaying logs using either a list or a table.
 */
 
 const _flexibleDisplayColumns = {
@@ -22,12 +22,12 @@ const _flexibleDisplayColumns = {
         {
             name: "Hike Distance",
             type: "textShort",
-            valueProvider: record => (record.distance / 1000) + "km"
+            valueProvider: log => (log.distance / 1000) + "km"
         },
         {
             name: "Altitude Gained",
             type: "textShort",
-            valueProvider: record => record.altitude_gained + "m"
+            valueProvider: log => log.altitude_gained + "m"
         },
         {
             name: "Number In Party",
@@ -97,12 +97,12 @@ const _flexibleDisplayColumns = {
         {
             name: "Hours On River",
             type: "textShort",
-            valueProvider: record => formatDuration(record.time, false)
+            valueProvider: log => formatDuration(log.time, false)
         },
         {
             name: "Distance On River",
             type: "textShort",
-            valueProvider: record => (record.distance / 1000) + "km"
+            valueProvider: log => (log.distance / 1000) + "km"
         },
         {
             name: "Number In Party",
@@ -151,8 +151,8 @@ const _flexibleDisplayColumns = {
         },
         {
             name: "Climbs",
-            customType: "subrecordsTable",
-            subrecordsTable: {
+            customType: "sublogsTable",
+            sublogsTable: {
                 buttonText: "Add Climb",
                 name: "Climbs"
             }
@@ -259,76 +259,76 @@ const _flexibleDisplayColumns = {
 
 const _tableDisplayColumns = {
     endurance: [
-        ["Date", record => formatDate(record.date)],
-        ["Distance", record => (record.distance / 1000) + "km"],
-        ["Time", record => formatDuration(record.time)],
-        ["Description", record => record.description]
+        ["Date", log => formatDate(log.date)],
+        ["Distance", log => (log.distance / 1000) + "km"],
+        ["Time", log => formatDuration(log.time)],
+        ["Description", log => log.description]
     ],
     flatWaterPaddling: [
-        ["Date", record => formatDate(record.date)],
-        ["Training", record => record.training],
-        ["Boat", record => record.boat],
-        ["Time", record => formatDuration(record.time)],
-        ["Distance", record => record.distance],
-        ["Place", record => record.place],
-        ["Comments", record => record.comments]
+        ["Date", log => formatDate(log.date)],
+        ["Training", log => log.training],
+        ["Boat", log => log.boat],
+        ["Time", log => formatDuration(log.time)],
+        ["Distance", log => log.distance],
+        ["Place", log => log.place],
+        ["Comments", log => log.comments]
     ],
     midmarMile: [
-        ["Date", record => formatDate(record.date)],
-        ["Distance", record => record.distance + "m"],
-        ["Time", record => formatDuration(record.time)]
+        ["Date", log => formatDate(log.date)],
+        ["Distance", log => log.distance + "m"],
+        ["Time", log => formatDuration(log.time)]
     ],
     rockClimbingInstruction: [
-        ["Date", record => formatDate(record.date)],
-        ["Duration", record => formatDuration(record.duration, false)],
-        ["Number Of Climbers", record => record.climbers],
-        ["Location", record => record.location],
+        ["Date", log => formatDate(log.date)],
+        ["Duration", log => formatDuration(log.duration, false)],
+        ["Number Of Climbers", log => log.climbers],
+        ["Location", log => log.location],
         ["Signed Off", "signer"]
     ],
     running: [
-        ["Date", record => formatDate(record.date)],
-        ["Distance", record => (record.distance / 1000) + "km"],
-        ["Time", record => formatDuration(record.time)],
-        ["Description", record => record.description],
+        ["Date", log => formatDate(log.date)],
+        ["Distance", log => (log.distance / 1000) + "km"],
+        ["Time", log => formatDuration(log.time)],
+        ["Description", log => log.description],
     ],
     service: [
-        ["Date", record => formatDate(record.date)],
-        ["Service", record => record.service],
-        ["Hours", record => formatDuration(record.time, false)],
-        ["Description", record => record.description],
+        ["Date", log => formatDate(log.date)],
+        ["Service", log => log.service],
+        ["Hours", log => formatDuration(log.time, false)],
+        ["Description", log => log.description],
         ["Signed Off", "signer"]
     ]
 };
 
-const _tableDisplayColumnsSubrecords = {
+const _tableDisplayColumnsSublogs = {
     rockClimbing: [
-        ["Route Name", record => record.route_name],
-        ["Method", record => record.method],
-        ["Grade", record => record.grade],
-        ["Pitches", record => record.pitches],
+        ["Route Name", log => log.route_name],
+        ["Method", log => log.method],
+        ["Grade", log => log.grade],
+        ["Pitches", log => log.pitches],
     ]
 };
 
-function createFlexibleRD(options) {
+function createFlexibleLD(options) {
     const {
         inputOptions,
         placeholder,
         removable = true,
-        recordType,
-        setRecord, // links to subrecords form
+        logType,
+        setLog, // links to sublogs form
         signable = false,
         singleton,
-        targetUser: targetUserId
+        targetUser: targetUserId = getUserId()
     } = options;
 
-    const items = _flexibleDisplayColumns[recordType];
+    const items = _flexibleDisplayColumns[logType];
 
     function showNone() {
         createElement("p", container, "None");
     }
 
-    function createSection(currentItems, record) {
-        const { id: recordId } = record;
+    function createSection(currentItems, log) {
+        const { id: logId } = log;
 
         for (let i = 0; i < currentItems.length; i++) {
             const item = currentItems[i];
@@ -338,7 +338,7 @@ function createFlexibleRD(options) {
                 currentItems[i] = {
                     type: "custom",
                     consumer: div => {
-                        const { signer } = record;
+                        const { signer } = log;
 
                         function addContent(signedOff) {
                             removeChildren(div);
@@ -347,10 +347,10 @@ function createFlexibleRD(options) {
                                 div.classList.remove("boolean-container");
                                 div.classList.add("option-card");
 
-                                createElement("h3", div, "Sign Off Record");
+                                createElement("h3", div, "Sign Off Log");
                                 createElement("button", div, "Sign Off").addEventListener("click", () => {
-                                    post(`/sign-${recordType}-record`, { id: recordId });
                                     addContent(true);
+                                    putRequest(`/logs/${logType}/${logId}`, { signedOff: true });
                                 });
                             } else {
                                 div.classList.add("boolean-container");
@@ -364,8 +364,8 @@ function createFlexibleRD(options) {
                         addContent((signable && signer == null) ? null : signer != null);
                     }
                 };
-            } else if (customType === "subrecordsTable") {
-                const { buttonText, name } = item.subrecordsTable ?? {};
+            } else if (customType === "sublogsTable") {
+                const { buttonText, name } = item.sublogsTable ?? {};
 
                 currentItems[i] = {
                     type: "custom",
@@ -375,16 +375,16 @@ function createFlexibleRD(options) {
                         createElement("h3", div, name);
                         div.appendChild(createSpacer(20));
 
-                        if (setRecord != null) {
+                        if (setLog != null) {
                             createElement("button", div, buttonText).addEventListener("click", () => {
-                                setRecord(recordId);
+                                setLog(logId);
                             });
                             div.appendChild(createSpacer(20));
                         }
 
-                        div.appendChild(createTableRD({
-                            recordId,
-                            recordType,
+                        div.appendChild(createTableLD({
+                            logId,
+                            logType,
                             removable
                         }));
                     }
@@ -392,9 +392,9 @@ function createFlexibleRD(options) {
             } else {
                 // provide value
                 if (typeof valueProvider === "string") {
-                    item.value = record[valueProvider];
+                    item.value = log[valueProvider];
                 } else if (typeof valueProvider === "function") {
-                    item.value = valueProvider(record);
+                    item.value = valueProvider(log);
                 }
 
                 delete item.valueProvider;
@@ -406,13 +406,14 @@ function createFlexibleRD(options) {
                 consumer: (div, section) => {
                     div.classList.add("option-card");
 
-                    createElement("h3", div, "Remove Record");
+                    createElement("h3", div, "Remove Log");
                     createElement("button", div, "Remove").addEventListener("click", () => {
-                        post(`/remove-${recordType}-record`, { id: record.id });
-
                         if (singleton) {
+                            deleteRequest(`/users/${targetUserId}/logs/${logType}`);
                             window.location.reload();
                         } else {
+                            deleteRequest(`/logs/${logType}/${logId}`);
+
                             if (section.parentElement.children.length === 1) {
                                 showNone();
                             }
@@ -428,52 +429,42 @@ function createFlexibleRD(options) {
     }
 
     const container = document.createElement("div");
-    container.classList.add("flexible-record-display-container");
+    container.classList.add("flexible-log-display-container");
 
     const loading = createLoading(true);
     container.appendChild(loading);
 
-    if (singleton) {
-        post(`/get-${recordType}-record`, {
-            user: targetUserId
-        }).then(res => {
-            const { exists, value } = res;
+    getRequest(`/users/${targetUserId}/logs/${logType}`).then(res => {
+        const { logs } = res;
 
-            loading.remove();
+        loading.remove();
 
-            if (exists) {
-                container.appendChild(createSection(items, value));
-            } else if (inputOptions == null) {
-                showNone();
-            } else {
-                inputOptions.recordType = recordType;
-                container.appendChild(createRecordInput(inputOptions));
-            }
-        });
-    } else {
-        post(`/get-${recordType}-records`, {
-            user: targetUserId
-        }).then(res => {
-            const { values } = res;
-
-            loading.remove();
-
-            if (values.length === 0) {
-                showNone();
-            } else {
-                for (let value of values) {
-                    const clonedItems = [];
-
-                    for (let item of items) {
-                        clonedItems.push({ ...item });
-                    }
-
-                    const section = createSection(clonedItems, value);
-                    container.appendChild(section);
+        if (singleton) {
+            if (logs.length === 0) {
+                if (inputOptions == null) {
+                    showNone();
+                } else {
+                    inputOptions.logType = logType;
+                    container.appendChild(createLogInput(inputOptions));
                 }
+            } else {
+                container.appendChild(createSection(items, logs[0]));
             }
-        });
-    }
+        } else if (logs.length === 0) {
+            showNone();
+        } else {
+            for (let log of logs) {
+                const clonedItems = [];
+
+                for (let item of items) {
+                    clonedItems.push({ ...item });
+                }
+
+                const section = createSection(clonedItems, log);
+                container.appendChild(section);
+            }
+        }
+    });
 
     /* Placeholder */
 
@@ -498,7 +489,7 @@ function createFlexibleRD(options) {
 */
 function createFlexibleDisplay(items) {
     const container = document.createElement("div");
-    container.classList.add("flexible-record-display");
+    container.classList.add("flexible-log-display");
 
     for (let item of items) {
         const { name, type, value } = item;
@@ -595,40 +586,41 @@ function createFlexibleDisplay(items) {
     return container;
 }
 
-function createTableRD(options) {
+function createTableLD(options) {
     const {
         placeholder,
-        recordType,
+        logType,
         removable = true,
-        recordId, // for subrecords
+        logId, // for sublogs
         signable = false,
-        targetUser: targetUserId
+        targetUser: targetUserId = getUserId()
     } = options;
 
     const container = document.createElement("div");
-    const subrecords = (recordId != null);
-    const columns = (subrecords ? _tableDisplayColumnsSubrecords : _tableDisplayColumns)[recordType];
+    const sublogs = (logId != null);
+    const columns = (sublogs ? _tableDisplayColumnsSublogs : _tableDisplayColumns)[logType];
 
     /* Loading */
 
     const loading = createLoading(true);
     container.appendChild(loading);
 
-    /* Get Records */
+    /* Get Logs */
 
-    const promise = (subrecords ? post(`/get-${recordType}-subrecords`, {
-        recordId
-    }) : post(`/get-${recordType}-records`, {
-        user: targetUserId
-    }));
+    let promise;
 
-    promise.then(res => {
-        const { values } = res;
+    if (sublogs) {
+        promise = new Promise(async r => r((await getRequest(`/logs/${logType}/${logId}`)).sublogs));
+    } else {
+        promise = new Promise(async r => r((await getRequest(`/users/${targetUserId}/logs/${logType}`)).logs));
+    }
+
+    promise.then(values => {
 
         /* Create Table */
 
         const table = document.createElement("table");
-        table.classList.add("records-table");
+        table.classList.add("logs-table");
 
         const topRow = createElement("tr", table);
 
@@ -645,8 +637,8 @@ function createTableRD(options) {
         /* Populate Table */
 
         if (values != null) {
-            values.forEach(record => {
-                const { id } = record;
+            values.forEach(log => {
+                const { id } = log;
 
                 const tr = createElement("tr", table);
 
@@ -656,14 +648,14 @@ function createTableRD(options) {
                     const content = column[1];
 
                     if (content === "signer") {
-                        const { signer } = record;
+                        const { signer } = log;
                         const signCell = createElement("td", tr, "Sign Off");
 
                         function setContent(signedOff) {
-                            if (signedOff == null) {
+                            if (signedOff == null) { // signable
                                 signCell.classList.add("interactive");
                                 signCell.addEventListener("click", () => {
-                                    post(`/sign-${recordType}-record`, { id });
+                                    putRequest(`/logs/${logType}/${id}`, { signedOff: true });
                                     setContent(true);
                                 });
                             } else {
@@ -674,7 +666,7 @@ function createTableRD(options) {
 
                         setContent((signable && signer == null) ? null : signer != null);
                     } else {
-                        createElement("td", tr, content(record));
+                        createElement("td", tr, content(log));
                     }
                 });
 
@@ -686,7 +678,12 @@ function createTableRD(options) {
 
                     removeCell.addEventListener("click", () => {
                         tr.remove();
-                        post(`/remove-${recordType}-${subrecords ? "sub" : ""}record`, { id });
+
+                        if (sublogs) {
+                            deleteRequest(`/logs/${logType}/sub/${id}`);
+                        } else {
+                            deleteRequest(`/logs/${logType}/${id}`);
+                        }
                     });
                 }
             });

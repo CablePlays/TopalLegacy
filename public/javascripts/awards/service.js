@@ -2,26 +2,16 @@ async function setupTotal() {
     const totalHoursLabel = document.getElementById("total-hours-label");
     totalHoursLabel.innerHTML = LOADING_TEXT;
 
-    let res = await fetch("/get-service-time", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getUserId()
-        })
-    });
+    const { time } = await getRequest(`/users/${getUserId()}/logs/service-hours`);
 
-    const { value } = await res.json();
-
-    totalHoursLabel.innerHTML = `${formatDuration(value, false)} / 25h`;
-    document.getElementById("total-hours-meter").value = value;
+    totalHoursLabel.innerHTML = `${formatDuration(time, false)} / 25h`;
+    document.getElementById("total-hours-meter").value = time;
 }
 
 window.addEventListener("load", () => {
-    createRecordInput({
-        placeholder: "record-input",
-        recordType: "service",
+    createLogInput({
+        placeholder: "log-input",
+        logType: "service",
         inputs: [
             {
                 id: "date",
@@ -60,14 +50,14 @@ window.addEventListener("load", () => {
             {
                 id: "description",
                 name: "Description",
-                description: "To make your record more reliable, describe what you did and who you worked with.",
+                description: "To make your log more reliable, describe what you did and who you worked with.",
                 type: "textLong"
             }
         ]
     });
     setupTotal();
-    createTableRD({
-        placeholder: "record-display",
-        recordType: "service"
+    createTableLD({
+        placeholder: "log-display",
+        logType: "service"
     });
 });

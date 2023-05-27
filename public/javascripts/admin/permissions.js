@@ -9,19 +9,21 @@ function setupAddUser() {
         const email = text + "@treverton.co.za";
         inputElement.value = null;
 
-        statusElement.innerHTML = "Sending request...";
+        statusElement.innerHTML = "Please wait...";
         statusElement.style.display = "block";
 
-        const { status, error } = await post("/set-permission", {
+        const { ok, error } = await putRequest("/permissions/users", {
             user: email,
             permission: "manageAwards",
             has: true
         });
 
-        if (status === "success") {
+        if (ok) {
             statusElement.innerHTML = `Added user "${email}" (Reloading...)`;
             window.location.reload();
-        } else if (status === "error" && error === "invalid_user") {
+        } else if (error === "self") {
+            statusElement.innerHTML = `You cannot manage your own permissions!`;
+        } else if (error === "invalid_user") {
             statusElement.innerHTML = `The user "${email}" does not exist!`;
         } else {
             statusElement.innerHTML = "Could not add user.";
@@ -38,16 +40,16 @@ async function loadUsers() {
     const loading = createLoading(true);
     permissionsContainer.replaceWith(loading);
 
-    const values = (await post("/get-permission-users")).values;
+    const { users } = await getRequest("/permissions/users");
 
-    for (let value of values) {
-        const { user: currentUser, permissions } = value;
+    for (let user of users) {
+        const { user: currentUser, permissions } = user;
         if (currentUser.id === userId) continue;
 
         const clone = template.content.cloneNode(true).firstChild; // clone then select div
         const children = clone.children;
 
-        children[0].innerHTML = currentUser.name;
+        children[0].innerHTML = currentUser.fullName;
 
         const table = children[1];
 
@@ -65,7 +67,7 @@ async function loadUsers() {
             checkbox.type = "checkbox";
             checkbox.checked = permissions[id];
             checkbox.addEventListener("click", () => {
-                post("/set-permission", {
+                putRequest("/permissions/users", {
                     user: currentUser.email,
                     permission: id,
                     has: checkbox.checked

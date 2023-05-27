@@ -17,7 +17,7 @@ async function loadRequests() {
     const loading = createLoading(true);
     container.replaceWith(loading);
 
-    const { values: signoffRequests } = await post("/get-award-requests");
+    const { requests: signoffRequests } = await getRequest("/awards/requests");
 
     for (let request of signoffRequests) {
         const { award, id: requestId, user } = request;
@@ -50,10 +50,9 @@ async function loadRequests() {
         grantElement.classList.add("transparent-button");
         grantElement.addEventListener("click", () => {
             promptConfirmation(`You're about to grant ${user.fullName} the ${getAwardName(award)} Award.`, () => {
-                post("/set-award", {
-                    id: award,
-                    complete: true,
-                    user: user.id
+                putRequest(`/users/${user.id}/awards`, {
+                    award,
+                    complete: true
                 });
 
                 div.remove();
@@ -75,17 +74,13 @@ async function loadRequests() {
         declineElement.addEventListener("click", () => {
             const message = messageElement.value;
             const handle = () => {
-                post("/decline-award-request", {
-                    id: requestId,
-                    message
-                });
-
+                deleteRequest(`/awards/requests/${requestId}`, { message });
                 div.remove();
                 checkCount();
             }
 
-            if (message == null || message.replaceAll(" ", "").length === 0) {
-                promptConfirmation("You haven't left a message for the pupil.", handle);
+            if (message == null || message.trim().length === 0) {
+                promptConfirmation("You haven't left a message for the student.", handle);
             } else {
                 handle();
             }

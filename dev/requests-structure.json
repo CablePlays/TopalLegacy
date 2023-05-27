@@ -1,0 +1,84 @@
+{
+    "/awards": {
+        "/recents": {
+            "GET": "Get recent awards"
+        },
+        "/requests": {
+            "GET": "Get signoff requests",
+            "POST": "Request signoff",
+            "/:": {
+                "DELETE": "Decline signoff request"
+            }
+        }
+    },
+    "/logs": {
+        "/:": {
+            "/sub": {
+                "/:": {
+                    "DELETE": "Delete sublog of type"
+                }
+            },
+            "/:": {
+                "DELETE": "Delete log or sublog of type",
+                "GET": "Get sublogs of log",
+                "POST": "Create sublog of log",
+                "PUT": "Sign off log of type"
+            }
+        }
+    },
+    "/permissions": {
+        "/users": {
+            "GET": "Get all users with at least one permission",
+            "PUT": "Set user permission with email"
+        }
+    },
+    "/session": {
+        "/account": {
+            "POST": "Create account",
+            "PUT": "Login"
+        },
+        "/change-password": {
+            "PUT": "Change password"
+        },
+        "/forgot-password": {
+            "POST": "Send password to email"
+        },
+        "/verify-email": {
+            "POST": "Send message to inbox of email for verification"
+        }
+    },
+    "/users": {
+        "GET": "Search users",
+        "/:": {
+            "GET": "Get user public account information",
+            "/approvals": {
+                "GET": "Get user approvals",
+                "PUT": "Set user approval"
+            },
+            "/awards": {
+                "GET": "Get user awards information",
+                "PUT": "Set award completion for user"
+            },
+            "/logs": {
+                "distance-run": {
+                    "GET": "Get user distance run"
+                },
+                "service-hours": {
+                    "GET": "Get user service hours"
+                },
+                "/:": {
+                    "DELETE": "Delete singleton log of type",
+                    "GET": "Get user logs of type",
+                    "POST": "Create user log of type"
+                }
+            },
+            "/milestones": {
+                "GET": "Get user milestones"
+            },
+            "/signoffs": {
+                "GET": "Get user signoffs of a specific type",
+                "PUT": "Set user signoff"
+            }
+        }
+    }
+}

@@ -31,17 +31,17 @@ async function handleClick() {
 
     message("Creating account, please wait.");
 
-    const { status } = await post("/create-account", {
+    const { ok } = await postRequest("/session/account", {
         name,
         surname,
         password,
         token: new URLSearchParams(window.location.search).get("token")
     });
 
-    if (status === "error") {
-        message("An error occured.");
-    } else {
+    if (ok) {
         window.location.href = "/account/signup/success";
+    } else {
+        message("An error occured.");
     }
 }
 

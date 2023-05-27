@@ -41,13 +41,13 @@ function setupSearch() {
         const loadingElement = createLoading();
         amountInfo.parentElement.insertBefore(loadingElement, amountInfo);
 
-        const { values } = await post("/search-users", { query });
-        const total = values.length;
+        const { users } = await getRequest("/users?search=" + query);
+        const total = users.length;
 
         loadingElement.remove();
         amountInfo.innerHTML = `${total === 0 ? "No" : total} user${total === 1 ? "" : "s"} found`;
 
-        values.forEach(value => {
+        users.forEach(value => {
             const { id, name, surname } = value;
             const row = createItem(id, name + " " + surname);
             table.appendChild(row);

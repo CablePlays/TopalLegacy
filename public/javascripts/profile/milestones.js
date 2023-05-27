@@ -8,19 +8,7 @@ function loadMilestones() {
         ["honors", "Honors"]
     ];
 
-    const milestonesPromise = new Promise(async r => {
-        const res = await fetch("/get-milestones", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                user: getProfileUser()
-            })
-        });
-
-        r((await res.json()).values);
-    });
+    const milestonesPromise = new Promise(async r => r((await getRequest(`/users/${getProfileUser()}/milestones`)).milestones));
 
     template.forEach(a => {
         const id = a[0];

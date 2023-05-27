@@ -7,7 +7,7 @@ function createAwardStatus(options) {
     const {
         awardStatus,
         display,
-        id
+        id // award or approval
     } = options;
 
     const clone = document.getElementById("status-display-template").content.cloneNode(true).firstChild;
@@ -26,11 +26,23 @@ function createAwardStatus(options) {
 
     bottom.style.display = "none";
 
-    post(awardStatus ? "/get-status-data" : "/get-approval", {
-        id
-    }).then(json => {
-        const { status, requested } = json;
-        const { complete, date, decline, signer } = status ?? {};
+    const userId = getUserId();
+    let promise;
+
+    if (awardStatus) {
+        promise = new Promise(async r => {
+            const { awards } = await getRequest(`/users/${userId}/awards`);
+            r(awards[id]);
+        });
+    } else {
+        promise = new Promise(async r => {
+            const { approvals } = await getRequest(`/users/${userId}/approvals`);
+            r(approvals[id]);
+        });
+    }
+
+    promise.then(status => {
+        const { complete, date, decline, signer, requested } = status ?? {};
 
         /* Top */
 
@@ -78,13 +90,11 @@ function createAwardStatus(options) {
 
                 requestButton.addEventListener("click", () => {
                     promptConfirmation(`You're about to request a sign-off on your ${getAwardName(id)} award.`, () => {
+                        postRequest("/awards/requests", { award: id });
+                        
                         declineElement.style.display = "none";
                         requestDiv.style.display = "none";
                         requestedDiv.style.display = "block";
-
-                        post("/request-award", {
-                            award: id
-                        });
                     });
                 });
             }

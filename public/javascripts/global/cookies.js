@@ -21,7 +21,8 @@ function removeCookie(name) {
 }
 
 function getUserId() {
-    return getCookie(USER_COOKIE);
+    const id = getCookie(USER_COOKIE);
+    return (id == null) ? null : parseInt(id);
 }
 
 function getPassword() {

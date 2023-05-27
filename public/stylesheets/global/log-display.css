@@ -1,4 +1,4 @@
-.flexible-record-display {
+.flexible-log-display {
     border: 3px solid var(--color-primary-300);
     border-radius: 100%;
     display: flex;
@@ -7,7 +7,7 @@
     padding: 10px;
 }
 
-.flexible-record-display>* {
+.flexible-log-display>* {
     background-color: var(--color-primary-500);
     border-radius: 4px;
     color: var(--color-primary-500-text);
@@ -16,7 +16,7 @@
     padding: 8px;
 }
 
-.flexible-record-display button {
+.flexible-log-display button {
     background-color: var(--color-background);
     border: none;
     border-radius: 4px;
@@ -26,18 +26,18 @@
     width: 200px;
 }
 
-.flexible-record-display .boolean-container {
+.flexible-log-display .boolean-container {
     align-items: center;
     column-gap: 20px;
     display: flex;
 }
 
-.flexible-record-display .boolean-container img {
+.flexible-log-display .boolean-container img {
     height: 40px;
     width: 40px;
 }
 
-.flexible-record-display .option-card {
+.flexible-log-display .option-card {
     background-color: var(--color-primary-600);
     color: var(--color-primary-600-text);
     display: flex;
@@ -45,66 +45,66 @@
     row-gap: 10px;
 }
 
-.flexible-record-display .radio-container {
+.flexible-log-display .radio-container {
     column-gap: 20px;
     display: flex;
     flex-wrap: wrap;
     row-gap: 10px;
 }
 
-.flexible-record-display .radio-container .radio-option {
+.flexible-log-display .radio-container .radio-option {
     column-gap: 10px;
     display: flex;
 }
 
-.flexible-record-display .radio-container .radio-option img {
+.flexible-log-display .radio-container .radio-option img {
     height: 20px;
     width: 20px;
 }
 
-.flexible-record-display .text-long-container p::before {
+.flexible-log-display .text-long-container p::before {
     content: "\"";
     font-size: 30px;
 }
 
-.flexible-record-display .text-long-container p::after {
+.flexible-log-display .text-long-container p::after {
     content: "\"";
     font-size: 30px;
 }
 
-.flexible-record-display-container {
+.flexible-log-display-container {
     display: flex;
     flex-direction: column;
     row-gap: 20px;
 }
 
-.records-table {
+.logs-table {
     width: 100%;
 }
 
-.records-table,
-.records-table th,
-.records-table td {
+.logs-table,
+.logs-table th,
+.logs-table td {
     border: 1px solid var(--color-black);
     border-collapse: collapse;
 }
 
-.records-table th,
-.records-table td {
+.logs-table th,
+.logs-table td {
     background-color: var(--color-secondary-300);
     color: var(--color-secondary-300-text);
     padding: 8px;
     text-align: center;
 }
 
-.records-table td.interactive {
+.logs-table td.interactive {
     background-color: var(--color-secondary-300);
     color: var(--color-secondary-400-text);
     cursor: pointer;
     width: 10px;
 }
 
-.records-table td.interactive:hover {
+.logs-table td.interactive:hover {
     background-color: var(--color-secondary-400);
     color: var(--color-secondary-400-text);
 }

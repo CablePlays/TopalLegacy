@@ -11,19 +11,17 @@ async function handleButton() {
     }
 
     message("Please wait.");
-    
-    const { status, error } = await post("/signup", { email });
 
-    if (status === "error") {
-        if (error === "emailTaken") {
-            message(`This email is already taken! If you have forgotten your password,
-                you can request an email to be sent to your inbox containing the password associated with it.
-                Go to the login page to do this.`);
-        } else {
-            message("An error occured.");
-        }
-    } else {
+    const { ok, error } = await postRequest("/session/verify-email", { email });
+
+    if (ok) {
         window.location.href = "/account/signup/verify";
+    } else if (error === "email_unavailable") {
+        message(`This email is already taken! If you have forgotten your password,
+            you can request an email to be sent to your inbox containing the password associated with it.
+            Go to the login page to do this.`);
+    } else {
+        message("An error occured.");
     }
 }
 

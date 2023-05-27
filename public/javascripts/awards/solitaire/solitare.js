@@ -1,12 +1,11 @@
-async function setupRecord() {
-    createFlexibleRD({
-        placeholder: "record-placeholder",
-        recordType: "solitaire",
+window.addEventListener("load", () => {
+    createFlexibleLD({
+        placeholder: "log-placeholder",
+        logType: "solitaire",
         removable: true,
         singleton: true,
         inputOptions: {
-            title: "Add Solitaire Record",
-            successMessage: "Your solitaire record has been created!",
+            title: "Create Solitaire Log",
             inputs: [
                 {
                     id: "date",
@@ -47,8 +46,4 @@ async function setupRecord() {
             ]
         }
     });
-}
-
-window.addEventListener("load", () => {
-    setupRecord();
 });

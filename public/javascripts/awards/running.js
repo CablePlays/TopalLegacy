@@ -2,32 +2,22 @@ async function setupTotal() {
     const distanceLabel = document.getElementById("total-distance-label");
     distanceLabel.innerHTML = LOADING_TEXT;
 
-    const res = await fetch("/get-distance-run", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user: getUserId()
-        })
-    });
+    const { distance } = await getRequest(`/users/${getUserId()}/logs/distance-run`);
 
-    const { value } = await res.json();
-
-    distanceLabel.innerHTML = `${value / 1000}km / 100km`;
-    document.getElementById("total-distance-meter").value = value;
+    distanceLabel.innerHTML = `${distance / 1000}km / 100km`;
+    document.getElementById("total-distance-meter").value = distance;
 }
 
 window.addEventListener("load", () => {
     setupTotal();
 
-    createTableRD({
-        placeholder: "record-display",
-        recordType: "running"
+    createTableLD({
+        placeholder: "log-display",
+        logType: "running"
     });
-    createRecordInput({
-        placeholder: "record-input",
-        recordType: "running",
+    createLogInput({
+        placeholder: "log-input",
+        logType: "running",
         inputs: [
             {
                 id: "date",

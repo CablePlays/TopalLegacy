@@ -6,7 +6,7 @@ const _TABLE_HEADER_NAMES = {
 }
 
 function createManagementRow(options) {
-    const { display, endpoint, id, promptTextSupplier, reloadToView, signoffType, status } = options;
+    const { display, setComplete, promptTextSupplier, reloadToView, status } = options;
     const { complete, date, signer } = status ?? {};
     const reloadText = "Reload to view";
 
@@ -26,14 +26,8 @@ function createManagementRow(options) {
             options.reloadToView = newComplete;
             options.status = { complete: newComplete };
 
+            setComplete(newComplete);
             tr.replaceWith(createManagementRow(options));
-
-            post(endpoint, {
-                complete: newComplete,
-                id,
-                type: signoffType,
-                user: getProfileUser()
-            });
         });
     });
 
@@ -61,7 +55,10 @@ async function setupAwardsTable() {
             id,
             promptTextSupplier: c => c ? `You're about to grant this user the ${display} Award.`
                 : `You're about to revoke the ${display} Award from this user.`,
-            endpoint: "/set-award",
+            setComplete: complete => putRequest(`/users/${getProfileUser()}/awards`, {
+                award: id,
+                complete
+            }),
             status: data
         });
 
@@ -75,7 +72,8 @@ function createSignoffTable(options) {
     const {
         container,
         signoffType,
-        promptTextSupplier = c => c ? "You're about to grant this user a sign-off." : "You're about to revoke a sign-off from this user."
+        promptTextSupplier = c => c ? "You're about to grant this user a sign-off."
+            : "You're about to revoke a sign-off from this user."
     } = options;
 
     const items = getSignoffs(signoffType);
@@ -95,22 +93,21 @@ function createSignoffTable(options) {
     table.classList.add("alternating");
     table.classList.add("management-table");
 
-    post("/get-signoffs", {
-        type: signoffType,
-        user: getProfileUser()
-    }).then(res => {
-        const { values } = res;
+    getRequest(`/users/${getProfileUser()}/signoffs?type=${signoffType}`).then(res => {
+        const { signoffs } = res;
 
         function createItemRows(item) {
             const [id, display] = item;
-            const status = values[id] ?? {};
+            const status = signoffs[id] ?? {};
 
             const tr = createManagementRow({
                 display,
-                id,
                 promptTextSupplier,
-                endpoint: "/set-signoff",
-                signoffType,
+                setComplete: complete => putRequest(`/users/${getProfileUser()}/signoffs`, {
+                    type: signoffType,
+                    signoff: id,
+                    complete
+                }),
                 status
             });
 
@@ -154,17 +151,17 @@ function createApprovalTable(options) {
     table.classList.add("alternating");
     table.classList.add("management-table");
 
-    post("/get-approval", {
-        id: approvalId,
-        user: getProfileUser()
-    }).then(async res => {
-        const { status } = res;
+    getRequest(`/users/${getProfileUser()}/approvals`).then(async res => {
+        const { approvals } = res;
+        const status = approvals[approvalId] ?? {};
 
         const tr = createManagementRow({
-            id: approvalId,
             promptTextSupplier,
-            endpoint: "/set-approval",
-            status: status
+            status,
+            setComplete: complete => putRequest(`/users/${getProfileUser()}/approvals`, {
+                approval: approvalId,
+                complete
+            }),
         });
 
         table.appendChild(tr);
@@ -261,12 +258,12 @@ function setupSections() {
     });
 
     createSection("Endurance", div => {
-        createElement("h3", div, "Records");
+        createElement("h3", div, "Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableRD({
-            recordType: "endurance",
+        div.appendChild(createTableLD({
+            logType: "endurance",
             removable: false,
             signable: true,
             targetUser: getProfileUser()
@@ -297,30 +294,30 @@ function setupSections() {
             signoffType: "kayaking"
         });
 
-        /* Flat Water Paddling Records */
+        /* Flat Water Paddling Logs */
 
         div.appendChild(createSpacer(20));
 
-        createElement("h3", div, "Flat Water Paddling Records");
+        createElement("h3", div, "Flat Water Paddling Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableRD({
-            recordType: "flatWaterPaddling",
+        div.appendChild(createTableLD({
+            logType: "flatWaterPaddling",
             removable: false,
             targetUser: getProfileUser()
         }));
 
-        /* River Trip Records */
+        /* River Trip Logs */
 
         div.appendChild(createSpacer(20));
 
-        createElement("h3", div, "River Trip Records");
+        createElement("h3", div, "River Trip Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "riverTrip",
+        div.appendChild(createFlexibleLD({
+            logType: "riverTrip",
             removable: false,
             signable: true,
             targetUser: getProfileUser()
@@ -339,21 +336,21 @@ function setupSections() {
     });
 
     createSection("Midmar Mile", div => {
-        createElement("h3", div, "Training Records");
+        createElement("h3", div, "Training Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableRD({
-            recordType: "midmarMile",
+        div.appendChild(createTableLD({
+            logType: "midmarMile",
             removable: false,
             signable: true,
             targetUser: getProfileUser()
         }));
     });
 
-    createSection("Mountaineering Records", div => {
-        div.appendChild(createFlexibleRD({
-            recordType: "mountaineering",
+    createSection("Mountaineering Logs", div => {
+        div.appendChild(createFlexibleLD({
+            logType: "mountaineering",
             removable: false,
             targetUser: getProfileUser()
         }));
@@ -396,16 +393,16 @@ function setupSections() {
             signoffType: "rockClimbing"
         });
 
-        /* Records */
+        /* Logs */
 
         div.appendChild(createSpacer(20));
 
-        createElement("h3", div, "Records");
+        createElement("h3", div, "Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "rockClimbing",
+        div.appendChild(createFlexibleLD({
+            logType: "rockClimbing",
             removable: false,
             targetUser: getProfileUser()
         }));
@@ -419,8 +416,8 @@ function setupSections() {
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "rockClimbingBookReviews",
+        div.appendChild(createFlexibleLD({
+            logType: "rockClimbingBookReviews",
             removable: false,
             singleton: true,
             targetUser: getProfileUser()
@@ -452,12 +449,12 @@ function setupSections() {
     });
 
     createSection("Rock Climbing Instructor & Leader", div => {
-        createElement("h3", div, "Instruction Records");
+        createElement("h3", div, "Instruction Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableRD({
-            recordType: "rockClimbingInstruction",
+        div.appendChild(createTableLD({
+            logType: "rockClimbingInstruction",
             removable: false,
             signable: true,
             targetUser: getProfileUser()
@@ -465,12 +462,12 @@ function setupSections() {
     });
 
     createSection("Running", div => {
-        createElement("h3", div, "Records");
+        createElement("h3", div, "Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableRD({
-            recordType: "running",
+        div.appendChild(createTableLD({
+            logType: "running",
             removable: false,
             signable: true,
             targetUser: getProfileUser()
@@ -478,12 +475,12 @@ function setupSections() {
     });
 
     createSection("Service", div => {
-        createElement("h3", div, "Records");
+        createElement("h3", div, "Logs");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableRD({
-            recordType: "service",
+        div.appendChild(createTableLD({
+            logType: "service",
             removable: false,
             signable: true,
             targetUser: getProfileUser()
@@ -491,12 +488,12 @@ function setupSections() {
     });
 
     createSection("Solitaire", div => {
-        createElement("h3", div, "Record");
+        createElement("h3", div, "Log");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "solitaire",
+        div.appendChild(createFlexibleLD({
+            logType: "solitaire",
             removable: false,
             signable: true,
             singleton: true,
@@ -505,12 +502,12 @@ function setupSections() {
     });
 
     createSection("Solitaire Instructor", div => {
-        createElement("h3", div, "Record");
+        createElement("h3", div, "Log");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "solitaireInstructor",
+        div.appendChild(createFlexibleLD({
+            logType: "solitaireInstructor",
             removable: false,
             signable: true,
             singleton: true,
@@ -519,12 +516,12 @@ function setupSections() {
     });
 
     createSection("Solitaire Leader", div => {
-        createElement("h3", div, "Record");
+        createElement("h3", div, "Log");
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "solitaireLeader",
+        div.appendChild(createFlexibleLD({
+            logType: "solitaireLeader",
             removable: false,
             signable: true,
             singleton: true,
@@ -533,7 +530,7 @@ function setupSections() {
     });
 
     createSection("Summit", div => {
-        createElement("h3", div, "Records");
+        createElement("h3", div, "Logs");
 
         div.appendChild(createSpacer(20));
 
@@ -551,8 +548,8 @@ function setupSections() {
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "traverseSummaries",
+        div.appendChild(createFlexibleLD({
+            logType: "traverseSummaries",
             removable: false,
             singleton: true,
             targetUser: getProfileUser()
@@ -566,8 +563,8 @@ function setupSections() {
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createFlexibleRD({
-            recordType: "traverseHikePlan",
+        div.appendChild(createFlexibleLD({
+            logType: "traverseHikePlan",
             removable: false,
             singleton: true,
             targetUser: getProfileUser()
@@ -587,8 +584,8 @@ function setupSections() {
         });
     });
 
-    createSection("Venture Award", div => {
-        createElement("h3", div, "Proposal Approved");
+    createSection("Venture", div => {
+        createElement("h3", div, "Proposal");
 
         div.appendChild(createSpacer(20));
 

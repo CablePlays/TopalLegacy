@@ -1,7 +1,7 @@
-function setupRecordInput() {
-    const element = createRecordInput({
-        recordType: "endurance",
-        placeholder: "record-input",
+window.addEventListener("load", () => {
+    createLogInput({
+        logType: "endurance",
+        placeholder: "log-input",
         inputs: [
             {
                 id: "date",
@@ -32,16 +32,13 @@ function setupRecordInput() {
                 id: "description",
                 name: "Description",
                 description: "To make your activity more legit, describe how you felt and what the weather was like.",
-                type: "textLong"
+                type: "textLong",
+                required: true
             }
         ]
     });
-}
-
-window.addEventListener("load", () => {
-    setupRecordInput();
-    createTableRD({
-        placeholder: "record-display",
-        recordType: "endurance"
+    createTableLD({
+        placeholder: "log-display",
+        logType: "endurance"
     });
 });

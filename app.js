@@ -1,11 +1,12 @@
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const rest = require("./server/rest");
-const indexRouter = require("./routes/index-router");
+const requestsRouter = require("./requests/index");
+const renderRouter = require("./render/index-router");
 
 const PORT = 80;
 const ARTIFICIAL_LATENCY = 0;
+const REQUESTS_PATH = "/requests";
 
 const app = express();
 
@@ -15,26 +16,27 @@ app.set('view engine', 'pug');
 
 app.use(express.static('public'));
 app.use(express.json()); // for reading json post requests
-app.use(cookieParser()); // for cookie objects/tools
+app.use(cookieParser()); // for cookie object
 
-// routes
-app.use("/", indexRouter);
-
-// simulate lag
-app.use((req, res, next) => {
+function simulateLag(req, res, next) {
     setTimeout(next, ARTIFICIAL_LATENCY);
-});
+}
 
-// rest
-rest(app);
+app.use("/", simulateLag); // latency
+app.use("/", renderRouter); // render
+app.use(REQUESTS_PATH, requestsRouter); // requests
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use((req, res, next) => { // catch 404 and forward to error handler
     next(createError(404));
 });
 
-// error handler
-app.use((err, req, res, next) => {
+app.use(REQUESTS_PATH, (err, req, res, next) => { // handle request errors
+    console.error(err);
+    let status = err.status || 500;
+    res.sendStatus(status);
+});
+
+app.use((err, req, res, next) => { // handle render errors
     let status = err.status || 500;
     res.status(status);
 
@@ -50,43 +52,3 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT);
-// app.on('error', onError);
-// app.on('listening', onListening);
-
-/**
- * Event listener for HTTP server "error" event.
-*/
-function onError(error) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
-
-    let bind = typeof PORT === 'string'
-        ? 'Pipe ' + PORT
-        : 'Port ' + PORT;
-
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-            break;
-        default:
-            throw error;
-    }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
-*/
-function onListening() {
-    var addr = server.address();
-    var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug('Listening on ' + bind);
-}

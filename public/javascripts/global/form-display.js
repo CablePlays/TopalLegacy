@@ -1,5 +1,5 @@
 /*
-    Handles creating records by generating a UI using options.
+    Handles creating logs by generating a form using options.
 */
 
 /*
@@ -14,28 +14,28 @@
         - time
         - url
 */
-function createRecordInput(options) {
+function createLogInput(options) {
     const {
-        recordType,
+        logType,
         inputs: providedInputs,
         placeholder,
-        subrecords,
-        onFirstRecordSet, // runnable fired when record is first set
-        successMessage = "Successfully created new record!",
+        sublogs,
+        onFirstLogSet, // runnable fired when log is first set
+        successMessage = "Successfully created new log!",
         title: titleText,
     } = options;
 
     const container = document.createElement("div");
-    container.classList.add("record-input");
+    container.classList.add("log-input");
 
     const inputs = {};
 
     // title
-    createElement("h2", container, titleText ?? "Create Record");
+    createElement("h2", container, titleText ?? "Create Log");
 
     // info
     createElement("p", container,
-     "Remember to check and verify your information before submitting. Editing will require a resubmission.").classList.add("partial");
+        "Remember to check and verify your information before submitting. Editing will require a resubmission.").classList.add("partial");
 
     container.appendChild(createSpacer(20));
 
@@ -196,13 +196,13 @@ function createRecordInput(options) {
                 break;
             }
             case "time": {
-                function applyListener(element, minute) {
+                function applyListener(element, isMinute) {
                     element.addEventListener("input", () => {
                         const v = element.value;
 
                         if (v !== "") {
-                            const min = (minute ? 0 : 1);
-                            const max = (minute ? 60 : 12);
+                            const min = (isMinute ? 0 : 1);
+                            const max = (isMinute ? 60 : 12);
 
                             if (v < min) {
                                 element.value = min;
@@ -239,10 +239,11 @@ function createRecordInput(options) {
                 separateInputs = false;
                 valueSupplier = () => {
                     let hour = hourElement.value;
-                    if (hour === "") return null;
-
                     let minute = minuteElement.value;
-                    if (minute === "") return null;
+
+                    if (hour === "" && minute === "") {
+                        return null;
+                    }
 
                     hour = +hour;
 
@@ -339,16 +340,21 @@ function createRecordInput(options) {
     const button = createElement("button", container, "Check & Create");
     button.classList.add("create-button");
 
-    let used = false;
-    let recordId;
+    container.appendChild(createSpacer(10));
 
-    const setRecord = a => {
-        if (recordId == null) {
-            onFirstRecordSet();
+    const messageElement = createElement("p", container);
+    messageElement.classList.add("info-message");
+
+    let used = false;
+    let logId;
+
+    const setLog = a => {
+        if (logId == null) {
+            onFirstLogSet();
         }
 
         container.scrollIntoView();
-        recordId = a;
+        logId = a;
     };
 
     button.addEventListener("click", () => {
@@ -356,43 +362,42 @@ function createRecordInput(options) {
             return;
         }
 
-        const record = {};
-        let valid = true; // all inputs are valid
+        const log = {};
+        let missingRequired = false; // if all inputs are valid
 
         for (let id of Object.getOwnPropertyNames(inputs)) {
             const { nameElement, required, supplier } = inputs[id];
             const value = supplier();
 
-            if (required && (value == null || typeof value === "string" && value.replaceAll(" ", "") === "")) {
-                valid = false;
+            if (required && (value == null || typeof value === "string" && value.trim() === "")) {
+                missingRequired = true;
                 nameElement.classList.add("required");
             } else {
-                record[id] = value;
+                log[id] = value;
+                nameElement.classList.remove("required");
             }
         }
 
-        if (valid) {
+        if (missingRequired) {
+            messageElement.innerHTML = "Missing required inputs!";
+        } else {
 
             /* Success Message */
 
-            container.appendChild(createSpacer(10));
-            createElement("p", container, successMessage).classList.add("success-message");
+            messageElement.innerHTML = successMessage;
 
             /* Request */
 
-            if (subrecords) {
-                if (recordId == null) {
+            const userId = getUserId();
+
+            if (sublogs) {
+                if (logId == null) {
                     return;
                 }
 
-                post(`/add-${recordType}-subrecord`, {
-                    recordId,
-                    value: record
-                });
+                postRequest(`/logs/${logType}/${logId}`, { sublog: log });
             } else {
-                post(`/add-${recordType}-record`, {
-                    value: record
-                });
+                postRequest(`/users/${userId}/logs/${logType}`, { log });
             }
 
             used = true;
@@ -406,5 +411,5 @@ function createRecordInput(options) {
         ensureElement(placeholder).replaceWith(container);
     }
 
-    return (subrecords ? { container, setRecord } : container);
+    return (sublogs ? { container, setLog } : container);
 }

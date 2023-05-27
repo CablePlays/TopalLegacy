@@ -16,12 +16,12 @@ async function handleButton() {
 
     message("Please wait.");
 
-    const { status } = await post("/reset-password", { password });
+    const { ok } = await putRequest("/session/change-password", { password });
 
-    if (status === "error") {
-        message("An error occured.");
-    } else {
+    if (ok) {
         message("Your password has been changed.");
+    } else {
+        message("An error occured.");
     }
 }
 

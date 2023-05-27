@@ -8,15 +8,19 @@ const fs = require("fs");
 const fsdb = require("file-system-db");
 
 const DIRECTORY = "./database";
+const RECENTS_DIRECTORY = DIRECTORY + "/recents";
 const USER_DIRECTORY = DIRECTORY + "/user_data";
 const COMPACT = false;
 
-function getUserIdFromFileName(name) {
-    return name.substring("user".length, name.length - 5);
-}
+const APPROVALS_PATH = "approvals";
+const AWARDS_PATH = "awards";
+const PERMISSIONS_PATH = "permissions";
+const RECENTS_AWARDS_PATH = "awards";
+const SIGNOFFS_PATH = "signoffs";
+const SINGLETON_LOGS_PATH = "singletonLogs";
 
 function getRecents() {
-    return new fsdb(`${DIRECTORY}/recents.json`, COMPACT);
+    return new fsdb(RECENTS_DIRECTORY, COMPACT);
 }
 
 function getUser(userId) {
@@ -24,20 +28,8 @@ function getUser(userId) {
     return new fsdb(path, COMPACT);
 }
 
-function getUsers(consumer) {
-    const children = fs.readdirSync(USER_DIRECTORY);
-    const users = [];
-
-    for (let child of children) {
-        const userId = getUserIdFromFileName(child);
-        users.push(userId);
-    }
-
-    return users;
-}
-
 function getPermissions(userId) {
-    const permissions = getUser(userId).get("permissions") ?? {};
+    const permissions = getUser(userId).get(PERMISSIONS_PATH) ?? {};
 
     if (permissions.managePermissions === true) {
         permissions.manageAwards = true;
@@ -46,14 +38,15 @@ function getPermissions(userId) {
     return permissions;
 }
 
-function setPermissions(userId, value) {
-    getUser(userId).set("permissions", value);
-}
-
 module.exports = {
+    APPROVALS_PATH,
+    AWARDS_PATH,
+    PERMISSIONS_PATH,
+    RECENTS_AWARDS_PATH,
+    SIGNOFFS_PATH,
+    SINGLETON_LOGS_PATH,
+
     getRecents,
     getUser,
-    getUsers,
-    getPermissions,
-    setPermissions
+    getPermissions
 }

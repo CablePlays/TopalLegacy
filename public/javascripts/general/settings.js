@@ -12,7 +12,7 @@ function setupButtons() {
         window.location.href = "/account/login";
     });
 
-    handleButton("reset-password", () => window.location.href = "/account/reset-password");
+    handleButton("change-password", () => window.location.href = "/account/change-password");
 
     const toggleDarkButton = document.getElementById("toggle-dark-button");
     const updateToggleDarkButtonText = enabled => toggleDarkButton.innerHTML = (enabled ? "On" : "Off");

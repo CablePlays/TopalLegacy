@@ -3,9 +3,9 @@ window.addEventListener("load", () => {
         placeholder: "signoffs",
         type: "rockClimbingInstructor"
     });
-    createFlexibleRD({
+    createFlexibleLD({
         placeholder: "book-review-placeholder",
-        recordType: "rockClimbingBookReviews",
+        logType: "rockClimbingBookReviews",
         removable: true,
         singleton: true,
         inputOptions: {
@@ -21,10 +21,10 @@ window.addEventListener("load", () => {
             ]
         }
     });
-    createRecordInput({
-        placeholder: "instruction-record-form",
-        recordType: "rockClimbingInstruction",
-        title: "Create Instruction Record",
+    createLogInput({
+        placeholder: "instruction-log-form",
+        logType: "rockClimbingInstruction",
+        title: "Create Instruction Log",
         inputs: [
             {
                 id: "date",
@@ -64,8 +64,8 @@ window.addEventListener("load", () => {
             }
         ]
     });
-    createTableRD({
-        placeholder: "instruction-records",
-        recordType: "rockClimbingInstruction"
+    createTableLD({
+        placeholder: "instruction-logs",
+        logType: "rockClimbingInstruction"
     });
 });

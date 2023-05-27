@@ -8,9 +8,8 @@ router.get("/signup/success", (req, res) => {
     res.advancedRender("entry/account-created");
 });
 
-router.use("/reset-password", middleware.requireLoggedIn);
-router.get("/reset-password", (req, res) => {
-    res.advancedRender("entry/reset-password");
+router.get("/change-password", middleware.requireLoggedIn, (req, res) => {
+    res.advancedRender("entry/change-password");
 });
 
 router.use("/", middleware.requireLoggedOut);

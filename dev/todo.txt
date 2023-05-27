@@ -4,15 +4,14 @@ Venture leader
 
 > Todo
 
+Logs page (award+signoffs grant/revoke & permissions change)
 Revamp milestone system
 Make recents cap out due to date as well as number & make recents store in SQL table
-Show message on missing requirements for forms
 Comments to Midmar Mile training logs
 
 > Ideas
 
 Leaderboard page
-Logs page (award+signoffs grant/revoke & permissions change)
 Popup showing checkboxes for each award indicating completion (maybe top right) - make hideable
 Make login loading faster or add indication of working
 Make website work well on mobile devices

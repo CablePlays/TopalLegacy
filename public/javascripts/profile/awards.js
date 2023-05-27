@@ -1,4 +1,4 @@
-function meterExtra(max, display, endpoint) {
+function meterExtra(max, display, supplier) {
     return async card => {
         const label = document.createElement("h3");
         label.innerHTML = LOADING_TEXT;
@@ -9,18 +9,7 @@ function meterExtra(max, display, endpoint) {
         meter.max = max;
         card.appendChild(meter);
 
-        let res = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                user: getProfileUser()
-            })
-        });
-
-        let { value } = await res.json();
-
+        const value = await supplier();
         label.innerHTML = display(value);
         meter.value = value;
     };
@@ -31,7 +20,7 @@ function setupAwards() {
     const awardsContainer = document.getElementById("awards-container");
 
     const extras = {
-        rockClimbing: {
+        rock_climbing: {
             after: card => {
                 card.appendChild(createSpacer(20));
 
@@ -42,26 +31,24 @@ function setupAwards() {
                 card.appendChild(createSpacer(20));
 
                 const image = createCheckbox(new Promise(async r => {
-                    const { status } = await post("/get-approval", {
-                        id: "rockClimbingBelayer",
-                        user: getProfileUser()
-                    });
-
-                    r(status.complete === true);
+                    const { approvals } = await getRequest(`/users/${profileUser}/approvals`);
+                    r(approvals.rockClimbingBelayer?.complete === true);
                 }));
                 image.classList.add("checkbox");
                 card.appendChild(image);
             }
         },
         running: {
-            before: meterExtra(100000, value => `${value / 1000}km / 100km`, "/get-distance-run")
+            before: meterExtra(100000, value => `${value / 1000}km / 100km`, async () =>
+                (await getRequest(`/users/${profileUser}/logs/distance-run`)).distance)
         },
         service: {
-            before: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, "/get-service-time")
+            before: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, async () =>
+                (await getRequest(`/users/${profileUser}/logs/service-hours`)).time)
         }
     };
 
-    const awards = getAwards(profileUser);
+    const awardsPromise = getAwards(profileUser);
 
     AWARDS.forEach(award => {
         const [id, display] = award;
@@ -78,7 +65,7 @@ function setupAwards() {
 
         card.appendChild(createSpacer(20));
 
-        const checkbox = createCheckbox(new Promise(async r => r((await awards)[id]?.complete === true)));
+        const checkbox = createCheckbox(new Promise(async r => r((await awardsPromise)[id]?.complete === true)));
         checkbox.classList.add("checkbox");
         card.appendChild(checkbox);
 

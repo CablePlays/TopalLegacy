@@ -10,7 +10,7 @@ function createSignoffDisplay(options) {
     } = options;
 
     const items = SIGNOFFS[type];
-    const hasHeadings = hasHeadings(items);
+    const headings = hasHeadings(items);
 
     const signoffsPromise = new Promise(async r => r((await getRequest(`/users/${getUserId()}/signoffs?type=${type}`)).signoffs));
 
@@ -23,7 +23,7 @@ function createSignoffDisplay(options) {
     }
 
     function createItems(items) {
-        if (!hasHeadings) {
+        if (!headings) {
             addLine();
         }
 
@@ -55,7 +55,7 @@ function createSignoffDisplay(options) {
         });
     };
 
-    if (hasHeadings === true) {
+    if (headings === true) {
         for (let item of items) {
             const [groupHeading, groupItems] = item;
 

@@ -1,5 +1,5 @@
 {
-    "audit-log": {
+    "/audit-log": {
         "GET": "Get audit log records"
     },
     "/awards": {

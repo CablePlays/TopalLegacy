@@ -62,14 +62,10 @@
     width: 20px;
 }
 
+.flexible-log-display .text-long-container p::after,
 .flexible-log-display .text-long-container p::before {
+    color: var(--color-secondary-600);
     content: "\"";
-    font-size: 30px;
-}
-
-.flexible-log-display .text-long-container p::after {
-    content: "\"";
-    font-size: 30px;
 }
 
 .flexible-log-display-container {

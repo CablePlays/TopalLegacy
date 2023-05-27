@@ -1,5 +1,6 @@
 window.addEventListener("load", () => {
     createLogInput({
+        title: "Create Training Log",
         logType: "midmarMile",
         placeholder: "log-input",
         inputs: [
@@ -27,6 +28,11 @@ window.addEventListener("load", () => {
                 name: "Time",
                 type: "duration",
                 required: true
+            },
+            {
+                id: "comments",
+                name: "Comments",
+                type: "textLong"
             }
         ]
     });

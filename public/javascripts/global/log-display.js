@@ -276,7 +276,8 @@ const _tableDisplayColumns = {
     midmarMile: [
         ["Date", log => formatDate(log.date)],
         ["Distance", log => log.distance + "m"],
-        ["Time", log => formatDuration(log.time)]
+        ["Time", log => formatDuration(log.time)],
+        ["Comments", log => log.comments]
     ],
     rockClimbingInstruction: [
         ["Date", log => formatDate(log.date)],

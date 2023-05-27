@@ -22,9 +22,8 @@ function simulateLag(req, res, next) {
     setTimeout(next, ARTIFICIAL_LATENCY);
 }
 
-app.use("/", simulateLag); // latency
 app.use("/", renderRouter); // render
-app.use(REQUESTS_PATH, requestsRouter); // requests
+app.use(REQUESTS_PATH, simulateLag, requestsRouter); // requests
 
 app.use((req, res, next) => { // catch 404 and forward to error handler
     next(createError(404));

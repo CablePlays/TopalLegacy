@@ -16,26 +16,7 @@
         "managePermissions": false,
         "viewLogs": false
     },
-    "approvals": {
-        "belayer": "STATUS"
-    },
-    "signoffs": {
-        "rockClimbing": {
-            "knots1": "STATUS"
-        }
-    },
-    "singletonLogs": {
-        "solitaire": {
-            "date": "DATE",
-            "location": "",
-            "othersInvolved": "",
-            "supervisors": "",
-            "items": "",
-            "experience": ""
-        },
-        "traverse": {
-            "hikePlan": "URL",
-            "summaries": "URL"
-        }
-    }
+    "approvals": {},
+    "signoffs": {},
+    "singletonLogs": {}
 }

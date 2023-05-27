@@ -25,6 +25,7 @@ router.put("/", (req, res) => {
     }
 
     const { approval, complete } = req.body;
+    const targetUserId = req.userId;
     const userId = cookies.getUserId(req);
 
     if (!general.isApproval(approval)) {
@@ -32,7 +33,7 @@ router.put("/", (req, res) => {
         return;
     }
 
-    const db = jsonDatabase.getUser(req.userId);
+    const db = jsonDatabase.getUser(targetUserId);
     const path = jsonDatabase.APPROVALS_PATH + "." + approval;
 
     if (complete === true) {
@@ -44,6 +45,15 @@ router.put("/", (req, res) => {
     } else {
         db.delete(path);
     }
+
+    /* Audit Log */
+
+    jsonDatabase.auditLogRecord({
+        type: (complete ? "grantApproval" : "revokeApproval"),
+        actor: userId,
+        approval,
+        user: targetUserId
+    });
 
     res.res(204);
 });

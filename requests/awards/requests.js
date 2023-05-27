@@ -92,6 +92,15 @@ router.delete("/:id", async (req, res) => {
         jsonDatabase.getUser(signoffRequestUserId).set("awards." + award + ".decline", declineJson);
     }
 
+    /* Audit Log */
+
+    jsonDatabase.auditLogRecord({
+        type: "declineSignoffRequest",
+        actor: userId,
+        award,
+        user: signoffRequestUserId
+    });
+
     res.res(200);
 });
 

@@ -4,6 +4,7 @@ const general = require("../server/general");
 const jsonDatabase = require("../server/json-database");
 
 // routers
+const auditLogRouter = require("./audit-log");
 const awardsRouter = require("./awards/index");
 const logsRouter = require("./logs");
 const permissionsRouter = require("./permissions");
@@ -45,6 +46,7 @@ router.use("/", (req, res, next) => { // provide response methods
 
 /* Routers */
 
+router.use('/audit-log', auditLogRouter);
 router.use('/awards', awardsRouter);
 router.use('/logs', logsRouter);
 router.use('/permissions', permissionsRouter);

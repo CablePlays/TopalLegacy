@@ -74,6 +74,16 @@ router.put("/users", async (req, res) => {
         db.delete(path);
     }
 
+    /* Audit Log */
+
+    jsonDatabase.auditLogRecord({
+        type: "changePermission",
+        actor: userId,
+        has,
+        permission,
+        user: targetUserId
+    });
+
     res.res(204);
 });
 

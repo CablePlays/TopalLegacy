@@ -7,6 +7,10 @@ router.get("/admin", middleware.createPermissionMiddleware("any"), (req, res) =>
     res.advancedRender("admin/admin", true);
 });
 
+router.get("/audit-log", middleware.createPermissionMiddleware("viewAuditLog"), (req, res) => {
+    res.advancedRender("admin/audit-log", true);
+});
+
 router.get("/permissions", middleware.createPermissionMiddleware("managePermissions"), (req, res) => {
     res.advancedRender("admin/permissions", true);
 });

@@ -1,0 +1,45 @@
+{
+    "changePermission": [
+        "actor",
+        "has",
+        "permission",
+        "user"
+    ],
+    "declineSignoffRequest": [
+        "actor",
+        "award",
+        "user"
+    ],
+    "grantApproval": [
+        "actor",
+        "approval",
+        "user"
+    ],
+    "grantAward": [
+        "actor",
+        "award",
+        "user"
+    ],
+    "grantSignoff": [
+        "actor",
+        "signoff",
+        "signoffType",
+        "user"
+    ],
+    "revokeApproval": [
+        "actor",
+        "approval",
+        "user"
+    ],
+    "revokeAward": [
+        "actor",
+        "award",
+        "user"
+    ],
+    "revokeSignoff": [
+        "actor",
+        "signoff",
+        "signoffType",
+        "user"
+    ]
+}

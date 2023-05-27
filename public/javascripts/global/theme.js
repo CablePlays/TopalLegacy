@@ -21,10 +21,12 @@ function displayDarkTheme(enabled) {
         setCssVariable("color-background", "rgb(20, 20, 30)");
         setCssVariable("color-background-text", "rgb(220, 220, 220)");
         setCssVariable("color-background-opposite", "rgb(255, 255, 255)");
+        setCssVariable("color-highlight", "rgb(200, 200, 0)");
     } else {
         setCssVariable("color-background", "rgb(255, 255, 255)");
         setCssVariable("color-background-text", "rgb(0, 0, 0)");
         setCssVariable("color-background-opposite", "rgb(20, 20, 30)");
+        setCssVariable("color-highlight", "rgb(200, 0, 0)");
     }
 
     for (let a of ["color-button", "color-button-active", "color-button-hover", "color-button-text"]) {
@@ -37,5 +39,4 @@ function setDarkTheme(enabled) {
     displayDarkTheme(enabled);
 }
 
-// set initial
-displayDarkTheme(getDarkTheme());
+displayDarkTheme(getDarkTheme()); // set initial

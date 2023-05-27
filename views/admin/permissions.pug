@@ -5,10 +5,7 @@ block content
   script(src="/javascripts/admin/permissions.js")
 
   h1 Permissions Manager
-  p.partial.
-    Information about each permission can be found at the bottom of this page.
-    It is also useful to know that all pages which require a permission will contain a key icon in the bottom right corner.
-    Users without permissions will not be able to view such pages.
+  p.partial Information about each permission can be found at the bottom of this page.
 
   .spacer.v20
 
@@ -44,13 +41,9 @@ block content
     h3 Available Permissions:
     ul
       li
-        h4 View Logs
-        p.partial.
-          This permission currently has no affect. It will be implemented in the future.
-      li
         h4 Manage Awards
         p.partial.
-          Allows the user to sign off on other users' awards.
+          Allows the user to view and sign off on other users' awards and sign-offs.
           Users with this permission are not able to manage other users' permissions.
       li
         h4 Manage Permissions
@@ -58,6 +51,9 @@ block content
           Allows the user to manage other users' permissions.
           Users with this permission are automatically granted all other permissions.
           This permission is required to view this page.
+      li
+        h4 View Audit Logs
+        p.partial Allows the user to view the audit logs of the website.
 
     template#user-template
       .user

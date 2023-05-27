@@ -95,6 +95,15 @@ router.put("/", async (req, res) => {
         db.delete(path);
     }
 
+    /* Audit Log */
+
+    jsonDatabase.auditLogRecord({
+        type: (complete ? "grantAward" : "revokeAward"),
+        actor: userId,
+        award,
+        user: targetUserId
+    });
+
     res.res(204);
 });
 

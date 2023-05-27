@@ -31,6 +31,7 @@ router.put("/", (req, res) => {
     }
 
     let { signoff, type, complete } = req.body;
+    const targetUserId = req.userId;
     const userId = cookies.getUserId(req);
 
     if (!general.isSignoff(type, signoff)) {
@@ -38,7 +39,7 @@ router.put("/", (req, res) => {
         return;
     }
 
-    const db = jsonDatabase.getUser(req.userId);
+    const db = jsonDatabase.getUser(targetUserId);
     const path = jsonDatabase.SIGNOFFS_PATH + "." + type + "." + signoff;
 
     if (complete === true) {
@@ -50,6 +51,16 @@ router.put("/", (req, res) => {
     } else {
         db.delete(path);
     }
+
+    /* Audit Log */
+
+    jsonDatabase.auditLogRecord({
+        type: (complete ? "grantSignoff" : "revokeSignoff"),
+        actor: userId,
+        signoff,
+        signoffType: type,
+        user: targetUserId
+    });
 
     res.res(204);
 });

@@ -12,7 +12,7 @@ const APPROVALS = [
 const PERMISSIONS = [
     "manageAwards",
     "managePermissions",
-    "viewLogs"
+    "viewAuditLog"
 ];
 
 const LOG_TYPES = { // cannot be both sub and singleton
@@ -312,6 +312,7 @@ async function sendEmail(recipient, subject, content) {
 
 module.exports = {
     MAX_RECENT_AWARDS,
+    PERMISSIONS,
 
     getLogsTable,
     getSublogsTable,

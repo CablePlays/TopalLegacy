@@ -1,4 +1,7 @@
 {
+    "audit-log": {
+        "GET": "Get audit log records"
+    },
     "/awards": {
         "/recents": {
             "GET": "Get recent awards"

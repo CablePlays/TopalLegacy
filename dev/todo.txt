@@ -1,6 +1,5 @@
 > Todo
 
-Logs page (award+signoffs grant/revoke & permissions change)
 Make recents cap out due to date as well as number & make recents store in SQL table
 
 > Ideas
@@ -18,5 +17,5 @@ Upload sketch of area for solitaire award
 
 > Award Ideas
 
-Mountain biking
 Horse riding
+Mountain biking

@@ -76,7 +76,7 @@ function createSignoffTable(options) {
             : "You're about to revoke a sign-off from this user."
     } = options;
 
-    const items = getSignoffs(signoffType);
+    const items = SIGNOFFS[signoffType];
 
     const loadingElement = createLoading(true);
     container.appendChild(loadingElement);

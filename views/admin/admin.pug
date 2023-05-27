@@ -4,6 +4,10 @@ block content
   link(rel="stylesheet" href="/stylesheets/admin/admin.css")
 
   h1 Admin Portal
+  p.partial.
+    All pages which require a permission will contain a key icon in the bottom right corner.
+    Users without permissions will not be able to view such pages.
+
   .spacer.v20
 
   .section-container
@@ -13,6 +17,14 @@ block content
       p.
         View requests from students for their awards to be signed off.
         Only users with the <b>manage awards</b> permission can access this page.
+      .line
+
+    .section(style=`display: ${displays.permission.viewAuditLog.flex}`)
+      h2 Audit Log
+      a(href="/audit-log") Go
+      p.
+        View user activity in the form of a list of logs.
+        Only users with the <b>view audit logs</b> permission can access this page.
       .line
 
     .section(style=`display: ${displays.permission.managePermissions.flex}`)

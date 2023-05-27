@@ -2,14 +2,6 @@
     Handles displaying a list of sign-offs.
 */
 
-function getSignoffs(signoffType) {
-    return SIGNOFFS[signoffType];
-}
-
-function hasHeadings(signoffs) {
-    return Array.isArray(signoffs[0][1]);
-}
-
 function createSignoffDisplay(options) {
     const {
         additions,
@@ -17,8 +9,8 @@ function createSignoffDisplay(options) {
         type
     } = options;
 
-    const items = getSignoffs(type);
-    const headings = hasHeadings(items);
+    const items = SIGNOFFS[type];
+    const hasHeadings = hasHeadings(items);
 
     const signoffsPromise = new Promise(async r => r((await getRequest(`/users/${getUserId()}/signoffs?type=${type}`)).signoffs));
 
@@ -31,7 +23,7 @@ function createSignoffDisplay(options) {
     }
 
     function createItems(items) {
-        if (!headings) {
+        if (!hasHeadings) {
             addLine();
         }
 
@@ -63,7 +55,7 @@ function createSignoffDisplay(options) {
         });
     };
 
-    if (headings === true) {
+    if (hasHeadings === true) {
         for (let item of items) {
             const [groupHeading, groupItems] = item;
 

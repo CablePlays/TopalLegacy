@@ -42,12 +42,14 @@ async function advancedRender(req, res, path, adminPage) {
                 true: generateDisplays(loggedIn)
             },
             permission: {
-                any: generateDisplays(general.hasAnyPermission(permissions)),
-                manageAwards: generateDisplays(permissions.manageAwards),
-                managePermissions: generateDisplays(permissions.managePermissions),
+                any: generateDisplays(general.hasAnyPermission(permissions))
             }
         }
     };
+
+    for (let permission of general.PERMISSIONS) {
+        placeholders.displays.permission[permission] = generateDisplays(permissions[permission]);
+    }
 
     res.render(path, placeholders);
 }

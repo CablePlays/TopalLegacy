@@ -27,7 +27,7 @@ const AWARDS = [
 const PERMISSIONS = [
     ["manageAwards", "Manage Awards"],
     ["managePermissions", "Manage Permissions"],
-    ["viewLogs", "View Logs"]
+    ["viewAuditLog", "View Audit Log"]
 ];
 
 const SIGNOFFS = {
@@ -183,6 +183,42 @@ function getAwardName(id) {
     }
 
     return null;
+}
+
+function getPermissionName(id) {
+    for (let award of PERMISSIONS) {
+        if (award[0] === id) {
+            return award[1];
+        }
+    }
+
+    return null;
+}
+
+function getSignoffName(signoffType, signoff) {
+    const signoffs = SIGNOFFS[signoffType];
+
+    if (hasHeadings(signoffs)) {
+        for (let headingGroup of signoffs) {
+            for (let s of headingGroup[1]) {
+                if (s[0] === signoff) {
+                    return s[1];
+                }
+            }
+        }
+    } else {
+        for (let s of signoffs) {
+            if (s[0] === signoff) {
+                return s[1];
+            }
+        }
+    }
+
+    return null;
+}
+
+function hasHeadings(signoffs) {
+    return Array.isArray(signoffs[0][1]);
 }
 
 /* Formatting */

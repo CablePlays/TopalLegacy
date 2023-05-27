@@ -35,49 +35,114 @@ function meterExtra(max, display, supplier) {
     };
 }
 
+const EXTRAS = {
+    rockClimbing: {
+        checkboxes: [{
+            type: "approval",
+            title: "Belayer Sign-Off",
+            approval: "rockClimbingBelayer"
+        }]
+    },
+    running: {
+        meter: {
+            display: value => `${value / 1000}km / 100km`,
+            max: 100000,
+            supplier: async () => (await getRequest(`/users/${getProfileUser()}/logs/distance-run`)).distance
+        }
+    },
+    service: {
+        meter: {
+            display: value => `${formatDuration(value, false)} / 25h`,
+            max: 90000,
+            supplier: async () => (await getRequest(`/users/${getProfileUser()}/logs/service-hours`)).time
+        }
+    },
+    venture: {
+        checkboxes: [{
+            type: "approval",
+            title: "Proposal Approved",
+            approval: "ventureProposal"
+        }]
+    }
+}
+
+function createCard(award, awardsPromise) {
+    const [awardId, cardTitle] = award;
+
+    /* Card */
+
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    createElement("h2", card, cardTitle);
+
+    const { checkboxes, meter } = EXTRAS[awardId] ?? {};
+
+    /* Meter */
+
+    if (meter == null) {
+        card.appendChild(createSpacer(20));
+    } else {
+        const { display, max, supplier } = meter;
+        const label = createElement("h3", card, LOADING_TEXT);
+
+        const meterElement = createElement("meter", card);
+        meterElement.max = max;
+
+        supplier().then(value => {
+            label.innerHTML = display(value);
+            meterElement.value = value;
+        });
+    }
+
+    /* Checkboxes */
+
+    const checkboxesContainer = createElement("div", card);
+    checkboxesContainer.classList.add("checkboxes-container");
+
+    function createCheckboxSection(checkboxTitle, supplierPromise) {
+        const checkboxContainer = createElement("div", checkboxesContainer);
+        checkboxContainer.classList.add("checkbox-container");
+
+        createElement("h3", checkboxContainer, checkboxTitle);
+
+        const checkbox = createCheckbox(supplierPromise);
+        checkbox.classList.add("checkbox");
+        checkboxContainer.appendChild(checkbox);
+    }
+
+    createCheckboxSection("Achieved", new Promise(async r => r((await awardsPromise)[awardId]?.complete === true)));
+
+    if (checkboxes != null) {
+        checkboxes.forEach(checkbox => {
+            const { title, type } = checkbox;
+            let promise;
+
+            if (type === "approval") {
+                const { approval } = checkbox;
+
+                promise = new Promise(async r => {
+                    const { approvals } = await getRequest(`/users/${getProfileUser()}/approvals`);
+                    r(approvals[approval]?.complete === true);
+                });
+            } else {
+                throw new Error("Invalid type: " + type);
+            }
+
+            createCheckboxSection(title, promise);
+        });
+    }
+
+    return card;
+}
+
 function setupAwards() {
     const profileUser = getProfileUser();
     const awardsContainer = document.getElementById("awards-container");
 
-    const extras = {
-        rockClimbing: {
-            after: approvalExtra("Belayer Sign-Off", "rockClimbingBelayer")
-        },
-        running: {
-            before: meterExtra(100000, value => `${value / 1000}km / 100km`, async () =>
-                (await getRequest(`/users/${profileUser}/logs/distance-run`)).distance)
-        },
-        service: {
-            before: meterExtra(90000, value => `${formatDuration(value, false)} / 25h`, async () =>
-                (await getRequest(`/users/${profileUser}/logs/service-hours`)).time)
-        },
-        venture: {
-            after: approvalExtra("Proposal Approved", "ventureProposal")
-        }
-    };
-
     const awardsPromise = getAwards(profileUser);
-
     AWARDS.forEach(award => {
-        const [id, display] = award;
-
-        const card = document.createElement("div");
-        card.classList.add("card");
-
-        const title = document.createElement("h2");
-        title.innerHTML = display;
-        card.appendChild(title);
-
-        const extra = extras[id] ?? {};
-        if (extra.before != null) extra.before(card);
-
-        card.appendChild(createSpacer(20));
-
-        const checkbox = createCheckbox(new Promise(async r => r((await awardsPromise)[id]?.complete === true)));
-        checkbox.classList.add("checkbox");
-        card.appendChild(checkbox);
-
-        if (extra.after != null) extra.after(card);
+        const card = createCard(award, awardsPromise);
         awardsContainer.appendChild(card);
     });
 }

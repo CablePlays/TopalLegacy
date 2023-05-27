@@ -1,19 +1,36 @@
-.card {
+#awards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+#awards-container meter {
+    width: 100%;
+}
+
+#awards-container .card {
     background-color: var(--color-primary-300);
     border-radius: 2px;
-    box-shadow: 0 0 5px 0 rgb(0, 0, 0, 0.5);
     color: var(--color-primary-300-text);
-    flex-basis: 33%;
+    flex-basis: 30%;
     flex-grow: 1;
     padding: 16px;
     text-align: center;
 }
 
-.checkbox {
+#awards-container .checkbox {
     height: 80px;
 }
 
-#awards-container {
+#awards-container .checkbox-container {
+    align-items: center;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+#awards-container .checkboxes-container {
+    column-gap: 20px;
+    display: flex;
+    justify-content: center;
 }

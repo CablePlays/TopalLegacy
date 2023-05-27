@@ -4,10 +4,9 @@ Venture leader
 
 > Todo
 
-Logs page (award+signoffs grant/revoke & permissions change)
-Revamp milestone system
-Make recents cap out due to date as well as number & make recents store in SQL table
 Comments to Midmar Mile training logs
+Logs page (award+signoffs grant/revoke & permissions change)
+Make recents cap out due to date as well as number & make recents store in SQL table
 
 > Ideas
 

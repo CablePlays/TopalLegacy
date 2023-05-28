@@ -23,7 +23,13 @@ function simulateLag(req, res, next) {
 }
 
 app.use("/", renderRouter); // render
-app.use(REQUESTS_PATH, simulateLag, requestsRouter); // requests
+
+if (ARTIFICIAL_LATENCY > 0) {
+    console.info(`Using artificial latency: ${ARTIFICIAL_LATENCY}ms`);
+    app.use("/", simulateLag);
+}
+
+app.use(REQUESTS_PATH, requestsRouter); // requests
 
 app.use((req, res, next) => { // catch 404 and forward to error handler
     next(createError(404));

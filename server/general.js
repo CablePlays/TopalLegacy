@@ -2,7 +2,8 @@ const nodemailer = require('nodemailer');
 const cookies = require("./cookies");
 const sqlDatabase = require('./sql-database');
 
-const MAX_RECENT_AWARDS = 10;
+const RECENT_AWARDS_LIFETIME = 48; // hours
+const RECENT_AWARDS_MAX = 2;
 
 const APPROVALS = [
     "rockClimbingBelayer",
@@ -311,7 +312,8 @@ async function sendEmail(recipient, subject, content) {
 }
 
 module.exports = {
-    MAX_RECENT_AWARDS,
+    RECENT_AWARDS_LIFETIME,
+    RECENT_AWARDS_MAX,
     PERMISSIONS,
 
     getLogsTable,

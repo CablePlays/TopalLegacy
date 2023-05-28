@@ -1,12 +1,11 @@
 > Todo
 
-Make recents cap out due to date as well as number & make recents store in SQL table
+...
 
 > Ideas
 
 Leaderboard page
 Popup showing checkboxes for each award indicating completion (maybe top right) - make hideable
-Make login loading faster or add indication of working
 Make website work well on mobile devices
 Scroll to top of page button
 Cycling images that staff can add

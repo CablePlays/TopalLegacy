@@ -62,23 +62,8 @@ router.put("/", async (req, res) => {
 
         /* Recents */
 
-        const recentsDb = jsonDatabase.getRecents();
-        const recentAwards = recentsDb.get("awards") ?? [];
-
         const date = new Date();
-
-        if (recentAwards.length >= general.MAX_RECENT_AWARDS) {
-            recentAwards.pop(); // remove from end
-        }
-
-        // add to start of recents
-        recentAwards.unshift({
-            date,
-            award: award,
-            user: targetUserId
-        });
-
-        recentsDb.set("awards", recentAwards);
+        sqlDatabase.run(`INSERT INTO recent_awards (user, award, date) VALUES ("${targetUserId}", "${award}", ${date.getTime()})`);
 
         /* User Data */
 

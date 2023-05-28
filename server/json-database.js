@@ -2,9 +2,8 @@ const fsdb = require("file-system-db");
 
 const DIRECTORY = "./database";
 const AUDIT_LOG_DIRECTORY = DIRECTORY + "/audit-log";
-const RECENTS_DIRECTORY = DIRECTORY + "/recents";
 const USER_DIRECTORY = DIRECTORY + "/user_data";
-const COMPACT = false;
+const COMPACT = true;
 
 // user
 const APPROVALS_PATH = "approvals";
@@ -15,16 +14,11 @@ const SINGLETON_LOGS_PATH = "singletonLogs";
 
 // other
 const AUDIT_LOG_RECORDS_PATH = "records";
-const RECENTS_AWARDS_PATH = "awards";
 
 /* Get File */
 
 function getAuditLog() {
     return new fsdb(AUDIT_LOG_DIRECTORY, COMPACT);
-}
-
-function getRecents() {
-    return new fsdb(RECENTS_DIRECTORY, COMPACT);
 }
 
 function getUser(userId) {
@@ -58,12 +52,10 @@ module.exports = {
     AUDIT_LOG_RECORDS_PATH,
     AWARDS_PATH,
     PERMISSIONS_PATH,
-    RECENTS_AWARDS_PATH,
     SIGNOFFS_PATH,
     SINGLETON_LOGS_PATH,
 
     getAuditLog,
-    getRecents,
     getUser,
     auditLogRecord,
     getPermissions

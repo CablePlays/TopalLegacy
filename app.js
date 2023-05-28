@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const consoleCommands = require("./server/console-commands");
 const requestsRouter = require("./requests/index");
 const renderRouter = require("./render/index-router");
 
@@ -9,6 +10,8 @@ const ARTIFICIAL_LATENCY = 0;
 const REQUESTS_PATH = "/requests";
 
 const app = express();
+
+consoleCommands();
 
 // view engine setup
 app.set('views', 'views');

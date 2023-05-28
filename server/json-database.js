@@ -3,7 +3,7 @@ const fsdb = require("file-system-db");
 const DIRECTORY = "./database";
 const AUDIT_LOG_DIRECTORY = DIRECTORY + "/audit-log";
 const USER_DIRECTORY = DIRECTORY + "/user_data";
-const COMPACT = true;
+const COMPACT = false;
 
 // user
 const APPROVALS_PATH = "approvals";

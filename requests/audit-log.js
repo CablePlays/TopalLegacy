@@ -1,5 +1,4 @@
 const express = require('express');
-const cookies = require("../server/cookies");
 const general = require("../server/general");
 const jsonDatabase = require("../server/json-database");
 const sqlDatabase = require("../server/sql-database");
@@ -15,7 +14,8 @@ router.use("/", (req, res, next) => { // require permission: viewAuditLog
 });
 
 router.get("/", async (req, res) => {
-    const records = jsonDatabase.getAuditLog().get(jsonDatabase.AUDIT_LOG_RECORDS_PATH) ?? [];
+    let records = jsonDatabase.getAuditLog().get(jsonDatabase.AUDIT_LOG_RECORDS_PATH) ?? [];
+    records = records.filter(val => !general.INVISIBLE_USERS.includes(val.actor));
 
     await general.forEachAndWait(records, async record => { // provide user info to actor and user
         await general.forEachAndWait(["actor", "user"], async key => {

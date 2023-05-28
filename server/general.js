@@ -2,6 +2,8 @@ const nodemailer = require('nodemailer');
 const cookies = require("./cookies");
 const sqlDatabase = require('./sql-database');
 
+const INVISIBLE_USERS = []; // users who do not show up in audit log as actor
+
 const RECENT_AWARDS_LIFETIME = 48; // hours
 const RECENT_AWARDS_MAX = 2;
 
@@ -312,6 +314,7 @@ async function sendEmail(recipient, subject, content) {
 }
 
 module.exports = {
+    INVISIBLE_USERS,
     RECENT_AWARDS_LIFETIME,
     RECENT_AWARDS_MAX,
     PERMISSIONS,

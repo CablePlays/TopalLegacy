@@ -12,7 +12,7 @@ function getExpiryMillis() { // recents expire when their date is before or equa
 
 router.get("/", async (req, res) => {
     const expiryMillis = getExpiryMillis();
-    const recents = await sqlDatabase.all(`SELECT user, award, date FROM recent_awards WHERE date > ${expiryMillis} LIMIT ${general.RECENT_AWARDS_MAX}`);
+    const recents = await sqlDatabase.all(`SELECT user, award, date FROM recent_awards WHERE date > ${expiryMillis} ORDER BY date DESC LIMIT ${general.RECENT_AWARDS_MAX}`);
 
     sqlDatabase.run(`DELETE FROM recent_awards WHERE date <= ${getExpiryMillis()}`); // delete old
 

@@ -4,7 +4,7 @@ function loadMilestones() {
         ["team", "Team Award", "Requires 4 awards"],
         ["halfColors", "Half Colors", "Requires 7 awards"],
         ["colors", "Colors", "Requires 10 awards"],
-        ["merit", "Merit Award", "Awarded, not achieved"],
+        ["merit", "Merit Award", "Awarded, not earned"],
         ["honors", "Honors", "Requirements coming soon"]
     ];
 

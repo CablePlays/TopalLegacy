@@ -42,7 +42,7 @@ const SIGNOFFS = {
         ["readBook", "Read a book on training and is knowledgeable in training methods for one category of races"],
         ["instruct", "Practical ability to instruct a novice in basic training in running, MTB or AR - and has spent time doing so"],
         ["who", "Familiarity with <i>Who's Who</i> in current endurance sport (from reading of running magazines, internet, TV)"],
-        ["firstAid", "First-aid training - or satisfies MIC of his or her familiarity with endurance problems and their treatment"],
+        ["firstAid", "First-aid training - or satisfies TIC of his or her familiarity with endurance problems and their treatment"],
         ["mentalAttitude", "Exhibits a healthy mental attitude towards the sport and towards others"],
         ["organisingEvents", "Performs voluntary service (either at Treverton or elsewhere) in administration and organizational roles - a minimum organizing three events"]
     ],
@@ -61,7 +61,7 @@ const SIGNOFFS = {
         ["attitude", "Have shown correct attitude"],
         ["skill", "Develop a high degree of skill"],
         ["knowledge", `Read at least one book on kayaking/canoeing and be able to show
-        a breadth of knowledge to the MIC in conversation as well as in your instruction of others`],
+        a breadth of knowledge to the TIC in conversation as well as in your instruction of others`],
         ["monitor", "Spend time acting as a duty equipment monitor in and around the boat shed"],
         ["rescue", "Demonstrate practical ability to rescue someone in the river - X-rescue, H-rescue & self-rescue"],
         ["firstAid", "Valid basic first aid and CPR training (level one)"]

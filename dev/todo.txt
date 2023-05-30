@@ -7,7 +7,6 @@
 Leaderboard page
 Popup showing checkboxes for each award indicating completion (maybe top right) - make hideable
 Make website work well on mobile devices
-Scroll to top of page button
 Cycling images that staff can add
 
 > Possible

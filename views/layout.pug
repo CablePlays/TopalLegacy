@@ -12,7 +12,7 @@ html
     link(rel="stylesheet" href="/stylesheets/global/footer.css")
     link(rel="stylesheet" href="/stylesheets/global/form-display.css")
     link(rel="stylesheet" href="/stylesheets/global/hamburger-icon.css")
-    link(rel="stylesheet" href="/stylesheets/global/images.css")
+    link(rel="stylesheet" href="/stylesheets/global/icons.css")
     link(rel="stylesheet" href="/stylesheets/global/log-display.css")
     link(rel="stylesheet" href="/stylesheets/global/sequel-display.css")
     link(rel="stylesheet" href="/stylesheets/global/signoff-display.css")
@@ -24,6 +24,7 @@ html
     script(src="/javascripts/global/confirmation.js")
     script(src="/javascripts/global/cookies.js")
     script(src="/javascripts/global/form-display.js")
+    script(src="/javascripts/global/icons.js")
     script(src="/javascripts/global/layout.js")
     script(src="/javascripts/global/log-display.js")
     script(src="/javascripts/global/rest.js")
@@ -66,7 +67,7 @@ html
         .line(style=`display: ${displays.loggedIn.true.flex}`)
 
         a(href="/settings") Settings
-        
+
         .line
 
         a(href="/account/login" style=`display: ${displays.loggedIn.false.flex}`) Login
@@ -84,6 +85,9 @@ html
     #admin-icon(style=`display: ${displays.adminPage.true.block}`)
       span This page requires special permissions to view.
       img(src="/images/admin-icon.png")
+
+    #up-icon
+      img(src="/images/dropdown-arrow.png")
 
     footer
       p &copy 2023 <a href="/">TOPAL</a>

@@ -114,7 +114,7 @@ meter::-webkit-meter-optimum-value {
     background-image: linear-gradient(90deg, var(--color-secondary-200), var(--color-secondary-500));
     background-size: 100% 100%;
     box-shadow: 0 3px 3px -3px rgb(51, 51, 51) inset;
-    -webkit-transition: width 1s;
+    transition: width 1s;
 }
 
 ol li,

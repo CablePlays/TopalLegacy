@@ -4,11 +4,11 @@
 }
 
 #admin-icon {
-    bottom: 0;
+    bottom: 10px;
     position: fixed;
     right: 20px;
     transition: 0.5s;
-    z-index: 900;
+    z-index: 1000;
 }
 
 #admin-icon.shifted {
@@ -52,9 +52,9 @@
     position: fixed;
     right: -10px;
     bottom: 10px;
-    transition: transform 0.1s, 0.5s;
+    transition: 0.5s, transform 0.1s;
     width: 50px;
-    z-index: 1000;
+    z-index: 950;
 }
 
 #up-icon:hover {

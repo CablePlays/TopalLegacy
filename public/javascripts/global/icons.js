@@ -3,7 +3,6 @@ function upIcon() {
     const adminIcon = document.getElementById("admin-icon");
 
     window.addEventListener("scroll", () => {
-        console.log(window.scrollY);
         if (window.scrollY >= 300) {
             upIcon.classList.add("visible");
             adminIcon.classList.add("shifted");

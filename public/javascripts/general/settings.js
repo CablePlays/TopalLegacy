@@ -26,4 +26,6 @@ function setupButtons() {
     updateToggleDarkButtonText(getDarkTheme());
 }
 
-window.addEventListener("load", setupButtons);
+window.addEventListener("load", () => {
+    setupButtons();
+});

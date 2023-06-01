@@ -77,6 +77,10 @@ router.get("/", (req, res) => {
     res.advancedRender("general/home");
 });
 
+router.get("/balls", (req, res) => {
+    res.advancedRender("general/fun");
+});
+
 router.get("/search", (req, res) => {
     res.advancedRender("general/search");
 });

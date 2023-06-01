@@ -1,0 +1,20 @@
+.bouncy-ball {
+    border-radius: 15px;
+    box-shadow: 0 0 5px 5px rgb(0, 0, 0, 0.7);
+    height: 30px;
+    position: absolute;
+    transition: left 2s, top 2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    width: 30px;
+}
+
+.bouncy-ball:hover {
+    transform: scale(1.5);
+}
+
+.bouncy-ball.a {
+    background-color: var(--color-primary-400);
+}
+
+.bouncy-ball.b {
+    background-color: var(--color-secondary-400);
+}

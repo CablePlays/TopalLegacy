@@ -5,7 +5,7 @@ const sqlDatabase = require('./sql-database');
 const INVISIBLE_USERS = []; // users who do not show up in audit log as actor
 
 const RECENT_AWARDS_LIFETIME = 48; // hours
-const RECENT_AWARDS_MAX = 2;
+const RECENT_AWARDS_MAX = 10;
 
 const APPROVALS = [
     "rockClimbingBelayer",

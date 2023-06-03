@@ -78,7 +78,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/balls", (req, res) => {
-    res.advancedRender("general/fun");
+    res.advancedRender("general/balls");
 });
 
 router.get("/search", (req, res) => {

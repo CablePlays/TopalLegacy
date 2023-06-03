@@ -3,10 +3,10 @@
         "running": {
             "complete": false,
             "date": "DATE",
-            "signer": "USER_INFO",
+            "signer": "USER",
             "decline": {
                 "date": "DATE",
-                "user": "USER_INFO",
+                "user": "USER",
                 "message": "Message content."
             }
         }
@@ -17,6 +17,15 @@
         "viewLogs": false
     },
     "approvals": {},
-    "signoffs": {},
+    "signoffs": {
+        "type": {
+            "signoff": {
+                "requestedDate": "DATE",
+                "complete": true,
+                "date": "DATE",
+                "signer": "USER"
+            }
+        }
+    },
     "singletonLogs": {}
 }

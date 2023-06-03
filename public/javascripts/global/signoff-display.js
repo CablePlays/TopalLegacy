@@ -9,8 +9,8 @@ function createSignoffDisplay(options) {
         type
     } = options;
 
-    const items = SIGNOFFS[type];
-    const headings = hasHeadings(items);
+    const typedSignoffs = SIGNOFFS[type];
+    const headings = hasHeadings(typedSignoffs);
 
     const signoffsPromise = new Promise(async r => r((await getRequest(`/users/${getUserId()}/signoffs?type=${type}`)).signoffs));
 
@@ -22,11 +22,7 @@ function createSignoffDisplay(options) {
         createElement("td", tr).classList.add("line");
     }
 
-    function createItems(items) {
-        if (!headings) {
-            addLine();
-        }
-
+    function createSignoffList(items) {
         items.forEach(item => {
             const [id, description] = item;
             const completePromise = new Promise(async r => r((await signoffsPromise)[id]?.complete === true));
@@ -56,7 +52,7 @@ function createSignoffDisplay(options) {
     };
 
     if (headings === true) {
-        for (let item of items) {
+        for (let item of typedSignoffs) {
             const [groupHeading, groupItems] = item;
 
             createElement("tr", table, e => {
@@ -69,10 +65,11 @@ function createSignoffDisplay(options) {
                 createElement("tr", table, addition);
             }
 
-            createItems(groupItems);
+            createSignoffList(groupItems);
         }
     } else {
-        createItems(items);
+        addLine();
+        createSignoffList(typedSignoffs);
     }
 
     /* Placeholder */

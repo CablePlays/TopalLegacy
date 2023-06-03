@@ -1,7 +1,7 @@
 > Todo
 
-Create automatic email reminder system to show staff members sign-off requests
 Create ability for students to request sign-offs as well as awards
+Create automatic email reminder system to show staff members sign-off requests
 
 > Ideas
 

@@ -28,11 +28,11 @@ function handleBall(element, container) {
 
 window.addEventListener("load", () => {
     const query = new URLSearchParams(window.location.search);
-    const amount = query.get("n") ?? 100;
+    const amount = query.get("n") ?? 1000;
 
     const container = document.getElementsByClassName("container")[0];
 
     for (let i = 0; i < amount; i++) {
-        createBall(container);
+        setTimeout(() => createBall(container), i);
     }
 });

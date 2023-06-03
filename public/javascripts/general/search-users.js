@@ -30,6 +30,11 @@ function setupSearch() {
     const searchButton = document.getElementById("search-button");
     const table = document.getElementById("results-table");
 
+    searchBar.addEventListener("keyup", event => {
+        if (event.key === "Enter") {
+            searchButton.click();
+        }
+    });
     searchButton.addEventListener("click", async () => {
         // clear previous results
         removeChildren(table);
@@ -55,4 +60,6 @@ function setupSearch() {
     });
 }
 
-window.addEventListener("load", setupSearch);
+window.addEventListener("load", () => {
+    setupSearch();
+});

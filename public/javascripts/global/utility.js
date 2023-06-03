@@ -87,7 +87,7 @@ const SIGNOFFS = {
         [
             "Harness",
             [
-                ["harness1", "Purpse and use of all types"],
+                ["harness1", "Purpose and use of all harness types"],
                 ["harness2", "Doubling back of straps"],
                 ["harness3", "Knowledge of appropriate tie-in / belay points"],
                 ["harness4", "Calls (belayer, climber, slack/tight rope)"],

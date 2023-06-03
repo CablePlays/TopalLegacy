@@ -80,7 +80,10 @@
             },
             "/signoffs": {
                 "GET": "Get user signoffs of a specific type",
-                "PUT": "Set user signoff"
+                "PUT": "Set user signoff",
+                "/requests": {
+                    "PUT": "Request signoff"
+                }
             }
         }
     }

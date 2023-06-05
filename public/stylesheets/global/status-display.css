@@ -3,49 +3,41 @@
     border: 3px solid var(--color-secondary-600);
     border-radius: 4px;
     color: var(--color-secondary-400-text);
-    margin-left: 5%;
-    padding: 10px;
-    width: 90%;
+    padding: 16px;
 }
 
-.status-display button {
+.status-display .bottom .request-button {
+    border-radius: 4px;
     cursor: pointer;
-    padding: 8px;
+    padding: 4px 8px;
 }
 
-.status-display .bottom {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.status-display .ruler {
-    background-color: var(--color-background-text);
+.status-display .line {
+    background-color: var(--color-background-opposite);
     height: 0.5px;
     margin-left: 5%;
     width: 90%;
 }
 
 .status-display .top {
+    align-items: center;
     display: flex;
-    flex-direction: row;
-    height: 100px;
     justify-content: space-around;
 }
 
-.status-display .top div {
+.status-display .top .date-container,
+.status-display .top .signer-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    justify-content: center;
 }
 
-.status-display .top .indication {
+.status-display .top .status-container {
     align-items: center;
     column-gap: 20px;
     display: flex;
-    flex-direction: row;
 }
 
-.status-display .top .indication img {
-    height: 70%;
+.status-display .top .status-container img {
+    height: 60px;
+    width: 60px;
 }

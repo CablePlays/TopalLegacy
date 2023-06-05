@@ -80,6 +80,10 @@ requestsRouter.put("/", (req, res) => {
 
     let { signoff, type, complete } = req.body;
 
+    if (signoff == null || type == null || complete == null) {
+        res.res(400);
+        return;
+    }
     if (!general.isSignoff(type, signoff)) {
         res.res(400, "invalid_signoff");
         return;
@@ -111,6 +115,10 @@ requestsRouter.delete("/:type/:signoff", (req, res) => {
 
     const { type, signoff } = req.params;
 
+    if (type == null || signoff == null) {
+        res.res(400);
+        return;
+    }
     if (!general.isSignoff(type, signoff)) {
         res.res(404, "invalid_signoff");
         return;

@@ -19,10 +19,11 @@ router.put("/", (req, res) => {
         return;
     }
 
-    const { award } = req.body;
+    const { award, complete } = req.body;
 
-    if (award == null) {
+    if (award == null | complete == null) {
         res.res(400);
+        return;
     }
     if (!general.isAward(award)) {
         res.res(400, "invalid_award");
@@ -36,14 +37,18 @@ router.put("/", (req, res) => {
         res.res(409, "award_complete");
         return;
     }
-    if (db.get(path + ".requestDate")) {
-        res.res(409, "request_exists");
-        return;
-    }
+    if (complete) {
+        if (db.get(path + ".requestDate")) {
+            res.res(409, "request_exists");
+            return;
+        }
 
-    db.set(path, {
-        requestDate: new Date()
-    });
+        db.set(path, {
+            requestDate: new Date()
+        });
+    } else {
+        db.delete(path);
+    }
 
     res.res(204);
 });

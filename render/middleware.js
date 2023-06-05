@@ -18,7 +18,7 @@ function requireLoggedOut(req, res, next) {
     }
 }
 
-function createPermissionMiddleware(permission) {
+function getPermissionMiddleware(permission) {
     return (req, res, next) => {
         if (cookies.isLoggedIn(req)) {
             const userId = cookies.getUserId(req);
@@ -37,5 +37,5 @@ function createPermissionMiddleware(permission) {
 module.exports = {
     requireLoggedIn,
     requireLoggedOut,
-    createPermissionMiddleware
+    getPermissionMiddleware
 }

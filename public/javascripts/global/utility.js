@@ -1,6 +1,7 @@
 /* Text */
 const LOADING_TEXT = "Loading...";
 const MISSING_TEXT = "N/A";
+const NONE_TEXT = "None";
 
 /* Images */
 const IMAGE_ADMIN = "/images/admin-icon.gif";
@@ -149,7 +150,7 @@ const SIGNOFFS = {
         ["logs", "Maintenance of a clear log of climbs and instruction time"],
         ["attitude", "Correct attitude — responsibility, ability, helpfulness"],
         ["climbingGrade", "Practical climbing grade 16+ with sport climbing (minimum of 10 different climbs at two different locations)"],
-        ["leadClimbsSport", "Protected lead climbs on rock placing protection (Sport) (at least 10 different climbs)"],
+        ["s", "Protected lead climbs on rock placing protection (Sport) (at least 10 different climbs)"],
         ["leadClimbsTrad", "Protected lead climbs on rock placing protection (Trad) (at least 3 different climbs)"],
         ["traverse", "Low traverse on outside wall in less than 45 seconds"],
         ["protection", `Practical protection of climbs and setting up of multiple belays
@@ -195,7 +196,7 @@ function getPermissionName(id) {
     return null;
 }
 
-function getSignoffName(signoffType, signoff) {
+function getSignoffDescription(signoffType, signoff) {
     const signoffs = SIGNOFFS[signoffType];
 
     if (hasHeadings(signoffs)) {
@@ -343,13 +344,12 @@ function createCheckbox(condition) {
     return checkbox;
 }
 
-function createLoading(center = false) {
+function createLoadingIcon(autoSize = true) {
     const loading = document.createElement("img");
     loading.src = IMAGE_LOADING;
-    loading.classList.add("loading");
 
-    if (center) {
-        loading.classList.add("center");
+    if (autoSize) {
+        loading.classList.add("loading");
     }
 
     return loading;

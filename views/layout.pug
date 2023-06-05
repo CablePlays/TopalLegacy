@@ -93,10 +93,12 @@ html
       p &copy 2023 <a href="/">TOPAL</a>
       a.corner(href="https://www.treverton.co.za" target="_blank") TREVERTON
 
-    #confirmation(style="display: none")
-      .dialog
+    #confirmation-container(style="display: none")
+      #confirmation-prompt
         h2 Are You Sure?
-        h3 You are about to do something with major consequences.
+        .spacer.v10
+        h3 Info
+        .spacer.v20
         .button-container
           button.transparent-button Nevermind
           button.transparent-button I'm Certain

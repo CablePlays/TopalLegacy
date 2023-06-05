@@ -5,11 +5,12 @@ const jsonDatabase = require("../server/json-database");
 
 // routers
 const auditLogRouter = require("./audit-log");
-const awardsRouter = require("./awards/index");
+const awardsRouter = require("./awards");
 const logsRouter = require("./logs");
 const permissionsRouter = require("./permissions");
+const requestsRouter = require("./requests");
 const sessionRouter = require("./session");
-const usersRouter = require("./users/index");
+const usersRouter = require("./users");
 
 const router = express.Router();
 
@@ -50,6 +51,7 @@ router.use('/audit-log', auditLogRouter);
 router.use('/awards', awardsRouter);
 router.use('/logs', logsRouter);
 router.use('/permissions', permissionsRouter);
+router.use('/requests', requestsRouter);
 router.use('/session', sessionRouter);
 router.use('/users', usersRouter);
 

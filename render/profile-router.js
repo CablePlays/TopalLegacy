@@ -21,6 +21,10 @@ router.use("/:id", async (req, res, next) => { // verify user ID
 const idRouter = express.Router();
 router.use("/:id", idRouter);
 
+idRouter.get("/admin", middleware.getPermissionMiddleware("manageAwards"), (req, res) => {
+    res.advancedRender("profile/admin", true);
+});
+
 idRouter.get("/awards", (req, res) => {
     res.advancedRender("profile/awards");
 });
@@ -29,8 +33,8 @@ idRouter.get("/milestones", (req, res) => {
     res.advancedRender("profile/milestones");
 });
 
-idRouter.get("/admin", middleware.createPermissionMiddleware("manageAwards"), (req, res) => {
-    res.advancedRender("profile/admin", true);
+idRouter.get("/requests", middleware.getPermissionMiddleware("manageAwards"), (req, res) => {
+    res.advancedRender("profile/requests", true);
 });
 
 module.exports = router;

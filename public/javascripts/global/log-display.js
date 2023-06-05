@@ -325,7 +325,7 @@ function createFlexibleLD(options) {
     const items = _flexibleDisplayColumns[logType];
 
     function showNone() {
-        createElement("p", container, "None");
+        createElement("p", container, NONE_TEXT);
     }
 
     function createSection(currentItems, log) {
@@ -432,7 +432,7 @@ function createFlexibleLD(options) {
     const container = document.createElement("div");
     container.classList.add("flexible-log-display-container");
 
-    const loading = createLoading(true);
+    const loading = createLoadingIcon();
     container.appendChild(loading);
 
     getRequest(`/users/${targetUserId}/logs/${logType}`).then(res => {
@@ -603,7 +603,7 @@ function createTableLD(options) {
 
     /* Loading */
 
-    const loading = createLoading(true);
+    const loading = createLoadingIcon();
     container.appendChild(loading);
 
     /* Get Logs */

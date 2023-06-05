@@ -42,7 +42,7 @@ function createAwardStatus(options) {
     }
 
     promise.then(status => {
-        const { complete, date, decline, signer, requested } = status ?? {};
+        const { complete, date, decline, signer, requestDate } = status ?? {};
 
         /* Top */
 
@@ -83,15 +83,15 @@ function createAwardStatus(options) {
             const requestButton = requestDiv.children[3];
             const requestedDiv = requestElement.children[1];
 
-            if (requested === true) {
+            if (requestDate) {
                 requestDiv.style.display = "none";
             } else {
                 requestedDiv.style.display = "none";
 
                 requestButton.addEventListener("click", () => {
                     promptConfirmation(`You're about to request a sign-off on your ${getAwardName(id)} award.`, () => {
-                        postRequest("/awards/requests", { award: id });
-                        
+                        putRequest(`/users/${getUserId()}/awards/requests`, { award: id });
+
                         declineElement.style.display = "none";
                         requestDiv.style.display = "none";
                         requestedDiv.style.display = "block";

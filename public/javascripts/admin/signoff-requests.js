@@ -1,98 +1,69 @@
-function getContainer() {
-    return document.getElementById("requests-container");
+const STATS_CONTAINER_ID = "stats-container";
+
+async function load() {
+    const statsContainer = document.getElementById(STATS_CONTAINER_ID);
+
+    // loading icon
+    const loadingIconContainer = createElement("div", statsContainer);
+    loadingIconContainer.appendChild(createSpacer(20));
+    const loadingIcon = createLoadingIcon();
+    loadingIconContainer.appendChild(loadingIcon);
+
+    const { total, users } = await getRequest(`/requests`);
+
+    loadingIconContainer.remove();
+    loadStats(total);
+    loadRequests(users);
 }
 
-function setInfo(areRequests) {
-    document.getElementById("info-heading").innerHTML = (areRequests ? "What are sign-off requests?" : "No sign-off requests!");
-}
+function loadStats(totalRequests) {
+    const statsContainer = document.getElementById(STATS_CONTAINER_ID);
 
-function checkCount() {
-    setInfo(getContainer().children.length > 0);
-}
+    for (let award of AWARDS) {
+        const [id, name] = award;
+        const count = totalRequests[id] ?? 0;
 
-async function loadRequests() {
-    const container = getContainer();
-
-    // loading
-    const loading = createLoading(true);
-    container.replaceWith(loading);
-
-    const { requests: signoffRequests } = await getRequest("/awards/requests");
-
-    for (let request of signoffRequests) {
-        const { award, id: requestId, user } = request;
-
-        const div = document.createElement("div");
-        div.classList.add("item");
-
-        const infoContainer = createElement("div", div);
-        createElement("p", infoContainer, "Request from");
-        createElement("h2", infoContainer, user.fullName);
-        createElement("h3", infoContainer, getAwardName(award) + " Award");
-
-        const buttonDiv = document.createElement("div");
-        buttonDiv.classList.add("button-container");
-
-        const profileElement = document.createElement("a");
-        profileElement.innerHTML = "Review";
-        profileElement.target = "_blank";
-        profileElement.href = `/profile/${user.id}/admin`;
-        profileElement.classList.add("transparent-button");
-        buttonDiv.appendChild(profileElement);
-
-        const declineElement = document.createElement("button");
-        declineElement.innerHTML = "Decline";
-        declineElement.classList.add("transparent-button");
-        buttonDiv.appendChild(declineElement);
-
-        const grantElement = document.createElement("button");
-        grantElement.innerHTML = "Grant";
-        grantElement.classList.add("transparent-button");
-        grantElement.addEventListener("click", () => {
-            promptConfirmation(`You're about to grant ${user.fullName} the ${getAwardName(award)} Award.`, () => {
-                putRequest(`/users/${user.id}/awards`, {
-                    award,
-                    complete: true
-                });
-
-                div.remove();
-                checkCount();
-            });
-        });
-        buttonDiv.appendChild(grantElement);
-
-        div.appendChild(buttonDiv);
-
-        const messageDescriptionElement = document.createElement("p");
-        messageDescriptionElement.innerHTML = "Before you decline a sign-off, leave a message for the student down below telling them why it was declined."
-        div.appendChild(messageDescriptionElement);
-
-        const messageElement = document.createElement("textarea");
-        div.appendChild(messageElement);
-
-        // decline button function
-        declineElement.addEventListener("click", () => {
-            const message = messageElement.value;
-            const handle = () => {
-                deleteRequest(`/awards/requests/${requestId}`, { message });
-                div.remove();
-                checkCount();
-            }
-
-            if (message == null || message.trim().length === 0) {
-                promptConfirmation("You haven't left a message for the student.", handle);
-            } else {
-                handle();
-            }
-        });
-
-        container.appendChild(div);
+        if (count > 0) {
+            createElement("p", statsContainer, name + ": " + count);
+        }
     }
 
-    loading.replaceWith(container);
+    if (statsContainer.children.length === 0) {
+        createElement("p", statsContainer, NONE_TEXT);
+    }
+}
+
+function loadRequests(userRequests) {
+    const requestsContainer = document.getElementById("requests-container");
+    userRequests.sort((a, b) => a.details.fullName.localeCompare(b.details.fullName)); // sort by full name
+
+    for (let userData of userRequests) {
+        const { details, requests } = userData;
+
+        const card = createElement("div", requestsContainer);
+        card.classList.add("request");
+
+        createElement("h3", card, details.fullName);
+        card.appendChild(createSpacer(10));
+
+        for (let award of AWARDS) {
+            const [id, name] = award;
+            const count = requests[id] ?? 0;
+
+            if (count > 0) {
+                createElement("p", card, name + ": " + count);
+            }
+        }
+
+        card.appendChild(createSpacer(20));
+
+        const link = createElement("a", card, "View Requests");
+        link.classList.add("transparent-button")
+        link.href = `/profile/${details.id}/requests`;
+        link.target = "_blank";
+    }
 }
 
 window.addEventListener("load", () => {
-    setInfo(true);
-    loadRequests().then(checkCount);
+    load();
 });

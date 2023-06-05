@@ -160,33 +160,6 @@ async function getUserInfo(userId) {
     };
 }
 
-/* Signoff Requests */
-
-function getSignoffRequest(id) {
-    return get(`SELECT * FROM signoff_requests WHERE id = ${id}`);
-}
-
-async function doesSignoffRequestExist(userId, award) {
-    const val = await get(`SELECT * FROM signoff_requests WHERE user = ${userId} AND award = "${award}"`);
-    return (val != null);
-}
-
-async function getSignoffRequests() {
-    return await all(`SELECT * FROM signoff_requests`);
-}
-
-async function insertSignoffRequest(userId, award) {
-    return await run(`INSERT INTO signoff_requests (user, award) VALUES (${userId}, "${award}")`);
-}
-
-async function deleteSignoffRequest(id) {
-    return await run(`DELETE FROM signoff_requests WHERE id = ${id}`);
-}
-
-async function deleteMatchingSignoffRequest(userId, award) {
-    return await run(`DELETE FROM signoff_requests WHERE user = ${userId} AND award = "${award}"`);
-}
-
 /* Create Tables */
 
 useDatabase(db => {
@@ -195,7 +168,6 @@ useDatabase(db => {
 
     db.all("CREATE TABLE IF NOT EXISTS unverified_users (email TEXT UNIQUE NOT NULL, token TEXT UNIQUE NOT NULL)");
     db.all("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL, name TEXT NOT NULL, surname TEXT NOT NULL)");
-    db.all("CREATE TABLE IF NOT EXISTS signoff_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, award TEXT NOT NULL)");
     db.all("CREATE TABLE IF NOT EXISTS recent_awards (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, award TEXT NOT NULL, date INTEGER NOT NULL)");
 
     /* Logs */
@@ -226,12 +198,5 @@ module.exports = {
     getUserId,
     getPassword,
     getUsers,
-    getUserInfo,
-
-    getSignoffRequest,
-    doesSignoffRequestExist,
-    getSignoffRequests,
-    insertSignoffRequest,
-    deleteSignoffRequest,
-    deleteMatchingSignoffRequest
+    getUserInfo
 }

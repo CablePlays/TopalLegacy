@@ -25,27 +25,63 @@ function createSignoffDisplay(options) {
     function createSignoffList(items) {
         items.forEach(item => {
             const [id, description] = item;
-            const completePromise = new Promise(async r => r((await signoffsPromise)[id]?.complete === true));
-
             const itemRow = createElement("tr", table);
 
-            createElement("td", itemRow, description);
+            createElement("td", itemRow, description); // description
 
-            createElement("td", itemRow, e => {
-                e.appendChild(createCheckbox(completePromise));
+            const td1 = createElement("td", itemRow);
+            const td2 = createElement("td", itemRow);
+
+            const loadingIcon = createLoadingIcon(false);
+            td1.appendChild(loadingIcon);
+
+            signoffsPromise.then(values => {
+                const signoff = values[id] ?? {};
+
+                if (signoff.complete) {
+                    loadingIcon.replaceWith(createCheckbox(true)); // checkbox
+                    td2.innerHTML = formatDate(signoff.date); // date
+                } else { // request button
+                    const requestButton = document.createElement("button");
+                    requestButton.classList.add("request-button");
+
+                    let hasRequested = (signoff.requestDate != null);
+
+                    const updateText = () => {
+                        requestButton.innerHTML = (hasRequested ? "Revoke Request" : "Request");
+
+                        if (hasRequested) {
+                            td2.innerHTML = "Requested";
+                        } else if (signoff.declined) {
+                            td2.innerHTML = "Declined";
+                        } else {
+                            td2.innerHTML = null;
+                        }
+                    };
+
+                    updateText();
+
+                    requestButton.addEventListener("click", () => {
+                        const promptConfirmationText = (hasRequested
+                            ? "You are about to revoke a sign-off request."
+                            : "You are about to request a sign-off."
+                        );
+
+                        promptConfirmation(promptConfirmationText, () => {
+                            hasRequested = !hasRequested;
+                            updateText();
+
+                            putRequest(`/users/${getUserId()}/signoffs/requests`, {
+                                type,
+                                signoff: id,
+                                complete: hasRequested
+                            });
+                        });
+                    });
+
+                    loadingIcon.replaceWith(requestButton);
+                }
             });
-
-            createElement("td", itemRow, e => {
-                signoffsPromise.then(values => {
-                    const date = values[id]?.date;
-
-                    if (date != null) {
-                        e.innerHTML = formatDate(date);
-                    }
-                });
-            });
-
-            /* Line */
 
             addLine();
         });

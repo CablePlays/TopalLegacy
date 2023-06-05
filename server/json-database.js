@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const fsdb = require("file-system-db");
 
 const DIRECTORY = "./database";
@@ -24,6 +26,33 @@ function getAuditLog() {
 function getUser(userId) {
     const path = `${USER_DIRECTORY}/user${userId}`;
     return new fsdb(path, COMPACT);
+}
+
+async function forEachUser(consumer) {
+    await new Promise(r => fs.readdir(USER_DIRECTORY, async (error, files) => {
+        if (error) {
+            console.error(error);
+        } else {
+            const promises = [];
+
+            for (let fileName of files) {
+                const userId = parseInt(fileName.substring("user".length, fileName.length - ".json".length));
+                const db = new fsdb(path.join(USER_DIRECTORY, fileName), COMPACT);
+                const promise = consumer(userId, db);
+
+                if (promise instanceof Promise) {
+                    promises.push(promise);
+                }
+            }
+
+            if (promises.length > 0) {
+                console.log("awaiting all");
+                await Promise.all(promises);
+            }
+        }
+
+        r();
+    }));
 }
 
 /* Audit Log */
@@ -57,6 +86,7 @@ module.exports = {
 
     getAuditLog,
     getUser,
+    forEachUser,
     auditLogRecord,
     getPermissions
 }

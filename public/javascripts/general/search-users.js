@@ -43,7 +43,7 @@ function setupSearch() {
         const query = searchBar.value.trim();
 
         // loading
-        const loadingElement = createLoading();
+        const loadingElement = createLoadingIcon();
         amountInfo.parentElement.insertBefore(loadingElement, amountInfo);
 
         const { users } = await getRequest("/users?search=" + query);

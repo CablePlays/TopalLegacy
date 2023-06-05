@@ -37,7 +37,7 @@ async function loadUsers() {
     const userId = getUserId();
 
     // loading
-    const loading = createLoading(true);
+    const loading = createLoadingIcon();
     permissionsContainer.replaceWith(loading);
 
     const { users } = await getRequest("/permissions/users");

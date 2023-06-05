@@ -6,7 +6,7 @@ const requestsRouter = require("./requests/index");
 const renderRouter = require("./render/index-router");
 
 const PORT = 80;
-const ARTIFICIAL_LATENCY = 0;
+const ARTIFICIAL_LATENCY = 500;
 const REQUESTS_PATH = "/requests";
 
 const app = express();

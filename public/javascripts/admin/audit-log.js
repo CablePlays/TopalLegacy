@@ -15,13 +15,14 @@ function getText(record) {
 
     switch (type) {
         case "changePermission": return `${highlight(record.actor.fullName)} changed permission for ${highlight(record.user.fullName)}: ${record.has ? "granted" : "revoked"} ${highlight(getPermissionName(record.permission))}`;
-        case "declineSignoffRequest": return `${highlight(record.actor.fullName)} declined the sign-off request from ${highlight(record.user.fullName)} for the ${highlight(getAwardName(record.award))} award`;
+        case "declineAwardSignoffRequest": return `${highlight(record.actor.fullName)} declined the ${highlight(getAwardName(record.award))} award sign-off request from ${highlight(record.user.fullName)}`;
+        case "declineSignoffRequest": return `${highlight(record.actor.fullName)} declined a ${highlight(getAwardName(record.signoffType))} sign-off request from ${highlight(record.user.fullName)}: ${highlight(getSignoffDescription(record.signoffType, record.signoff))}`;
         case "grantApproval": return `${highlight(record.actor.fullName)} granted ${highlight(record.user.fullName)} the ${highlight(camelCaseToSentence(record.approval))} approval`;
         case "grantAward": return `${highlight(record.actor.fullName)} granted ${highlight(record.user.fullName)} the ${highlight(getAwardName(record.award))} award`;
-        case "grantSignoff": return `${highlight(record.actor.fullName)} granted ${highlight(record.user.fullName)} a ${highlight(getAwardName(record.signoffType))} sign-off: ${highlight(getSignoffName(record.signoffType, record.signoff))}`;
+        case "grantSignoff": return `${highlight(record.actor.fullName)} granted ${highlight(record.user.fullName)} a ${highlight(getAwardName(record.signoffType))} sign-off: ${highlight(getSignoffDescription(record.signoffType, record.signoff))}`;
         case "revokeApproval": return `${highlight(record.actor.fullName)} revoked the ${highlight(camelCaseToSentence(record.approval))} approval from ${highlight(record.user.fullName)}`;
         case "revokeAward": return `${highlight(record.actor.fullName)} revoked the ${highlight(getAwardName(record.award))} award from ${highlight(record.user.fullName)}`;
-        case "revokeSignoff": return `${highlight(record.actor.fullName)} revoked a ${highlight(getAwardName(record.signoffType))} sign-off from ${highlight(record.user.fullName)}: ${highlight(getSignoffName(record.signoffType, record.signoff))}`;
+        case "revokeSignoff": return `${highlight(record.actor.fullName)} revoked a ${highlight(getAwardName(record.signoffType))} sign-off from ${highlight(record.user.fullName)}: ${highlight(getSignoffDescription(record.signoffType, record.signoff))}`;
         default: throw new Error("Invalid type: " + type);
     };
 }
@@ -31,7 +32,7 @@ async function loadAuditLogs() {
     container.id = "audit-log-container";
     document.getElementById("audit-logs").replaceWith(container);
 
-    const loadingElement = createLoading();
+    const loadingElement = createLoadingIcon();
     container.appendChild(loadingElement);
 
     const { records } = await getRequest("/audit-log");
@@ -39,7 +40,7 @@ async function loadAuditLogs() {
     loadingElement.remove();
 
     if (records.length === 0) {
-        createElement("p", container, "None");
+        createElement("p", container, NONE_TEXT);
     } else {
         records.forEach(record => {
             const { date } = record;

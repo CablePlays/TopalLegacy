@@ -1,47 +1,27 @@
 const express = require('express');
-const cookies = require("../../server/cookies");
-const general = require("../../server/general");
-const jsonDatabase = require("../../server/json-database");
-const sqlDatabase = require("../../server/sql-database");
+const cookies = require("../../../server/cookies");
+const general = require("../../../server/general");
+const jsonDatabase = require("../../../server/json-database");
+const sqlDatabase = require("../../../server/sql-database");
+
+const requestsRouter = require("./requests");
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
     const userId = req.userId;
-    const awards = jsonDatabase.getUser(userId).get(jsonDatabase.AWARDS_PATH);
-    let values = {};
+    const awards = jsonDatabase.getUser(userId).get(jsonDatabase.AWARDS_PATH) ?? {};
 
-    if (awards != null) {
-        await general.provideUserInfoToStatuses(awards);
-        values = awards;
-    }
-
-    const signoffRequests = await sqlDatabase.all(`SELECT * FROM signoff_requests WHERE user = ${userId}`);
-
-    for (let signoffRequest of signoffRequests) {
-        const { award } = signoffRequest;
-        let awardStatus = values[award];
-
-        if (awardStatus == null) {
-            awardStatus = {};
-            values[award] = awardStatus;
-        }
-
-        awardStatus.requested = true;
-    }
-
-    res.res(200, { awards: values });
-});
-
-router.use("/", (req, res, next) => { // require permission: manageAwards
-    if (req.permissions.manageAwards) {
-        next();
-    } else {
-        res.res(403);
-    }
+    await general.provideUserInfoToStatuses(awards);
+    res.res(200, { awards });
 });
 
 router.put("/", async (req, res) => {
+    if (!req.permissions.manageAwards) {
+        res.res(403);
+        return;
+    }
+
     const { award, complete } = req.body;
     const targetUserId = req.userId;
     const userId = cookies.getUserId(req);
@@ -72,10 +52,6 @@ router.put("/", async (req, res) => {
             date,
             signer: userId
         });
-
-        /* Remove Signoff Requests */
-
-        sqlDatabase.deleteMatchingSignoffRequest(targetUserId, award);
     } else {
         db.delete(path);
     }
@@ -91,5 +67,7 @@ router.put("/", async (req, res) => {
 
     res.res(204);
 });
+
+router.use("/requests", requestsRouter);
 
 module.exports = router;

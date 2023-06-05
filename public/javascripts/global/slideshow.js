@@ -11,7 +11,7 @@ function createSlideshow(period, providedCards) {
     if (!instant) {
         loadingContainer = document.createElement("div");
         loadingContainer.classList.add("slideshow-loading-container");
-        loadingContainer.appendChild(createLoading());
+        loadingContainer.appendChild(createLoadingIcon());
         slideshow.appendChild(loadingContainer);
     }
 

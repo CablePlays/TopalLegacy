@@ -37,7 +37,7 @@ function createManagementRow(options) {
 async function setupAwardsTable() {
     const awardsTable = document.getElementById("awards-table");
 
-    const loading = createLoading(true);
+    const loading = createLoadingIcon();
     awardsTable.replaceWith(loading);
 
     awardsTable.appendChild(createTableHeaders([
@@ -78,7 +78,7 @@ function createSignoffTable(options) {
 
     const items = SIGNOFFS[signoffType];
 
-    const loadingElement = createLoading(true);
+    const loadingElement = createLoadingIcon();
     container.appendChild(loadingElement);
 
     const table = document.createElement("table");
@@ -137,7 +137,7 @@ function createApprovalTable(options) {
         promptTextSupplier = c => c ? "You're about to grant this user a sign-off." : "You're about to revoke a sign-off from this user."
     } = options;
 
-    const loadingElement = createLoading(true);
+    const loadingElement = createLoadingIcon();
     container.appendChild(loadingElement);
 
     const table = document.createElement("table");

@@ -1,0 +1,27 @@
+extends profile
+
+block tab-content
+  link(rel="stylesheet" href="/stylesheets/profile/requests.css")
+  script(src="/javascripts/profile/requests.js")
+
+  h1 Requests
+  p.partial This page shows all of the user's award and sign-off requests.
+
+  .spacer.v20
+
+  h2 Award Requests
+  p.partial.
+    When declining requests, you can leave students a message telling them why you declined it.
+    Write the message in the box under the accept and decline buttons.
+
+  .spacer.v20
+
+  #award-requests
+
+  .spacer.v20
+
+  h2 Sign-Off Requests
+
+  .spacer.v20
+
+  #signoff-requests

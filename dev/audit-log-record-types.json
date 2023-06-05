@@ -5,9 +5,15 @@
         "permission",
         "user"
     ],
-    "declineSignoffRequest": [
+    "declineAwardSignoffRequest": [
         "actor",
         "award",
+        "user"
+    ],
+    "declineSignoffRequest": [
+        "actor",
+        "signoff",
+        "signoffType",
         "user"
     ],
     "grantApproval": [

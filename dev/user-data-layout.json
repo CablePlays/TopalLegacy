@@ -1,9 +1,22 @@
 {
-    "awards": {
-        "running": {
+    "statusTypes": {
+        "STATUS": {
+            "complete": false,
+            "date": "DATE",
+            "signer": "USER"
+        },
+        "REQUESTABLE_STATUS": {
             "complete": false,
             "date": "DATE",
             "signer": "USER",
+            "requestDate": "DATE",
+            "declined": false
+        },
+        "DECLINABLE_STATUS": {
+            "complete": false,
+            "date": "DATE",
+            "signer": "USER",
+            "requestDate": "DATE",
             "decline": {
                 "date": "DATE",
                 "user": "USER",
@@ -11,20 +24,20 @@
             }
         }
     },
+    "approvals": {
+        "approval": "STATUS"
+    },
+    "awards": {
+        "running": "DECLINABLE_STATUS"
+    },
     "permissions": {
         "manageAwards": false,
         "managePermissions": false,
         "viewLogs": false
     },
-    "approvals": {},
     "signoffs": {
         "type": {
-            "signoff": {
-                "requestedDate": "DATE",
-                "complete": true,
-                "date": "DATE",
-                "signer": "USER"
-            }
+            "signoff": "REQUESTABLE_STATUS"
         }
     },
     "singletonLogs": {}

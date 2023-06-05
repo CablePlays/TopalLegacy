@@ -9,12 +9,7 @@ router.get("/", async (req, res) => {
     const { type } = req.query;
     const targetUserId = req.userId;
 
-    if (type == null) {
-        res.res(400);
-        return;
-    }
-
-    let signoffs = await jsonDatabase.getUser(targetUserId).get(jsonDatabase.SIGNOFFS_PATH + "." + type);
+    let signoffs = jsonDatabase.getUser(targetUserId).get(jsonDatabase.SIGNOFFS_PATH + (type ? "." + type : ""));
 
     if (signoffs == null) {
         signoffs = {};
@@ -31,7 +26,7 @@ router.put("/", (req, res) => {
         return;
     }
 
-    let { signoff, type, complete } = req.body;
+    let { type, signoff, complete } = req.body;
     const targetUserId = req.userId;
     const userId = cookies.getUserId(req);
 
@@ -66,9 +61,12 @@ router.put("/", (req, res) => {
     res.res(204);
 });
 
-router.put("/requests", (req, res) => {
+const requestsRouter = express.Router();
+router.use("/requests", requestsRouter);
+
+requestsRouter.put("/", (req, res) => {
     if (!req.loggedIn) {
-        res.res(403, "logged_out");
+        res.res(401, "logged_out");
         return;
     }
 
@@ -89,16 +87,60 @@ router.put("/requests", (req, res) => {
 
     const db = jsonDatabase.getUser(targetUserId);
     const path = jsonDatabase.SIGNOFFS_PATH + "." + type + "." + signoff;
-    const requestPath = path + ".requestDate";
 
-    if (complete === true) {
-        db.set(requestPath, new Date());
-    } else if (db.get(path + ".complete")) { // check if already signed off
+    if (db.get(path + ".complete")) { // check if already complete
         res.res(409, "already_complete");
         return;
     }
+    if (complete === true) {
+        db.set(path, {
+            requestDate: new Date()
+        });
+    } else {
+        db.delete(path);
+    }
 
-    db.delete(requestPath);
+    res.res(204);
+});
+
+requestsRouter.delete("/:type/:signoff", (req, res) => {
+    if (!req.permissions.manageAwards) {
+        res.res(403);
+        return;
+    }
+
+    const { type, signoff } = req.params;
+
+    if (!general.isSignoff(type, signoff)) {
+        res.res(404, "invalid_signoff");
+        return;
+    }
+
+    const userId = cookies.getUserId(req);
+    const targetUserId = req.userId;
+
+    const db = jsonDatabase.getUser(targetUserId);
+    const path = jsonDatabase.SIGNOFFS_PATH + "." + type + "." + signoff;
+
+    if (!db.get(path + ".requestDate")) {
+        res.res(409, "no_request");
+        return;
+    }
+
+    db.set(path, {
+        declined: true
+    });
+
+    /* Audit Log */
+
+    jsonDatabase.auditLogRecord({
+        type: "declineSignoffRequest",
+        actor: userId,
+        signoffType: type,
+        signoff,
+        user: targetUserId
+    });
+
     res.res(204);
 });
 

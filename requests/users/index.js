@@ -25,11 +25,11 @@ router.get("/", async (req, res) => {
     res.res(200, { users });
 });
 
-router.use("/:id", async (req, res, next) => { // verify user
+router.use("/:id", async (req, res, next) => { // verify and provide user
     const { id } = req.params;
 
     if (await sqlDatabase.isUser(id)) {
-        req.userId = id;
+        req.userId = parseInt(id);
         next();
     } else {
         res.res(404, "invalid_user");

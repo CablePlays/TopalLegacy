@@ -1,45 +1,26 @@
-.container .item {
+.container .request {
     align-items: center;
-    background-color: var(--color-primary-500);
-    color: var(--color-primary-500-text);
+    background-color: var(--color-secondary-400);
+    border: 2px solid var(--color-background-opposite);
+    border-radius: 4px;
+    color: var(--color-secondary-400-text);
     display: flex;
     flex-direction: column;
-    max-width: 100%;
+    min-height: 280px;
     padding: 16px;
-    row-gap: 20px;
     text-align: center;
-    width: 500px;
+    transition: 0.15s;
+    width: 200px;
 }
 
-.container .item a,
-.container .item button {
-    cursor: pointer;
-    display: inline-block;
+.container .request:hover {
+    transform: scale(1.01);
+}
+
+.container .request a {
     border-radius: 4px;
-    font-size: 15px;
-    min-width: 100px;
-    padding: 16px;
+    padding: 8px;
     text-decoration: none;
-}
-
-.container .item textarea {
-    height: 100px;
-    padding: 16px;
-    width: 90%;
-}
-
-.container .item .button-container {
-    column-gap: 20px;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.container .none {
-    background-color: var(--color-primary-700);
-    border-radius: 4px;
-    color: var(--color-primary-700-text);
-    padding: 16px;
 }
 
 #requests-container {
@@ -47,5 +28,4 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
 }

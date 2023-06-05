@@ -1,0 +1,66 @@
+.container .award-request {
+    align-items: center;
+    background-color: var(--color-secondary-400);
+    border: 2px solid var(--color-background-opposite);
+    border-radius: 4px;
+    color: var(--color-secondary-400-text);
+    display: flex;
+    flex-direction: column;
+    height: 280px;
+    padding: 16px;
+    text-align: center;
+    transition: 0.15s;
+    width: 200px;
+}
+
+.container .award-request:hover {
+    transform: scale(1.01);
+}
+
+.container .award-request textarea {
+    flex-grow: 1;
+    padding: 8px;
+}
+
+.container .button-container {
+    display: flex;
+    gap: 20px;
+}
+
+.container .button-container button {
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.container .signoff-request {
+    background-color: var(--color-secondary-400);
+    border: 2px solid var(--color-background-opposite);
+    border-radius: 4px;
+    color: var(--color-secondary-400-text);
+    padding: 16px;
+    transition: 0.15s;
+    width: 500px;
+}
+
+.container .signoff-request:hover {
+    transform: scale(1.01);
+}
+
+.container .signoff-requests-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#award-requests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#signoff-requests {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}

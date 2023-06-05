@@ -17,9 +17,16 @@ const commands = {
             has = (has === "true");
         }
 
-        const { fullName } = await sqlDatabase.getUserInfo(user);
+        const db = jsonDatabase.getUser(user);
+        const path = jsonDatabase.PERMISSIONS_PATH + "." + permission;
 
-        jsonDatabase.getUser(user).set(jsonDatabase.PERMISSIONS_PATH + "." + permission, has);
+        if (has === true || has === "true") {
+            db.set(path, true);
+        } else {
+            db.delete(path);
+        }
+
+        const { fullName } = await sqlDatabase.getUserInfo(user);
         console.info(`${fullName} has ${has ? "been given" : "lost"} the permission ${permission}.`);
     }
 };

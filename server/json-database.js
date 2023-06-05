@@ -46,7 +46,6 @@ async function forEachUser(consumer) {
             }
 
             if (promises.length > 0) {
-                console.log("awaiting all");
                 await Promise.all(promises);
             }
         }

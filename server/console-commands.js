@@ -52,7 +52,7 @@ function handleCommand(args) {
     const command = commands[label];
 
     if (command == null) {
-        console.log("Unknown command!");
+        console.info("Unknown command!");
         return;
     }
 

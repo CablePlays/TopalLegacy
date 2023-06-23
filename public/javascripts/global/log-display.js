@@ -3,6 +3,49 @@
 */
 
 const _flexibleDisplayColumns = {
+    // endurancef: [
+    //     ["Date", log => formatDate(log.date)],
+    //     ["Discipline", log => log.discipline],
+    //     ["Distance", log => (log.distance / 1000) + "km"],
+    //     ["Time", log => formatDuration(log.time)],
+    //     ["Description", log => log.description]
+    // ],
+    endurance: [
+        {
+            name: "Date",
+            type: "date",
+            valueProvider: "date"
+        },
+        {
+            name: "Discipline",
+            type: "radio",
+            options: [
+                ["running", "Running"],
+                ["mountainBiking", "Mountain Biking"],
+                ["multisport", "Multisport / Adventure Racing"],
+                ["canoeing", "Canoeing"],
+                ["horseRiding", "Horse Riding"],
+                ["ironman", "Ironman / Ironwoman"],
+                ["other", "Other"]
+            ],
+            valueProvider: "discipline"
+        },
+        {
+            name: "Distance",
+            type: "textShort",
+            valueProvider: log => (log.distance / 1000) + "km"
+        },
+        {
+            name: "Time",
+            type: "textShort",
+            valueProvider: log => formatDuration(log.time)
+        },
+        {
+            name: "Description",
+            type: "textLong",
+            valueProvider: "description"
+        }
+    ],
     mountaineering: [
         {
             name: "Start Date",
@@ -258,12 +301,6 @@ const _flexibleDisplayColumns = {
 };
 
 const _tableDisplayColumns = {
-    endurance: [
-        ["Date", log => formatDate(log.date)],
-        ["Distance", log => (log.distance / 1000) + "km"],
-        ["Time", log => formatDuration(log.time)],
-        ["Description", log => log.description]
-    ],
     flatWaterPaddling: [
         ["Date", log => formatDate(log.date)],
         ["Training", log => log.training],

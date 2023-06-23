@@ -10,6 +10,23 @@ window.addEventListener("load", () => {
                 required: true
             },
             {
+                id: "discipline",
+                name: "Discipline",
+                type: "selection",
+                required: true,
+                selection: {
+                    options: [
+                        ["running", "Running"],
+                        ["mountainBiking", "Mountain Biking"],
+                        ["multisport", "Multisport / Adventure Racing"],
+                        ["canoeing", "Canoeing"],
+                        ["horseRiding", "Horse Riding"],
+                        ["ironman", "Ironman / Ironwoman"],
+                        ["other", "Other (Describe In Description)"]
+                    ]
+                }
+            },
+            {
                 id: "distance",
                 name: "Distance",
                 type: "range",
@@ -37,7 +54,7 @@ window.addEventListener("load", () => {
             }
         ]
     });
-    createTableLD({
+    createFlexibleLD({
         placeholder: "log-display",
         logType: "endurance"
     });

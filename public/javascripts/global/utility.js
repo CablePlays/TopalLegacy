@@ -3,11 +3,11 @@ const LOADING_TEXT = "Loading...";
 const MISSING_TEXT = "N/A";
 const NONE_TEXT = "None";
 
-/* Images */
-const IMAGE_ADMIN = "/images/admin-icon.gif";
-const IMAGE_CHECKBOX_CHECKED = "/images/checked.png";
-const IMAGE_CHECKBOX_UNCHECKED = "/images/unchecked.png";
-const IMAGE_LOADING = "/images/loading.gif";
+/* Assets */
+const IMAGE_ADMIN = "/assets/icons/admin.gif";
+const IMAGE_CHECKBOX_CHECKED = "/assets/icons/checked.png";
+const IMAGE_CHECKBOX_UNCHECKED = "/assets/icons/unchecked.png";
+const IMAGE_LOADING = "/assets/icons/loading.gif";
 
 const AWARDS = [
     ["drakensberg", "Drakensberg"],

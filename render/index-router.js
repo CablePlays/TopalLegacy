@@ -91,6 +91,10 @@ router.get("/settings", (req, res) => {
 
 /* Routers */
 
+router.use('/home-new', (req, res) => {
+    res.advancedRender("new/home");
+});
+
 router.use('/', adminRouter);
 router.use('/account', accountRouter);
 router.use('/awards', awardsRouter);

@@ -1,50 +1,50 @@
 .container .card {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    font-size: 40px;
-    justify-content: center;
-    padding: 16px;
-    row-gap: 20px;
-    text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 40px;
+  justify-content: center;
+  padding: 16px;
+  row-gap: 20px;
+  text-align: center;
 }
 
 .container .card a {
-    align-items: center;
-    border-radius: 30px;
-    display: flex;
-    font-size: 35px;
-    height: 60px;
-    padding: 16px;
-    text-decoration: none;
+  align-items: center;
+  border-radius: 30px;
+  display: flex;
+  font-size: 35px;
+  height: 60px;
+  padding: 16px;
+  text-decoration: none;
 }
 
 .container .card-basic {
-    background-color: var(--color-secondary-500);
-    color: var(--color-secondary-500-text);
+  background-color: var(--color-secondary-500);
+  color: var(--color-secondary-500-text);
 }
 
 .container .card-highlight {
-    background-color: var(--color-primary-500);
-    color: var(--color-primary-500-text);
+  background-color: var(--color-primary-500);
+  color: var(--color-primary-500-text);
 }
 
 .container .info {
-    background-color: var(--color-background-accent);
-    border-radius: 2px;
-    color: var(--color-background-accent-text);
-    padding: 8px;
+  background-color: var(--color-background-accent);
+  border-radius: 2px;
+  color: var(--color-background-accent-text);
+  padding: 8px;
 }
 
 .container .info .red {
-    color: rgb(150, 8, 13);
+  color: rgb(150, 8, 13);
 }
 
 .container .recent-awards-slideshow {
-    border: 2px solid var(--color-black);
-    height: 300px;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1200px;
-    width: 100%;
+  border: 2px solid var(--color-black);
+  height: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+  width: 100%;
 }

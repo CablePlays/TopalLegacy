@@ -47,6 +47,7 @@ app.use(REQUESTS_PATH, (err, req, res, next) => { // handle request errors
 app.use((err, req, res, next) => { // handle render errors
     let status = err.status || 500;
     res.status(status);
+    console.error(err);
 
     // set locals
     res.locals.message = err.message;

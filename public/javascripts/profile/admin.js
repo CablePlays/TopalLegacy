@@ -186,7 +186,7 @@ function createSection(title, load) {
     createElement("h2", topDiv, title);
     // arrow
     const arrow = createElement("img", topDiv);
-    arrow.src = "/images/dropdown-arrow.png";
+    arrow.src = "/assets/icons/arrow.png";
 
     /* Spacer */
 

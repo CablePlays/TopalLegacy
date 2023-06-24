@@ -2,14 +2,28 @@ extends ../layout
 
 block assets
   link(rel='stylesheet' href='/stylesheets/pages/home.css')
+  script(src='/javascripts/home.js')
 
 block content
-  .overlay
-    h1 Welcome to topal
-    p.
-      Topal allows you to easily record and earn OP awards.
-      Use the navigation bar at the top of your screen to view your awards.
-      Go to the search tab to find your friends and see which awards they've completed.
-    .button-container
-      button.button-primary Awards
-      button.button-secondary Leaderboards
+  .banner
+    .top
+      h1 Welcome to topal
+      p.
+        Topal allows you to easily record and earn OP awards.
+        Use the navigation bar at the top of your screen to view your awards.
+        Go to the search tab to find your friends and see which awards they've completed.
+      .button-container
+        button.button-primary Awards
+        button.button-secondary Leaderboards
+
+    #slideshow
+    //- .slideshow
+    //-   .card
+    //-     h1 Recent Awards
+    //-     p Caleb Jennings recently achieved the Venture Award
+    //-     button Profile
+    //-     .date 24 June
+    //-   #slideshow-previous
+    //-     img(src="/assets/icons/chevron_left.svg")
+    //-   #slideshow-next
+    //-     img(src="/assets/icons/chevron_right.svg")

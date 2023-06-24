@@ -1,12 +1,9 @@
 @import "../global";
 
-.overlay {
-    align-items: center;
+.banner {
     background-image: url("/assets/backgrounds/home.webp");
-    display: flex;
-    flex-direction: column;
-    height: 980px;
-    padding: 20px;
+    height: 900px;
+    position: relative;
 
     button {
         border-radius: 16px;
@@ -17,46 +14,140 @@
         font-size: 16px;
     }
 
-    h1 {
-        color: $color-primary-400;
-        margin-bottom: 16px;
-        font-weight: 700;
-        font-size: 60px;
-        margin-top: 150px;
-        text-align: center;
-        text-transform: uppercase;
+    .top {
+        @extend .flex-center;
+
+        h1 {
+            color: $color-primary-400;
+            margin-bottom: 16px;
+            font-weight: 700;
+            font-size: 60px;
+            margin-top: 150px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        p {
+            color: #fff;
+            font-weight: 400;
+            font-size: 20px;
+            max-width: 880px;
+            text-align: center;
+        }
+
+        .button-container {
+            column-gap: 32px;
+            display: flex;
+            margin-top: 32px;
+
+            .button-primary {
+                background-color: $color-primary-400;
+                border: none;
+                color: white;
+
+                &:hover {
+                    background-color: $color-primary-300;
+                }
+            }
+
+            .button-secondary {
+                background-color: rgb(0, 0, 0, 0);
+                border: 2px solid $color-primary-400;
+                color: $color-primary-400;
+
+                &:hover {
+                    background-color: rgb(255, 255, 255, 0.1);
+                }
+            }
+        }
     }
 
-    p {
-        color: #fff;
-        font-weight: 400;
-        font-size: 20px;
-        max-width: 880px;
-        text-align: center;
-    }
+    .slideshow {
+        background-color: rgb(255, 255, 255, 0.3);
+        bottom: 0;
+        color: white;
+        height: 250px;
+        overflow: hidden;
+        position: absolute;
+        width: 100%;
 
-    .button-container {
-        column-gap: 32px;
-        display: flex;
-        margin-top: 32px;
+        .card {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            text-align: center;
+            width: 100%;
 
-        .button-primary {
-            background-color: $color-primary-400;
-            border: none;
-            color: white;
+            button {
+                background-color: white;
+                border: none;
+                color: black;
+                font-weight: 400;
+                margin-top: 20px;
 
-            &:hover {
-                background-color: $color-primary-300;
+                &:hover {
+                    background-color: $white-hover;
+                }
+            }
+
+            h1 {
+                font-size: 64px;
+                font-weight: 300;
+                margin-top: 20px;
+            }
+
+            p {
+                font-size: 30px;
+                font-weight: 500;
+            }
+
+            .date {
+                bottom: 18px;
+                color: rgb(200, 200, 200);
+                font-size: 20px;
+                font-weight: 600;
+                left: 18px;
+                position: absolute;
             }
         }
 
-        .button-secondary {
-            background-color: rgb(0, 0, 0, 0);
-            border: 2px solid $color-primary-400;
-            color: $color-primary-400;
+        .next,
+        .previous {
+            background-color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            height: 70px;
+            position: absolute;
+            top: 90px;
+            width: 70px;
+            z-index: 10;
 
             &:hover {
-                background-color: rgb(255, 255, 255, 0.1);
+                background-color: $white-hover;
+            }
+
+            img {
+                height: 26px;
+                position: absolute;
+                top: 37.5px - 13px;
+                width: 26px;
+            }
+        }
+
+        .next {
+            right: -40px;
+
+            img {
+                left: 5px;
+            }
+        }
+
+        .previous {
+            left: -40px;
+
+            img {
+                right: 5px;
             }
         }
     }

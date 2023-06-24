@@ -1,3 +1,11 @@
+// abstracts
 @import "abstracts/colors";
-@import "base/base";
-@import "layout/footer", "layout/topbar";
+
+// base
+@import "base/base", "base/helpers";
+
+// components
+@import "components/slideshow";
+
+// layouts
+@import "layouts/footer", "layouts/topbar";

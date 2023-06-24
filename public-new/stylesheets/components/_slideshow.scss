@@ -1,0 +1,47 @@
+.slideshow {
+    overflow: hidden;
+
+    .card-container {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        transition: 0.5s;
+        width: fit-content;
+
+        .card {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            transition: 0.5s;
+            width: fit-content;
+        }
+    }
+
+    .indicator-container {
+        align-items: center;
+        bottom: 10px;
+        column-gap: 10px;
+        display: flex;
+        left: 50%;
+        justify-content: center;
+        position: absolute;
+        transform: translateX(-50%);
+
+        .indicator {
+            background-color: white;
+            border-radius: 2px;
+            cursor: pointer;
+            height: 10px;
+            transition: 0.5s;
+            width: 10px;
+
+            &.selected {
+                background-color: rgb(50, 50, 50);
+                height: 12px;
+                transform: translateY(-5px);
+                box-shadow: 0 6px 5px 0 rgb(0, 0, 0, 0.7);
+                width: 12px;
+            }
+        }
+    }
+}

@@ -10,6 +10,59 @@ a.link {
   text-decoration: underline;
 }
 
+.flex-center, .banner .top {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slideshow {
+  overflow: hidden;
+}
+.slideshow .card-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  transition: 0.5s;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.slideshow .card-container .card {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  transition: 0.5s;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.slideshow .indicator-container {
+  align-items: center;
+  bottom: 10px;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  display: flex;
+  left: 50%;
+  justify-content: center;
+  position: absolute;
+  transform: translateX(-50%);
+}
+.slideshow .indicator-container .indicator {
+  background-color: white;
+  border-radius: 2px;
+  cursor: pointer;
+  height: 10px;
+  transition: 0.5s;
+  width: 10px;
+}
+.slideshow .indicator-container .indicator.selected {
+  background-color: rgb(50, 50, 50);
+  height: 12px;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 5px 0 rgba(0, 0, 0, 0.7);
+  width: 12px;
+}
+
 footer {
   align-items: center;
   color: white;
@@ -124,15 +177,12 @@ footer .treverton-link {
   background-color: #f29354;
 }
 
-.overlay {
-  align-items: center;
+.banner {
   background-image: url("/assets/backgrounds/home.webp");
-  display: flex;
-  flex-direction: column;
-  height: 980px;
-  padding: 20px;
+  height: 900px;
+  position: relative;
 }
-.overlay button {
+.banner button {
   border-radius: 16px;
   cursor: pointer;
   width: 175px;
@@ -140,7 +190,7 @@ footer .treverton-link {
   font-weight: 300;
   font-size: 16px;
 }
-.overlay h1 {
+.banner .top h1 {
   color: #EF7523;
   margin-bottom: 16px;
   font-weight: 700;
@@ -149,32 +199,110 @@ footer .treverton-link {
   text-align: center;
   text-transform: uppercase;
 }
-.overlay p {
+.banner .top p {
   color: #fff;
   font-weight: 400;
   font-size: 20px;
   max-width: 880px;
   text-align: center;
 }
-.overlay .button-container {
+.banner .top .button-container {
   -moz-column-gap: 32px;
        column-gap: 32px;
   display: flex;
   margin-top: 32px;
 }
-.overlay .button-container .button-primary {
+.banner .top .button-container .button-primary {
   background-color: #EF7523;
   border: none;
   color: white;
 }
-.overlay .button-container .button-primary:hover {
+.banner .top .button-container .button-primary:hover {
   background-color: #f29354;
 }
-.overlay .button-container .button-secondary {
+.banner .top .button-container .button-secondary {
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid #EF7523;
   color: #EF7523;
 }
-.overlay .button-container .button-secondary:hover {
+.banner .top .button-container .button-secondary:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+.banner .slideshow {
+  background-color: rgba(255, 255, 255, 0.3);
+  bottom: 0;
+  color: white;
+  height: 250px;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+}
+.banner .slideshow .card {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-align: center;
+  width: 100%;
+}
+.banner .slideshow .card button {
+  background-color: white;
+  border: none;
+  color: black;
+  font-weight: 400;
+  margin-top: 20px;
+}
+.banner .slideshow .card button:hover {
+  background-color: rgb(220, 220, 220);
+}
+.banner .slideshow .card h1 {
+  font-size: 64px;
+  font-weight: 300;
+  margin-top: 20px;
+}
+.banner .slideshow .card p {
+  font-size: 30px;
+  font-weight: 500;
+}
+.banner .slideshow .card .date {
+  bottom: 18px;
+  color: rgb(200, 200, 200);
+  font-size: 20px;
+  font-weight: 600;
+  left: 18px;
+  position: absolute;
+}
+.banner .slideshow .next,
+.banner .slideshow .previous {
+  background-color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  height: 70px;
+  position: absolute;
+  top: 90px;
+  width: 70px;
+  z-index: 10;
+}
+.banner .slideshow .next:hover,
+.banner .slideshow .previous:hover {
+  background-color: rgb(220, 220, 220);
+}
+.banner .slideshow .next img,
+.banner .slideshow .previous img {
+  height: 26px;
+  position: absolute;
+  top: 24.5px;
+  width: 26px;
+}
+.banner .slideshow .next {
+  right: -40px;
+}
+.banner .slideshow .next img {
+  left: 5px;
+}
+.banner .slideshow .previous {
+  left: -40px;
+}
+.banner .slideshow .previous img {
+  right: 5px;
 }

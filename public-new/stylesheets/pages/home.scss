@@ -1,0 +1,63 @@
+@import "../global";
+
+.overlay {
+    align-items: center;
+    background-image: url("/assets/backgrounds/home.webp");
+    display: flex;
+    flex-direction: column;
+    height: 980px;
+    padding: 20px;
+
+    button {
+        border-radius: 16px;
+        cursor: pointer;
+        width: 175px;
+        height: 60px;
+        font-weight: 300;
+        font-size: 16px;
+    }
+
+    h1 {
+        color: $color-primary-400;
+        margin-bottom: 16px;
+        font-weight: 700;
+        font-size: 60px;
+        margin-top: 150px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    p {
+        color: #fff;
+        font-weight: 400;
+        font-size: 20px;
+        max-width: 880px;
+        text-align: center;
+    }
+
+    .button-container {
+        column-gap: 32px;
+        display: flex;
+        margin-top: 32px;
+
+        .button-primary {
+            background-color: $color-primary-400;
+            border: none;
+            color: white;
+
+            &:hover {
+                background-color: $color-primary-300;
+            }
+        }
+
+        .button-secondary {
+            background-color: rgb(0, 0, 0, 0);
+            border: 2px solid $color-primary-400;
+            color: $color-primary-400;
+
+            &:hover {
+                background-color: rgb(255, 255, 255, 0.1);
+            }
+        }
+    }
+}

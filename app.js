@@ -14,10 +14,12 @@ const app = express();
 consoleCommands();
 
 // view engine setup
-app.set('views', 'views');
+const usingNew = true; // FOR TESTING
+app.set('views', 'views' + (usingNew ? '-new' : ''));
 app.set('view engine', 'pug');
 
 app.use(express.static('public'));
+app.use(express.static('public-new'));
 app.use(express.json()); // for reading json post requests
 app.use(cookieParser()); // for cookie object
 
@@ -35,6 +37,7 @@ if (ARTIFICIAL_LATENCY > 0) {
 app.use(REQUESTS_PATH, requestsRouter); // requests
 
 app.use((req, res, next) => { // catch 404 and forward to error handler
+    console.warn("Not found: " + req.url);
     next(createError(404));
 });
 

@@ -1,0 +1,21 @@
+footer {
+  align-items: center;
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+
+  a, p {
+    color: black;
+    display: inline;
+    font-size: 16px;
+    text-decoration: none;
+  }
+
+  .treverton-link {
+    font-weight: 800;
+    left: 16px;
+    position: absolute;
+  }
+}

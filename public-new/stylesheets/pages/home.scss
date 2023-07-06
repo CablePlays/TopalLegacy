@@ -1,8 +1,10 @@
 @import "../global";
 
+$banner-breakpoint: 450px;
+
 .banner {
     background-image: url("/assets/backgrounds/home.webp");
-    height: 900px;
+    height: 980px;
     position: relative;
 
     button {
@@ -16,12 +18,13 @@
 
     .top {
         @extend .flex-center;
+        padding: 0 20px;
 
         h1 {
             color: $color-primary-400;
             margin-bottom: 16px;
+            font-size: 45px;
             font-weight: 700;
-            font-size: 60px;
             margin-top: 150px;
             text-align: center;
             text-transform: uppercase;
@@ -29,15 +32,27 @@
 
         p {
             color: #fff;
+            font-size: 16px;
             font-weight: 400;
-            font-size: 20px;
             max-width: 880px;
             text-align: center;
         }
 
+        @media screen and (min-width: $banner-breakpoint) {
+            h1 {
+                font-size: 60px;
+            }
+
+            p {
+                font-size: 20px;
+            }
+        }
+
         .button-container {
-            column-gap: 32px;
             display: flex;
+            flex-wrap: wrap;
+            gap: 8px 32px;
+            justify-content: center;
             margin-top: 32px;
 
             .button-primary {
@@ -66,7 +81,6 @@
         background-color: rgb(255, 255, 255, 0.3);
         bottom: 0;
         color: white;
-        height: 250px;
         overflow: hidden;
         position: absolute;
         width: 100%;
@@ -84,7 +98,7 @@
                 border: none;
                 color: black;
                 font-weight: 400;
-                margin-top: 20px;
+                margin: 20px 0 40px 0;
 
                 &:hover {
                     background-color: $white-hover;
@@ -92,14 +106,35 @@
             }
 
             h1 {
-                font-size: 64px;
+                font-size: 38px;
                 font-weight: 300;
                 margin-top: 20px;
             }
 
             p {
-                font-size: 30px;
+                font-size: 18px;
                 font-weight: 500;
+                padding: 0 50px;
+            }
+
+            @media screen and (min-width: 400px) {
+                h1 {
+                    font-size: 48px;
+                }
+
+                p {
+                    font-size: 25px;
+                }
+            }
+
+            @media screen and (min-width: 600px) {
+                h1 {
+                    font-size: 64px;
+                }
+
+                p {
+                    font-size: 30px;
+                }
             }
 
             .date {
@@ -109,6 +144,22 @@
                 font-weight: 600;
                 left: 18px;
                 position: absolute;
+            }
+        }
+
+        .next {
+            right: -40px;
+
+            img {
+                left: 5px;
+            }
+        }
+
+        .previous {
+            left: -40px;
+
+            img {
+                right: 5px;
             }
         }
 
@@ -132,22 +183,6 @@
                 position: absolute;
                 top: 37.5px - 13px;
                 width: 26px;
-            }
-        }
-
-        .next {
-            right: -40px;
-
-            img {
-                left: 5px;
-            }
-        }
-
-        .previous {
-            left: -40px;
-
-            img {
-                right: 5px;
             }
         }
     }

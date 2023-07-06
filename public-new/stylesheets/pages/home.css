@@ -91,12 +91,14 @@ footer .treverton-link {
 .topbar {
   align-items: center;
   background-color: #fff;
-  color: white;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+  color: white;
+  -moz-column-gap: 20px;
+       column-gap: 20px;
   display: flex;
   justify-content: space-around;
+  padding: 0 20px;
   position: fixed;
-  top: 0;
   width: 100%;
   z-index: 100;
 }
@@ -104,9 +106,14 @@ footer .treverton-link {
   align-items: center;
   -moz-column-gap: 20px;
        column-gap: 20px;
-  display: flex;
+  display: none;
   height: 100%;
   justify-content: flex-end;
+}
+@media screen and (min-width: 550px) {
+  .topbar .links {
+    display: flex;
+  }
 }
 .topbar .links a {
   color: #3a3a3a;
@@ -132,10 +139,15 @@ footer .treverton-link {
   align-items: center;
   background-color: #EFEFEF;
   border-radius: 8px;
-  display: flex;
+  display: none;
   height: 49px;
   padding: 0 16px;
   width: 500px;
+}
+@media screen and (min-width: 800px) {
+  .topbar .search {
+    display: flex;
+  }
 }
 .topbar .search input {
   background: transparent;
@@ -172,6 +184,7 @@ footer .treverton-link {
   cursor: pointer;
   padding: 8px;
   transition: background-color 0.1s;
+  white-space: nowrap;
 }
 #sign-in-button:hover {
   background-color: #f29354;
@@ -179,7 +192,7 @@ footer .treverton-link {
 
 .banner {
   background-image: url("/assets/backgrounds/home.webp");
-  height: 900px;
+  height: 980px;
   position: relative;
 }
 .banner button {
@@ -190,26 +203,38 @@ footer .treverton-link {
   font-weight: 300;
   font-size: 16px;
 }
+.banner .top {
+  padding: 0 20px;
+}
 .banner .top h1 {
   color: #EF7523;
   margin-bottom: 16px;
+  font-size: 45px;
   font-weight: 700;
-  font-size: 60px;
   margin-top: 150px;
   text-align: center;
   text-transform: uppercase;
 }
 .banner .top p {
   color: #fff;
+  font-size: 16px;
   font-weight: 400;
-  font-size: 20px;
   max-width: 880px;
   text-align: center;
 }
+@media screen and (min-width: 450px) {
+  .banner .top h1 {
+    font-size: 60px;
+  }
+  .banner .top p {
+    font-size: 20px;
+  }
+}
 .banner .top .button-container {
-  -moz-column-gap: 32px;
-       column-gap: 32px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  justify-content: center;
   margin-top: 32px;
 }
 .banner .top .button-container .button-primary {
@@ -232,7 +257,6 @@ footer .treverton-link {
   background-color: rgba(255, 255, 255, 0.3);
   bottom: 0;
   color: white;
-  height: 250px;
   overflow: hidden;
   position: absolute;
   width: 100%;
@@ -250,19 +274,36 @@ footer .treverton-link {
   border: none;
   color: black;
   font-weight: 400;
-  margin-top: 20px;
+  margin: 20px 0 40px 0;
 }
 .banner .slideshow .card button:hover {
   background-color: rgb(220, 220, 220);
 }
 .banner .slideshow .card h1 {
-  font-size: 64px;
+  font-size: 38px;
   font-weight: 300;
   margin-top: 20px;
 }
 .banner .slideshow .card p {
-  font-size: 30px;
+  font-size: 18px;
   font-weight: 500;
+  padding: 0 50px;
+}
+@media screen and (min-width: 400px) {
+  .banner .slideshow .card h1 {
+    font-size: 48px;
+  }
+  .banner .slideshow .card p {
+    font-size: 25px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .banner .slideshow .card h1 {
+    font-size: 64px;
+  }
+  .banner .slideshow .card p {
+    font-size: 30px;
+  }
 }
 .banner .slideshow .card .date {
   bottom: 18px;
@@ -271,6 +312,18 @@ footer .treverton-link {
   font-weight: 600;
   left: 18px;
   position: absolute;
+}
+.banner .slideshow .next {
+  right: -40px;
+}
+.banner .slideshow .next img {
+  left: 5px;
+}
+.banner .slideshow .previous {
+  left: -40px;
+}
+.banner .slideshow .previous img {
+  right: 5px;
 }
 .banner .slideshow .next,
 .banner .slideshow .previous {
@@ -293,16 +346,4 @@ footer .treverton-link {
   position: absolute;
   top: 24.5px;
   width: 26px;
-}
-.banner .slideshow .next {
-  right: -40px;
-}
-.banner .slideshow .next img {
-  left: 5px;
-}
-.banner .slideshow .previous {
-  left: -40px;
-}
-.banner .slideshow .previous img {
-  right: 5px;
 }

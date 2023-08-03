@@ -8,17 +8,16 @@ const renderRouter = require("./render/index-router");
 const PORT = 80;
 const ARTIFICIAL_LATENCY = 0;
 const REQUESTS_PATH = "/requests";
-const USING_NEW = true; // FOR TESTING
 
 const app = express();
 
 consoleCommands();
 
 // view engine setup
-app.set('views', 'views' + (USING_NEW ? '-new' : ''));
+app.set('views', 'views');
 app.set('view engine', 'pug');
 
-app.use(express.static('public' + (USING_NEW ? '-new' : '')));
+app.use(express.static('public'));
 app.use(express.json()); // for reading json post requests
 app.use(cookieParser()); // for cookie object
 

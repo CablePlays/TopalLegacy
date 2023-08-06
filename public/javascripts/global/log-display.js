@@ -3,13 +3,6 @@
 */
 
 const _flexibleDisplayColumns = {
-    // endurancef: [
-    //     ["Date", log => formatDate(log.date)],
-    //     ["Discipline", log => log.discipline],
-    //     ["Distance", log => (log.distance / 1000) + "km"],
-    //     ["Time", log => formatDuration(log.time)],
-    //     ["Description", log => log.description]
-    // ],
     endurance: [
         {
             name: "Date",

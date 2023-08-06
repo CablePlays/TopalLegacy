@@ -262,7 +262,7 @@ function setupSections() {
 
         div.appendChild(createSpacer(20));
 
-        div.appendChild(createTableLD({
+        div.appendChild(createFlexibleLD({
             logType: "endurance",
             removable: false,
             signable: true,

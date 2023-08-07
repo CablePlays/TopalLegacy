@@ -7,7 +7,8 @@ const renderRouter = require("./render/index-router");
 const https = require("https");
 const fs = require("fs");
 
-const PORT = 80;
+const PORT_HTTPS = 443;
+const PORT_HTTP = 80;
 const ARTIFICIAL_LATENCY = 0;
 const REQUESTS_PATH = "/requests";
 
@@ -63,13 +64,19 @@ app.use((err, req, res, next) => { // handle render errors
     }
 });
 
-// app.listen(PORT);
-
 const options = {
     key: fs.readFileSync('/etc/letsencrypt/live/topal.click/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/topal.click/fullchain.pem')
 };
 
-https.createServer(options, app).listen(PORT, (req, res) => {
-    console.log("Server started at port " + PORT);
+https.createServer(options, app).listen(PORT_HTTPS, (req, res) => {
+    console.log("Server started at port " + PORT_HTTPS);
 });
+
+const httpApp = express();
+
+httpApp.use("/", (req, res) => {
+    res.redirect(`https://${req.headers.host}${req.url}`);
+});
+
+httpApp.listen(PORT_HTTP);

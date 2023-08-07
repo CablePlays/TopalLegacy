@@ -133,7 +133,7 @@ router.post("/verify-email", async (req, res) => {
         `<h2>Topal</h2>
         <h2>Create Account</h2>
         <p> If you are trying to create a Topal account then please continue with
-        <a href="topal.click/account/create-account?token=${token}">this</a> link.
+        <a href="https://topal.click/account/create-account?token=${token}">this</a> link.
         If you are not trying to create a Topal account then please ignore this email.`
     ).then(() => res.res(204), error => {
         console.error(error);

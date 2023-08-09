@@ -2,9 +2,9 @@ const express = require('express');
 const cookies = require("../server/cookies");
 const general = require("../server/general");
 const jsonDatabase = require("../server/json-database");
+const middleware = require("./middleware");
 
 // routers
-const accountRouter = require("./account-router");
 const adminRouter = require("./admin-router");
 const awardsRouter = require("./awards-router");
 const profileRouter = require("./profile-router");
@@ -89,10 +89,13 @@ router.get("/settings", (req, res) => {
     res.advancedRender("general/settings");
 });
 
+router.get("/login", middleware.requireLoggedOut, (req, res) => {
+    res.advancedRender("account/login");
+});
+
 /* Routers */
 
 router.use('/', adminRouter);
-router.use('/account', accountRouter);
 router.use('/awards', awardsRouter);
 router.use('/profile', profileRouter);
 

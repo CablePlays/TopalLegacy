@@ -1,0 +1,30 @@
+extends ../layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/account/login.css")
+
+  script(src="/javascripts/account/login.js")
+  script(src="https://accounts.google.com/gsi/client" async)
+
+  .content-container
+    h1 Sign In
+    h3 Topal
+
+    .spacer.v20
+
+    #info-container(style="display: none")
+      p#info-text
+      .spacer.v20
+
+    #g_id_onload(data-client_id="65424431927-tnmjot67sd1im3nmepq80s0i82j4vm6t.apps.googleusercontent.com" 
+      data-context="signin"
+      data-ux_mode="popup"
+      data-callback="handleLogin"
+      data-auto_prompt="false")
+
+    .g_id_signin(data-type="standard"
+      data-shape="rectangular"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-logo_alignment="left")

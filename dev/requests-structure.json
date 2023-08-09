@@ -1,4 +1,9 @@
 {
+    "/account": {
+        "/handle-login": {
+            "PUT": "Logs in user with the given response from Google servers"
+        }
+    },
     "/audit-log": {
         "GET": "Get audit log records"
     },
@@ -30,21 +35,6 @@
     },
     "/requests": {
         "GET": "Gets general information about sign-off requests"
-    },
-    "/session": {
-        "/account": {
-            "POST": "Create account",
-            "PUT": "Login"
-        },
-        "/change-password": {
-            "PUT": "Change password"
-        },
-        "/forgot-password": {
-            "POST": "Send password to email"
-        },
-        "/verify-email": {
-            "POST": "Send message to inbox of email for verification"
-        }
     },
     "/users": {
         "GET": "Search users",

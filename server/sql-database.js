@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { deprecate } = require("util");
 const sqlite3 = require("sqlite3").verbose();
 
 if (!fs.existsSync("database")) {
@@ -71,6 +72,9 @@ function run(sql) {
     });
 }
 
+/*
+    Deprecated
+*/
 async function replace(table, conditionColumn, conditionValue, values) {
     let columns = Object.getOwnPropertyNames(values);
     if (columns.length === 0) return; // nothing to replace
@@ -166,7 +170,6 @@ useDatabase(db => {
 
     /* General */
 
-    db.all("CREATE TABLE IF NOT EXISTS unverified_users (email TEXT UNIQUE NOT NULL, token TEXT UNIQUE NOT NULL)");
     db.all("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL, name TEXT NOT NULL, surname TEXT NOT NULL)");
     db.all("CREATE TABLE IF NOT EXISTS recent_awards (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER NOT NULL, award TEXT NOT NULL, date INTEGER NOT NULL)");
 

@@ -1,5 +1,5 @@
 const USER_COOKIE = "user_id";
-const PASSWORD_COOKIE = "password";
+const PASSWORD_COOKIE = "session_token";
 
 function getCookie(name) {
     let cookies = decodeURIComponent(document.cookie || "").split(";");

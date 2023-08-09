@@ -4,12 +4,12 @@ const general = require("../server/general");
 const jsonDatabase = require("../server/json-database");
 
 // routers
+const accountRouter = require("./account");
 const auditLogRouter = require("./audit-log");
 const awardsRouter = require("./awards");
 const logsRouter = require("./logs");
 const permissionsRouter = require("./permissions");
 const requestsRouter = require("./requests");
-const sessionRouter = require("./session");
 const usersRouter = require("./users");
 
 const router = express.Router();
@@ -47,12 +47,12 @@ router.use("/", (req, res, next) => { // provide response methods
 
 /* Routers */
 
+router.use('/account', accountRouter);
 router.use('/audit-log', auditLogRouter);
 router.use('/awards', awardsRouter);
 router.use('/logs', logsRouter);
 router.use('/permissions', permissionsRouter);
 router.use('/requests', requestsRouter);
-router.use('/session', sessionRouter);
 router.use('/users', usersRouter);
 
 module.exports = router;

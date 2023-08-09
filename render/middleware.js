@@ -6,7 +6,7 @@ function requireLoggedIn(req, res, next) {
     if (cookies.isLoggedIn(req)) {
         next();
     } else {
-        res.redirect("/account/signup");
+        res.redirect(`/login?redirect=${req.originalUrl}`);
     }
 }
 
@@ -18,7 +18,7 @@ function requireLoggedOut(req, res, next) {
     }
 }
 
-function getPermissionMiddleware(permission) {
+function requirePermission(permission) {
     return (req, res, next) => {
         if (cookies.isLoggedIn(req)) {
             const userId = cookies.getUserId(req);
@@ -37,5 +37,5 @@ function getPermissionMiddleware(permission) {
 module.exports = {
     requireLoggedIn,
     requireLoggedOut,
-    getPermissionMiddleware
+    requirePermission
 }

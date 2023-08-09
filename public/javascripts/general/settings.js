@@ -1,18 +1,16 @@
-function handleButton(element, runnable) {
+function handleButton(element, onClick) {
     if (typeof element === "string") {
         element = document.getElementById(element + "-button");
     }
 
-    element.addEventListener("click", runnable);
+    element.addEventListener("click", onClick);
 }
 
 function setupButtons() {
     handleButton("logout", () => {
         logOut();
-        window.location.href = "/account/login";
+        window.location.href = "/login";
     });
-
-    handleButton("change-password", () => window.location.href = "/account/change-password");
 
     const toggleDarkButton = document.getElementById("toggle-dark-button");
     const updateToggleDarkButtonText = enabled => toggleDarkButton.innerHTML = (enabled ? "On" : "Off");

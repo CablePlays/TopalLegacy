@@ -24,7 +24,7 @@ function getCookie(name, cookies) {
 /* External */
 
 const USER_COOKIE = "user_id";
-const PASSWORD_COOKIE = "password";
+const PASSWORD_COOKIE = "session_token";
 
 function getUserId(req) {
     const userId = getCookie(USER_COOKIE, req.headers.cookie);

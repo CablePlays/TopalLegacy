@@ -81,16 +81,20 @@ router.get("/balls", (req, res) => {
     res.advancedRender("general/balls");
 });
 
+router.get("/login", middleware.requireLoggedOut, (req, res) => {
+    res.advancedRender("general/login");
+});
+
+router.get("/privacy-policy", middleware.requireLoggedOut, (req, res) => {
+    res.advancedRender("general/privacy-policy");
+});
+
 router.get("/search", (req, res) => {
     res.advancedRender("general/search");
 });
 
 router.get("/settings", (req, res) => {
     res.advancedRender("general/settings");
-});
-
-router.get("/login", middleware.requireLoggedOut, (req, res) => {
-    res.advancedRender("account/login");
 });
 
 /* Routers */

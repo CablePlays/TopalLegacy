@@ -5,3 +5,7 @@ h2 {
 .email {
     color: var(--color-highlight);
 }
+
+.faint {
+    color: rgb(150, 150, 150);
+}

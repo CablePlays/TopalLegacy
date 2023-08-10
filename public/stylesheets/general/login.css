@@ -7,3 +7,7 @@
 .content-container {
     margin-top: 150px;
 }
+
+.faint {
+    color: rgb(100, 100, 100);
+}

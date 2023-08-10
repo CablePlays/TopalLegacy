@@ -65,8 +65,8 @@ app.use((err, req, res, next) => { // handle render errors
 });
 
 const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/topal.click/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/topal.click/fullchain.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/opawards.treverton.co.za/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/opawards.treverton.co.za/fullchain.pem')
 };
 
 https.createServer(options, app).listen(PORT_HTTPS, (req, res) => {

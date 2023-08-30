@@ -290,29 +290,6 @@ async function provideUserInfoToStatuses(statuses) {
     });
 }
 
-async function sendEmail(recipient, subject, content) {
-    console.info("Sending email to " + recipient + ": " + subject);
-    const from = "cableplays1912@gmail.com";
-
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        auth: {
-            user: from,
-            pass: "lvbiogzkrjbabbnb"
-        }
-    });
-
-    const info = await transporter.sendMail({
-        from: from,
-        to: recipient,
-        subject,
-        html: content
-    });
-
-    console.info("Email sent: " + info.messageId);
-}
-
 module.exports = {
     INVISIBLE_USERS,
     RECENT_AWARDS_LIFETIME,
@@ -336,6 +313,5 @@ module.exports = {
     isPasswordValid,
     forEachAndWait,
     provideUserInfoToStatus,
-    provideUserInfoToStatuses,
-    sendEmail
+    provideUserInfoToStatuses
 }

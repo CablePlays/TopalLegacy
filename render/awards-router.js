@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const middleware = require("./middleware");;
+const middleware = require("./middleware");
 
 const router = express.Router();
 

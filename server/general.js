@@ -1,4 +1,3 @@
-const nodemailer = require('nodemailer');
 const cookies = require("./cookies");
 const sqlDatabase = require('./sql-database');
 
